@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Gestione Musica{% endblock %}
+
+{% block header %}
+    <h1>Pagina per la gestione delle tracce musicali</h1>
+{% endblock %}
+
+{% block content %}
+<h1>Lettore Audio</h1>
+<div id="player">
+    <p id="track-info">Traccia: Nessuna</p>
+    <div>
+        <button onclick="prevTrack()">⏮️ Precedente</button>
+        <button onclick="playTrack()">▶️ Play</button>
+        <button onclick="pauseTrack()">⏸️ Pausa</button>
+        <button onclick="stopTrack()">⏹️ Stop</button>
+        <button onclick="resumeTrack()">▶️ Riprendi</button>
+        <button onclick="nextTrack()">⏭️ Successiva</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentTrackIndex = 0;
+    let tracks = [];
+    let trackInfo = document.getElementById("track-info");
+
+    // Recupera le tracce disponibili dal server
+    async function fetchTracks() {
+        const response = await fetch('/tracks');
+        const data = await response.json();
+        tracks = data.tracks;
+        if (tracks.length > 0) {
+            currentTrackIndex = 0;
+            updateTrackInfo();
+        } else {
+            trackInfo.textContent = "Nessuna traccia disponibile";
+        }
+    }
+
+    // Aggiorna le informazioni sulla traccia corrente
+    function updateTrackInfo() {
+        if (tracks.length > 0 && currentTrackIndex >= 0 && currentTrackIndex < tracks.length) {
+            trackInfo.textContent = `Traccia: ${tracks[currentTrackIndex]} (${currentTrackIndex + 1} di ${tracks.length})`;
+        } else {
+            trackInfo.textContent = "Traccia: Nessuna";
+        }
+    }
+
+    // Riproduce la traccia corrente
+    async function playTrack() {
+        if (tracks.length > 0) {
+            const track = tracks[currentTrackIndex];
+            await fetch('/play', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ track })
+            });
+            updateTrackInfo();
+        }
+    }
+
+    // Mette in pausa la traccia corrente
+    async function pauseTrack() {
+        await fetch('/pause', { method: 'POST' });
+    }
+
+    // Riprende la traccia corrente
+    async function resumeTrack() {
+        await fetch('/resume', { method: 'POST' });
+    }
+
+    // Ferma la riproduzione
+    async function stopTrack() {
+        await fetch('/stop', { method: 'POST' });
+    }
+
+    // Passa alla traccia precedente
+    async function prevTrack() {
+        if (currentTrackIndex > 0) {
+            currentTrackIndex--;
+            await playTrack();
+        } else {
+            currentTrackIndex = tracks.length - 1;
+            await playTrack();
+        }
+    }
+
+    // Passa alla traccia successiva
+    async function nextTrack() {
+        if (currentTrackIndex < tracks.length - 1) {
+            currentTrackIndex++;
+            await playTrack();
+        } else {
+            currentTrackIndex = 0;
+            await playTrack();
+        }
+    }
+
+    // Carica le tracce al caricamento della pagina
+    window.onload = fetchTracks;
+</script>
+{% endblock %}

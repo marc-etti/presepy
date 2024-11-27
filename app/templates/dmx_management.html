@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Gestione DMX{% endblock %}
+
+{% block header %}
+    <h1>Pagina di gestione DMX</h1>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <button onclick="initialize()">Inizializza</button>
+        <button onclick="reset()">Reset</button>
+        <button onclick="startLoop()">Avvia Loop</button>
+        <button onclick="stopLoop()">Ferma Loop</button>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Inizializza il sistema DMX
+    async function initialize() {
+        await fetch('initialize_DMX', { method: 'POST' });
+    }
+
+    // Resetta il sistema DMX
+    async function reset() {
+        await fetch('reset_DMX', { method: 'POST' });
+    }
+
+    // Avvia il loop di aggiornamento DMX
+    async function startLoop() {
+        await fetch('start_DMX', { method: 'POST' });
+    }
+
+    // Ferma il loop di aggiornamento DMX
+    async function stopLoop() {
+        await fetch('stop_DMX', { method: 'POST' });
+    }
+
+</script>
+{% endblock %}

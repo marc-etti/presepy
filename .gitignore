@@ -1,0 +1,40 @@
+# Ambiente virtuale
+venv/
+*.pyc
+__pycache__/
+
+# File di configurazione e credenziali
+instance/
+.env
+*.env
+
+# File temporanei e di sistema
+*.log
+*.sqlite3
+*.db
+*.pid
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Cache Python
+*.pyc
+__pycache__/
+*.pyo
+
+# Flask specifico
+*.pytest_cache/
+.cache/
+
+# Editor/IDE
+.vscode/
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
+
+# Sistema operativo
+*.bak
+*.tmp
+*.~lock.*

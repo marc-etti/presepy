@@ -1,10 +1,10 @@
+from config import LOGS_FOLDER
 from app.services.dmx.DMX_instance import dmx
 
 from app.services.dmx.DMX_logic import running_event
 from app.services.dmx.DMX_logic import main_dmx_function
 from app.services.dmx.DMX_logic import inizializzazione_test
 
-import pygame
 from flask import Blueprint, request, jsonify
 import os
 import threading
@@ -13,8 +13,7 @@ import time
 # Creazione del Blueprint
 dmx_bp = Blueprint('dmx', __name__)
 
-LOGS_FOLDER = 'app/logs'
-
+# Variabile globale per il thread 
 thread = None
 
 @dmx_bp.route('/initialize_DMX', methods=['POST'])

@@ -1,10 +1,14 @@
+from config import LOGS_FOLDER
+
 import time
 from threading import Event
 from app.services.dmx.DMX_instance import dmx
 from app.services.controllers.led_controller import LedController
 
+
 led_controller = LedController(dmx, 1)
 
+# Evento per la gestione del thread
 running_event = Event()
 
 def inizializzazione_test():
@@ -22,6 +26,6 @@ def main_dmx_function():
         led_controller.increase_color('red', 1)
         led_controller.increase_color('green', 1)
         led_controller.increase_color('blue', 1)
-        dmx.write_channels_on_log('app/logs/dmx_log.log')
+        dmx.write_channels_on_log(LOGS_FOLDER  + '/dmx_log.log')
         time.sleep(0.5)
 

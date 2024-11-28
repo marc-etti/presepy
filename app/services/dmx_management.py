@@ -1,4 +1,4 @@
-from app.services.dmx.DMX import DMX
+from app.services.dmx.DMX_data import DMXData 
 from app.services.controllers.led_controller import LedController
 
 import pygame
@@ -13,7 +13,7 @@ dmx_bp = Blueprint('dmx', __name__)
 LOGS_FOLDER = 'app/logs'
 
 # Inizializzazione dell'interfaccia DMX
-dmx = DMX()
+dmx = DMXData()
 
 # Creazione di un controller per i LED
 led_controller = LedController(dmx, 1)
@@ -78,8 +78,8 @@ def main_dmx_function():
     """Funzione di loop che si occupa di aggiornare i valori del DMX
     e inviarli alla porta USB specificata."""
     while running:
-        led_controller.increase_color('red', 1, dmx)
-        led_controller.increase_color('green', 1, dmx)
-        led_controller.increase_color('blue', 1, dmx)
+        led_controller.increase_color('red', 1)
+        led_controller.increase_color('green', 1)
+        led_controller.increase_color('blue', 1)
         dmx.write_channels_on_log('app/logs/dmx_log.log')
         time.sleep(0.5)

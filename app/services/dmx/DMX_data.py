@@ -5,17 +5,18 @@ from datetime import datetime
 NUMBER_OF_CHANNELS = 512
 MAX_CHANNEL_VALUE = 255
 
-class DMX:
+class DMXData:
     """
-    Classe che rappresenta un'interfaccia DMX.
-    Permette di inviare valori a 512 canali DMX.
+    Classe che gestisce i dati DMX.
+    Il protocollo DMX prevede la trasmissione di 512 canali
+    (513 canali in totale ma il canale 0 viene tenuto a 0)
     """
 
     def __init__(self):
         """
         Costruttore della classe.
         """
-        self.channels = [0] * NUMBER_OF_CHANNELS
+        self.channels = [0] * (NUMBER_OF_CHANNELS + 1)
 
     def set_channel(self, channel, value):
         """
@@ -28,7 +29,7 @@ class DMX:
             raise ValueError("Il canale deve essere compreso tra 1 e 512")
         if value < 0 or value > 255:
             raise ValueError("Il valore deve essere compreso tra 0 e 255")
-        self.channels[channel - 1] = value
+        self.channels[channel] = value
 
     def set_interval(self, start_channel, end_channel, value):
         """
@@ -46,8 +47,8 @@ class DMX:
             raise ValueError("Il canale iniziale deve essere minore o uguale al canale finale")
         if value < 0 or value > 255:
             raise ValueError("Il valore deve essere compreso tra 0 e 255")
-        for i in range(start_channel, end_channel + 1):
-            self.channels[i - 1] = value
+        for i in range(start_channel, end_channel):
+            self.channels[i] = value
 
     def get_channel(self, channel):
         """
@@ -58,7 +59,7 @@ class DMX:
         """
         if channel < 1 or channel > 512:
             raise ValueError("Il canale deve essere compreso tra 1 e 512")
-        return self.channels[channel - 1]
+        return self.channels[channel]
     
     def get_channels(self):
         """
@@ -72,7 +73,7 @@ class DMX:
         """
         Resetta tutti i canali DMX.
         """
-        for i in range(512):
+        for i in range(1, NUMBER_OF_CHANNELS + 1):
             self.channels[i] = 0
 
     def send(self, host, port):

@@ -23,7 +23,7 @@ deactivate
 
 ## Accesso all'interfaccia web
 
-L'interfaccia web è accessibile all'indirizzo [http://0.0.0.0:5000/](http://0.0.0.0:5000/).
+L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/).
 
 ## Accesso alla console di Flask
 
@@ -39,13 +39,6 @@ Il file `config.py` contiene le seguenti variabili di configurazione:
 - `SECRET_KEY`: chiave segreta per la sessione di Flask
 - `DMX_PORT`: porta seriale per la comunicazione DMX512
 - `AUDIO_DIR`: percorso della cartella contenente i file audio
-- `AUDIO_EXT`: estensione dei file audio supportati
-- `AUDIO_VOLUME`: volume di default per i file audio
-- `AUDIO_FADE`: durata in secondi del fade in/out per i file audio
-- `AUDIO_LOOP`: riproduzione in loop dei file audio
-- `AUDIO_DELAY`: ritardo in secondi per la riproduzione dei file audio
-- `SCHEDULER_INTERVAL`: intervallo in secondi per la verifica degli eventi
-- `SCHEDULER_FILE`: percorso del file JSON contenente gli eventi pianificati
 
 ## Dipendenze
 

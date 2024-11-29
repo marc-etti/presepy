@@ -1,6 +1,7 @@
 # File della classe DMX
 
 from datetime import datetime
+import threading
 
 NUMBER_OF_CHANNELS = 512
 MAX_CHANNEL_VALUE = 255
@@ -12,12 +13,33 @@ class DMXData:
     (513 canali in totale ma il canale 0 viene tenuto a 0)
     """
 
+    # def __init__(self):
+    #     """
+    #     Costruttore della classe.
+    #     """
+    #     self.channels = [0] * (NUMBER_OF_CHANNELS + 1)
+
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        """
+        Metodo per creare un'istanza singola della classe.
+        """
+        if not cls._instance:
+            with cls._lock:
+                if not cls._instance:  # Doppio controllo per la sicurezza con thread multipli.
+                    cls._instance = super(DMXData, cls).__new__(cls, *args, **kwargs)
+        return cls._instance 
+
     def __init__(self):
         """
         Costruttore della classe.
         """
-        self.channels = [0] * (NUMBER_OF_CHANNELS + 1)
+        if not hasattr(self, 'channels'):  # Per evitare di sovrascrivere l'istanza esistente.
+            self.channels = [0] * (NUMBER_OF_CHANNELS + 1)
 
+        
     def set_channel(self, channel, value):
         """
         Imposta il valore di un canale DMX.
@@ -86,6 +108,9 @@ class DMXData:
         """
         Scrive i valori dei canali DMX su file di log.
         """
+        if not log_file:
+            raise ValueError("Il file di log non è stato specificato")
+        
         with open(log_file, 'a') as f:
             f.write(f'{datetime.now().strftime("%H:%M:%S")}: {self.channels}\n')
 

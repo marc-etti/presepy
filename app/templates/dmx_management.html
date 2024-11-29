@@ -12,6 +12,7 @@
         <button onclick="reset()">Reset</button>
         <button onclick="startLoop()">Avvia Loop</button>
         <button onclick="stopLoop()">Ferma Loop</button>
+        <button onclick="stampa()">Stampa</button>
     </div>
 {% endblock %}
 
@@ -37,5 +38,10 @@
         await fetch('stop_DMX', { method: 'POST' });
     }
 
+    // Stampa il valore dei canali DMX sul file di log
+    async function stampa() {
+        await fetch('stampa_DMX', { method: 'POST' });
+    }
+    
 </script>
 {% endblock %}

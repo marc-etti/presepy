@@ -1,4 +1,4 @@
-from config import AUDIO_FOLDER
+from config import Config
 
 import pygame
 from flask import Blueprint, request, jsonify
@@ -18,7 +18,7 @@ pygame.mixer.init()
 
 # Funzione per ottenere la lista di file audio
 def get_audio_files():
-    return [f for f in os.listdir(AUDIO_FOLDER) if f.endswith(('.mp3', '.wav', '.ogg'))]
+    return [f for f in os.listdir(Config.AUDIO_FOLDER) if f.endswith(('.mp3', '.wav', '.ogg'))]
 
 # Thread di controllo della riproduzione
 def background_player():
@@ -41,7 +41,7 @@ def play():
     if not track_name or track_name not in get_audio_files():
         return jsonify({'error': 'Traccia non trovata'}), 404
 
-    track_path = os.path.join(AUDIO_FOLDER, track_name)
+    track_path = os.path.join(Config.AUDIO_FOLDER, track_name)
     pygame.mixer.music.load(track_path)
     pygame.mixer.music.play()
     current_track = track_name

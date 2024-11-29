@@ -1,4 +1,4 @@
-from config import LOGS_FOLDER
+from config import Config
 
 import time
 from threading import Event
@@ -26,6 +26,6 @@ def main_dmx_function():
         led_controller.increase_color('red', 1)
         led_controller.increase_color('green', 1)
         led_controller.increase_color('blue', 1)
-        dmx.write_channels_on_log(LOGS_FOLDER  + '/dmx_log.log')
+        dmx.write_channels_on_log(Config.LOGS_FOLDER  + '/dmx_log.log')
         time.sleep(0.5)
 

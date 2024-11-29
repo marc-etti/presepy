@@ -1,4 +1,4 @@
-from config import LOGS_FOLDER
+from config import Config
 from app.services.dmx.DMX_instance import dmx
 
 from app.services.dmx.DMX_logic import running_event
@@ -6,9 +6,7 @@ from app.services.dmx.DMX_logic import main_dmx_function
 from app.services.dmx.DMX_logic import inizializzazione_test
 
 from flask import Blueprint, request, jsonify
-import os
 import threading
-import time
 
 # Creazione del Blueprint
 dmx_bp = Blueprint('dmx', __name__)
@@ -19,7 +17,6 @@ thread = None
 @dmx_bp.route('/initialize_DMX', methods=['POST'])
 def initialize_DMX():
     """Inizializza l'interfaccia DMX."""
-    #dmx.reset()
     inizializzazione_test()
     return jsonify({'message': 'Interfaccia DMX inizializzata'})
 
@@ -45,13 +42,10 @@ def stop_DMX():
         running_event.clear()
     return jsonify({'message': 'Invio valori DMX fermato'})
 
-
-def log_dmx_data():
-    global running
-    if not os.path.exists(LOGS_FOLDER):
-        os.makedirs(LOGS_FOLDER)
-    log_file = os.path.join(LOGS_FOLDER, 'dmx_log.log')
-    while running:
-        dmx.write_channels_on_log(log_file)
-        time.sleep(1)  # Scrive sul log ogni secondo
+@dmx_bp.route('/stampa_DMX', methods=['POST'])
+def stampa_DMX():
+    """Stampa i valori dei canali DMX sul file di log."""
+    dmx.write_channels_on_log(Config.LOGS_FOLDER + 'dmx_log_1.log')
+    dmx.write_channels_on_console()
+    return jsonify({'message': 'Valori DMX stampati sul log'})
 

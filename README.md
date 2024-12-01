@@ -25,11 +25,6 @@ deactivate
 
 L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/).
 
-## Accesso alla console di Flask
-
-```bash
-flask shell
-```
 
 ## Configurazione
 
@@ -39,14 +34,13 @@ Il file `config.py` contiene le seguenti variabili di configurazione:
 - `SECRET_KEY`: chiave segreta per la sessione di Flask
 - `DMX_PORT`: porta seriale per la comunicazione DMX512
 - `AUDIO_DIR`: percorso della cartella contenente i file audio
+- `LOGS_FILE`: percorso del file di log
 
 ## Dipendenze
 
 - Flask
-- Flask-SocketIO
 - Flask-WTF
-- python-rtmidi
-- pyserial
+- pygame
 
 ## Funzionalità
 
@@ -60,7 +54,7 @@ Il file `config.py` contiene le seguenti variabili di configurazione:
 ## Struttura
 
 ```plaintext
-my_presepe_project/
+presepy/
 ├── app/
 │   ├── __init__.py          # Inizializzazione del pacchetto Flask -
 │   ├── routes.py            # Definizione delle rotte Flask        -

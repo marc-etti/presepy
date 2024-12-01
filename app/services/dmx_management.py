@@ -45,7 +45,6 @@ def stop_DMX():
 @dmx_bp.route('/stampa_DMX', methods=['POST'])
 def stampa_DMX():
     """Stampa i valori dei canali DMX sul file di log."""
-    dmx.write_channels_on_log(Config.LOGS_FOLDER + 'dmx_log_1.log')
-    dmx.write_channels_on_console()
+    dmx.write_channels_on_log(Config.LOGS_FOLDER + 'dmx_log.log')
     return jsonify({'message': 'Valori DMX stampati sul log'})
 

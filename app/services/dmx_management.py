@@ -1,5 +1,7 @@
 from config import Config
-from app.services.dmx.DMX_instance import dmx
+from app.services.dmx.DMX_logic import dmx
+
+from app.services.dmx.DMX_logic import phase_manager
 
 from app.services.dmx.DMX_logic import running_event
 from app.services.dmx.DMX_logic import main_dmx_function
@@ -48,3 +50,7 @@ def stampa_DMX():
     dmx.write_channels_on_log(Config.LOGS_FOLDER + 'dmx_log.log')
     return jsonify({'message': 'Valori DMX stampati sul log'})
 
+@dmx_bp.route('/get_current_phase', methods=['GET'])
+def get_current_phase():
+    """Restituisce la fase corrente."""
+    return jsonify({'current_phase': phase_manager.get_phase()})

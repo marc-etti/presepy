@@ -38,3 +38,11 @@ __pycache__/
 *.bak
 *.tmp
 *.~lock.*
+
+# File musicali
+*.mp3
+*.wav
+*.flac
+*.m4a
+*.aac
+*.ogg

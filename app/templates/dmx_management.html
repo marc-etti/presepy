@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block content %}
+    <p>Fase corrente: <span id="current_phase_box"> . . . </span></p>
     <div>
         <button onclick="initialize()">Inizializza</button>
         <button onclick="reset()">Reset</button>
@@ -42,6 +43,16 @@
     async function stampa() {
         await fetch('stampa_DMX', { method: 'POST' });
     }
+
+    // Ottiene la fase corrente
+    async function getCurrentPhase() {
+        const response = await fetch('get_current_phase');
+        const data = await response.json();
+        document.getElementById('current_phase_box').textContent = data.current_phase;
+    }
     
+    // Aggiorna la fase corrente ogni 5 secondi
+    setInterval(getCurrentPhase, 5000);
+
 </script>
 {% endblock %}

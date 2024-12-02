@@ -27,6 +27,6 @@ class FaroController:
         self.value = value
         self.dmx.set_channel(self.channel, self.value)
 
-    def get_value(self):
+    def get_value(self) -> int:
         """Restituisce il valore del faro."""
-        return self.value
+        return self.dmx.get_channel(self.channel)

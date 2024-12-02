@@ -13,12 +13,6 @@ class DMXData:
     (513 canali in totale ma il canale 0 viene tenuto a 0)
     """
 
-    # def __init__(self):
-    #     """
-    #     Costruttore della classe.
-    #     """
-    #     self.channels = [0] * (NUMBER_OF_CHANNELS + 1)
-
     _instance = None
     _lock = threading.Lock()
 
@@ -101,6 +95,12 @@ class DMXData:
     def send(self, host, port):
         """
         Invia i valori dei canali DMX alla porta specificata.
+        """
+        pass
+
+    def close(self):
+        """
+        Chiude la connessione DMX.
         """
         pass
 

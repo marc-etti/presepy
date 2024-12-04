@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block content %}
+    <p>Stato: <span id="is_on"> . . . </span></p>
     <p>Fase corrente: <span id="current_phase_box"> . . . </span></p>
     <div>
         <button onclick="initialize()">Inizializza</button>
@@ -49,6 +50,10 @@
         const response = await fetch('get_current_phase');
         const data = await response.json();
         document.getElementById('current_phase_box').textContent = data.current_phase;
+        if (data.is_on) 
+            document.getElementById('is_on').textContent = 'Acceso';
+        else 
+            document.getElementById('is_on').textContent = 'Spento';
     }
     
     // Aggiorna la fase corrente ogni 5 secondi

@@ -4,7 +4,7 @@ from app.utils.common import write_on_log
 import time
 from threading import Event
 from app.services.dmx.DMX_data import DMXData
-from app.services.dmx.phase_manager import PhaseManager
+from app.services.dmx.state_manager import StateManager
 from app.services.controllers.led_controller import LedController
 
 from app.services.controllers.faro_controller import FaroController
@@ -15,8 +15,8 @@ dmx = DMXData()
 # Evento per la gestione del thread
 running_event = Event()
 
-# Istanza della classe PhaseManager
-phase_manager = PhaseManager()
+# Istanza della classe StateManager
+state_manager = StateManager()
 
 def inizializzazione_test():
     """Inizializza l'interfaccia DMX."""
@@ -62,7 +62,7 @@ def main_dmx_function():
         for phase, targets, duration in phases:
             if not running_event.is_set():
                 break
-            phase_manager.set_phase(phase)
+            state_manager.set_phase(phase)
             print(f"Inizio fase {phase}")
             write_on_log(f"INIZIO FASE {phase}", Config.LOGS_FOLDER + 'dmx_log.log')
             gradual_transition(fari, targets, duration)

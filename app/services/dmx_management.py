@@ -5,7 +5,7 @@ from app.services.dmx.DMX_logic import state_manager
 
 from app.services.dmx.DMX_logic import running_event
 from app.services.dmx.DMX_logic import main_dmx_function
-from app.services.dmx.DMX_logic import inizializzazione_test
+from app.services.dmx.DMX_logic import inizializzazione
 
 from flask import Blueprint, request, jsonify
 import threading
@@ -19,7 +19,7 @@ thread = None
 @dmx_bp.route('/initialize_DMX', methods=['POST'])
 def initialize_DMX():
     """Inizializza l'interfaccia DMX."""
-    inizializzazione_test()
+    inizializzazione()
     return jsonify({'message': 'Interfaccia DMX inizializzata'})
 
 @dmx_bp.route('/reset_DMX', methods=['POST'])

@@ -1,0 +1,18 @@
+{
+    "Faro1": {
+        "channel": 1,
+        "value": 255
+    },
+    "Faro2": {
+        "channel": 2,
+        "value": 255
+    },
+    "Faro3": {
+        "channel": 3,
+        "value": 255
+    },
+    "Faro4": {
+        "channel": 4,
+        "value": 255
+    }
+}

@@ -18,10 +18,10 @@ running_event = Event()
 state_manager = StateManager()
 
 # inizializzazione
-faro1 = FaroController(dmx, 1, 255)
-faro2 = FaroController(dmx, 2, 255)
-faro3 = FaroController(dmx, 3, 255)
-faro4 = FaroController(dmx, 4, 255)
+faro1 = FaroController(dmx, 1, 1, "Faro1")
+faro2 = FaroController(dmx, 2, 1, "Faro2")
+faro3 = FaroController(dmx, 3, 1, "Faro3")
+faro4 = FaroController(dmx, 4, 1, "Faro4")
 
 def inizializzazione():
     """Inizializza l'interfaccia DMX."""
@@ -36,7 +36,7 @@ def main_dmx_function():
        aggiorna i valori istante per istante e in base alla fase del giorno"""
     
     # Costanti
-    FREQUENCY = 1/44 # Frequenza di invio dei dati al dmx (44Hz)
+    FREQUENCY = 1/2 # Frequenza di invio dei dati al dmx (44Hz)
     DURATA_ALBA = 30
     DURATA_GIORNO = 60
     DURATA_SERA = 30
@@ -59,7 +59,7 @@ def main_dmx_function():
 
             if not running_event.is_set():                          # Controllo se il programma è in esecuzione
                 break                                               # Se non è in esecuzione esco dal ciclo
-            if istante < ISTANTI_ALBA:                              # Se vero è ALBA
+            if istante < ISTANTI_ALBA:                                              # ALBA
                 if istante == 0:                                    # Controllo se è l'istante iniziale
                     print("Alba in corso")                          # Stampo il messaggio di inizio alba
                     state_manager.set_phase("ALBA")                 # Imposto la fase del giorno
@@ -67,7 +67,7 @@ def main_dmx_function():
                 faro2.proportional_value(istante, ISTANTI_ALBA)
                 faro3.proportional_value(istante, ISTANTI_ALBA)
                 faro4.proportional_value(istante, ISTANTI_ALBA)
-            elif istante < ISTANTI_GIORNO:
+            elif istante < ISTANTI_GIORNO:                                          # GIORNO
                 if istante == ISTANTI_ALBA:
                     print("Giorno in corso")
                     state_manager.set_phase("GIORNO")
@@ -75,7 +75,7 @@ def main_dmx_function():
                 faro2.set_value(255)
                 faro3.set_value(255)
                 faro4.set_value(255)
-            elif istante < ISTANTI_SERA:
+            elif istante < ISTANTI_SERA:                                            # SERA
                 if istante == ISTANTI_GIORNO:
                     print("Sera in corso")
                     state_manager.set_phase("SERA")
@@ -83,7 +83,7 @@ def main_dmx_function():
                 faro2.proportional_value(istante - ISTANTI_GIORNO, ISTANTI_SERA)
                 faro3.proportional_value(istante - ISTANTI_GIORNO, ISTANTI_SERA)
                 faro4.proportional_value(istante - ISTANTI_GIORNO, ISTANTI_SERA)
-            elif istante < ISTANTI_NOTTE:
+            elif istante < ISTANTI_NOTTE:                                           # NOTTE
                 if istante == ISTANTI_SERA:
                     print("Notte in corso")
                     state_manager.set_phase("NOTTE")
@@ -105,6 +105,7 @@ def main_dmx_function():
 
     # Chiusura
     print("Programma terminato")
+    state_manager.set_istante(istante)
     closing_function()
 
 def closing_function():

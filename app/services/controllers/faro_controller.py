@@ -6,10 +6,10 @@ class FaroController:
     MAX_VALUE = 255
     MIN_VALUE = 0
     
-    def __init__(self, dmx_instance, channel=None, value=0, name=None):
+    def __init__(self, dmx_instance, channel, value, name):
         """Inizializza il faro."""
-        if channel is None:
-            raise ValueError("Il canale del faro non può essere nullo")
+        if channel is None or channel == 0:
+            raise ValueError("Il canale del faro non può essere zero o vuoto.")
         self.dmx = dmx_instance             # Istanza del DMX
         self.channel = channel              # Canale del faro
         self.value = value                  # Intensità del faro

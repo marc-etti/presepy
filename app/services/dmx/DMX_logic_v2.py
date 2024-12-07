@@ -79,10 +79,10 @@ def main_dmx_function():
                 if istante == ISTANTI_GIORNO:
                     print("Sera in corso")
                     state_manager.set_phase("SERA")
-                faro1.proportional_value(istante - ISTANTI_GIORNO, ISTANTI_SERA)
-                faro2.proportional_value(istante - ISTANTI_GIORNO, ISTANTI_SERA)
-                faro3.proportional_value(istante - ISTANTI_GIORNO, ISTANTI_SERA)
-                faro4.proportional_value(istante - ISTANTI_GIORNO, ISTANTI_SERA)
+                faro1.proportional_value(ISTANTI_SERA - istante, ISTANTI_SERA - ISTANTI_GIORNO)
+                faro2.proportional_value(ISTANTI_SERA - istante, ISTANTI_SERA - ISTANTI_GIORNO)
+                faro3.proportional_value(ISTANTI_SERA - istante, ISTANTI_SERA - ISTANTI_GIORNO)
+                faro4.proportional_value(ISTANTI_SERA - istante, ISTANTI_SERA - ISTANTI_GIORNO)
             elif istante < ISTANTI_NOTTE:                                           # NOTTE
                 if istante == ISTANTI_SERA:
                     print("Notte in corso")
@@ -110,10 +110,10 @@ def main_dmx_function():
 
 def closing_function():
     """Funzione di chiusura del programma."""
-    state_manager.write_data_on_json(Config.JSON_FILE)
-    faro1.write_data_on_json(Config.JSON_FILE)
-    faro2.write_data_on_json(Config.JSON_FILE)
-    faro3.write_data_on_json(Config.JSON_FILE)
-    faro4.write_data_on_json(Config.JSON_FILE)
+    state_manager.write_data_on_json()
+    faro1.write_data_on_json()
+    faro2.write_data_on_json()
+    faro3.write_data_on_json()
+    faro4.write_data_on_json()
     dmx.close()
     print("Interfaccia DMX chiusa")

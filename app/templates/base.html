@@ -25,10 +25,20 @@
         {% block content %}{% endblock %}
     </main>
     <footer>
-        <p>{% block footer %}Footer Predefinito{% endblock %}</p>
-    </footer>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+        {% block footer %}
 
+            Copyright AM &copy; <span id="current_year"></span>
+        
+        {% endblock %}
+    </footer>
+
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('current_year').textContent = new Date().getFullYear();
+        });
+    </script>
     {% block scripts %} 
         {# Inserire eventuali script specifici per la pagina #}
     {% endblock %}

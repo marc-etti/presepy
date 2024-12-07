@@ -1,4 +1,5 @@
 import json, os
+from config import Config
 
 class FaroController:
     """Classe per la gestione dei fari."""
@@ -48,17 +49,17 @@ class FaroController:
         """Restituisce il valore del faro."""
         return self.dmx.get_channel(self.channel)
     
-    def write_data_on_json(self, file_path):
-        """Scrive i dati del faro su un file JSON."""
+    def write_data_on_json(self):
+        """Scrive i dati del faro sul file JSON."""
         # Controlla se il file esiste e ha contenuto valido
-        if os.path.exists(file_path):
-            with open(file_path, 'r') as file:
+        if os.path.exists(Config.JSON_FILE):
+            with open(Config.JSON_FILE, 'r') as file:
                 try:
                     existing_data = json.load(file)  # Legge i dati esistenti
                 except json.JSONDecodeError:
                     raise ValueError("Il file JSON non è valido.")
         else:
-            raise FileNotFoundError(f"Il file {file_path} non esiste.")
+            raise FileNotFoundError(f"Il file {Config.JSON_FILE} non esiste.")
 
         # Trova l'indice dell'oggetto se già esiste
         devices = existing_data.get("devices_info", [])
@@ -80,17 +81,17 @@ class FaroController:
             })
 
         # Salva i dati aggiornati sul file
-        with open(file_path, 'w') as file:
+        with open(Config.JSON_FILE, 'w') as file:
             json.dump(existing_data, file, indent=4)
 
 
-    def init_from_json(self, file_path):
-        """Inizializza un'istanza della classe dai dati in un file JSON."""
+    def init_from_json(self):
+        """Inizializza un'istanza della classe dai dati presenti nel file JSON."""
 
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"Il file {file_path} non esiste.")
+        if not os.path.exists(Config.JSON_FILE):
+            raise FileNotFoundError(f"Il file {Config.JSON_FILE} non esiste.")
 
-        with open(file_path, 'r') as file:
+        with open(Config.JSON_FILE, 'r') as file:
             try:
                 data = json.load(file)
             except json.JSONDecodeError:

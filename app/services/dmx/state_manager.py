@@ -73,11 +73,11 @@ class StateManager:
             print(f"Errore inaspettato: {e}")
             return []
     
-    def write_data_on_json(self, file_path):
+    def write_data_on_json(self):
         """Scrive i dati dello state manager su un file JSON."""
         # Controlla se il file esiste e ha contenuto valido
-        if os.path.exists(file_path):
-            with open(file_path, 'r') as file:
+        if os.path.exists(Config.JSON_FILE):
+            with open(Config.JSON_FILE, 'r') as file:
                 try:
                     existing_data = json.load(file)  # Legge i dati esistenti
                 except json.JSONDecodeError:
@@ -91,7 +91,7 @@ class StateManager:
             'istante': self.istante
         }
 
-        with open(file_path, 'w') as file:
+        with open(Config.JSON_FILE, 'w') as file:
             json.dump(existing_data, file, indent=4)
     
     #TODO: Implementare il meteo quando sarà possibile

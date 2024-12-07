@@ -1,4 +1,5 @@
 import os, json
+from config import Config
 
 class StateManager:
     """Classe per la gestione dello stato del sistema."""
@@ -50,6 +51,27 @@ class StateManager:
     def get_istante(self):
         """Restituisce l'istante salvato."""
         return self.istante
+    
+    #TODO: decidere se è il caso di spostare questa funzione in un'altra classe
+    def get_devices_info(self):
+        """Restituisce le informazioni sui dispositivi collegati presenti nel file data.json."""
+        try:
+            with open(Config.JSON_FILE, 'r') as file:
+                data = json.load(file)
+            if 'devices_info' not in data:
+                print("Errore: Il file data.json non contiene la chiave 'devices_info'.")
+                return []
+            else:
+                return data.get('devices_info', [])
+        except FileNotFoundError:
+            print("Errore: Il file data.json non è stato trovato.")
+            return []
+        except json.JSONDecodeError:
+            print("Errore: Il file data.json è corrotto o non è un JSON valido.")
+            return []
+        except Exception as e:
+            print(f"Errore inaspettato: {e}")
+            return []
     
     def write_data_on_json(self, file_path):
         """Scrive i dati dello state manager su un file JSON."""

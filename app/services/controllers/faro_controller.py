@@ -56,31 +56,65 @@ class FaroController:
                 try:
                     existing_data = json.load(file)  # Legge i dati esistenti
                 except json.JSONDecodeError:
-                    existing_data = {}  # Se il file è corrotto o vuoto, inizializza come dizionario vuoto
+                    raise ValueError("Il file JSON non è valido.")
         else:
-            existing_data = {}
+            raise FileNotFoundError(f"Il file {file_path} non esiste.")
 
-        # Aggiorna o aggiungi i dati
-        existing_data[self.name] = {
-            'channel': self.channel,
-            'value': self.value
-        }
+        # Trova l'indice dell'oggetto se già esiste
+        devices = existing_data.get("devices_info", [])
+        if not isinstance(devices, list):
+            raise ValueError("Il file JSON non contiene una lista di dispositivi.")
 
+        for device in devices:
+            if device.get("name") == self.name:
+                # Aggiorna i dati esistenti
+                device["channel"] = self.channel
+                device["value"] = self.value
+                break
+        else:
+            # Aggiungi un nuovo dispositivo se non esiste
+            devices.append({
+                "name": self.name,
+                "channel": self.channel,
+                "value": self.value
+            })
+
+        # Salva i dati aggiornati sul file
         with open(file_path, 'w') as file:
             json.dump(existing_data, file, indent=4)
 
 
-
     def init_from_json(self, file_path):
-        """Inizializza il faro da un file JSON."""
+        """Inizializza un'istanza della classe dai dati in un file JSON."""
+
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Il file {file_path} non esiste.")
+
         with open(file_path, 'r') as file:
-            if os.path.exists(file_path):
-                try:
-                    data = json.load(file)
-                except json.JSONDecodeError:
-                    data = {}
-            if self.name in data:
-                print(f"Caricamento dati di {self.name}")
-                self.channel = data[self.name]['channel']
-                self.value = data[self.name]['value']
+            try:
+                data = json.load(file)
+            except json.JSONDecodeError:
+                raise ValueError("Il file JSON non è valido.")
+
+        devices = data.get("devices_info", [])
+        if devices == []:
+            # Se non ci sono dispositivi, non fare nulla
+            return
+        elif not isinstance(devices, list):
+            raise ValueError("Il file JSON non contiene una lista di dispositivi.")
+        
+        for device in devices:
+            if device.get("name") == self.name:
+                self.channel = device.get("channel", 0)
+                self.value = device.get("value", 0)
                 self.dmx.set_channel(self.channel, self.value)
+                return
+            
+        raise ValueError(f"Il dispositivo {self.name} non è stato trovato nel file JSON.")
+    
+    #TODO: Generalizzare le funzioni per la lettura e scrittura dei dati su file JSON e spostarle in una classe a parte
+
+
+    def __str__(self):
+        """Restituisce una rappresentazione testuale del faro."""
+        return f"Faro {self.name} - Canale: {self.channel}, Valore: {self.value}"

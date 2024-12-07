@@ -52,7 +52,12 @@ def stampa_DMX():
     dmx.write_channels_on_log(Config.LOGS_FOLDER + 'dmx_log.log')
     return jsonify({'message': 'Valori DMX stampati sul log'})
 
-@dmx_bp.route('/get_current_phase', methods=['GET'])
-def get_current_phase():
-    """Restituisce la fase corrente."""
+@dmx_bp.route('/get_current_status', methods=['GET'])
+def get_current_status():
+    """Restituisce lo stato corrente."""
     return jsonify({'current_phase': state_manager.get_phase(), 'is_on': state_manager.is_on()})
+
+@dmx_bp.route('/get_devices_info', methods=['GET'])
+def get_devices_info():
+    """Restituisce le informazioni sui dispositivi DMX."""
+    return jsonify(state_manager.get_devices_info())

@@ -1,22 +1,28 @@
 {
-    "Faro1": {
-        "channel": 1,
-        "value": 60
-    },
-    "Faro2": {
-        "channel": 2,
-        "value": 60
-    },
-    "Faro3": {
-        "channel": 3,
-        "value": 60
-    },
-    "Faro4": {
-        "channel": 4,
-        "value": 60
-    },
     "stateManager": {
         "current_phase": "ALBA",
-        "istante": 15
-    }
+        "istante": 10
+    },
+    "devices_info": [
+        {
+            "name": "Faro1",
+            "channel": 1,
+            "value": 38
+        },
+        {
+            "name": "Faro2",
+            "channel": 2,
+            "value": 38
+        },
+        {
+            "name": "Faro3",
+            "channel": 3,
+            "value": 38
+        },
+        {
+            "name": "Faro4",
+            "channel": 4,
+            "value": 38
+        }
+    ]
 }

@@ -15,8 +15,9 @@ def create_app():
     app.register_blueprint(dmx_bp)
     app.register_blueprint(test_bp)
 
-    # controllo che la cartella per i log esista
-    if not os.path.exists(app.config['LOGS_FOLDER']):
-        os.makedirs(app.config['LOGS_FOLDER'])
+    # controllo che il file data.json esista e in caso contrario lo creo
+    if not os.path.exists(app.config['JSON_FILE']):
+        with open(app.config['JSON_FILE'], 'w') as file:
+            file.write('{devices_info: []}')
 
     return app

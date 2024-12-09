@@ -7,12 +7,12 @@
 {% endblock %}
 
 {% block content %}
-    <button onclick="writelog()">Scrivi nel log</button>
+    <button onclick="writeLog()">Scrivi nel log</button>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    async function writelog() {
+    async function writeLog() {
         const response = await fetch('/write_log', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

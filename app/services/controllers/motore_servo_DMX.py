@@ -21,7 +21,7 @@ class MotoreServoDMX:
         self.i_num_cicli_totali = 0                 # numero di cicli di tick timer per eseguire la movimentazione
         self.i_num_cicli_attuali = 0                # numero di cicli fatti
         self.i_num_cicli_attesa = 0                 # numero di cicli di attesa
-        self.i_durata_profilo = 0                   # duarata del ciclo [s]
+        self.i_durata_profilo = 0                   # durata del ciclo [s]
         self.i_cont_motore = 0                      # variabile di servizio x calcolo ritardi automa
         self.i_cont_max_azzurro = 0
         self.i_form_num_contr = 0                   # numero del form di controllo

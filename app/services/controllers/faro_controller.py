@@ -1,6 +1,3 @@
-import json, os
-from config import Config
-
 class FaroController:
     """Classe per la gestione dei fari."""
 
@@ -49,73 +46,24 @@ class FaroController:
         """Restituisce il valore del faro."""
         return self.dmx.get_channel(self.channel)
     
-    def write_data_on_json(self):
-        """Scrive i dati del faro sul file JSON."""
-        # Controlla se il file esiste e ha contenuto valido
-        if os.path.exists(Config.JSON_FILE):
-            with open(Config.JSON_FILE, 'r') as file:
-                try:
-                    existing_data = json.load(file)  # Legge i dati esistenti
-                except json.JSONDecodeError:
-                    raise ValueError("Il file JSON non è valido.")
-        else:
-            raise FileNotFoundError(f"Il file {Config.JSON_FILE} non esiste.")
 
-        # Trova l'indice dell'oggetto se già esiste
-        devices = existing_data.get("devices_info", [])
-        if not isinstance(devices, list):
-            raise ValueError("Il file JSON non contiene una lista di dispositivi.")
-
-        for device in devices:
-            if device.get("name") == self.name:
-                # Aggiorna i dati esistenti
-                device["channel"] = self.channel
-                device["value"] = self.value
-                break
-        else:
-            # Aggiungi un nuovo dispositivo se non esiste
-            devices.append({
-                "name": self.name,
-                "channel": self.channel,
-                "value": self.value
-            })
-
-        # Salva i dati aggiornati sul file
-        with open(Config.JSON_FILE, 'w') as file:
-            json.dump(existing_data, file, indent=4)
-
-
-    def init_from_json(self):
-        """Inizializza un'istanza della classe dai dati presenti nel file JSON."""
-
-        if not os.path.exists(Config.JSON_FILE):
-            raise FileNotFoundError(f"Il file {Config.JSON_FILE} non esiste.")
-
-        with open(Config.JSON_FILE, 'r') as file:
-            try:
-                data = json.load(file)
-            except json.JSONDecodeError:
-                raise ValueError("Il file JSON non è valido.")
-
-        devices = data.get("devices_info", [])
-        if devices == []:
-            # Se non ci sono dispositivi, non fare nulla
-            return
-        elif not isinstance(devices, list):
-            raise ValueError("Il file JSON non contiene una lista di dispositivi.")
-        
-        for device in devices:
-            if device.get("name") == self.name:
-                self.channel = device.get("channel", 0)
-                self.value = device.get("value", 0)
-                self.dmx.set_channel(self.channel, self.value)
-                return
-            
-        raise ValueError(f"Il dispositivo {self.name} non è stato trovato nel file JSON.")
+    def to_dict(self) -> dict:
+        """Restituisce un dizionario con i dati del faro."""
+        return {
+            "name": self.name,
+            "channel": self.channel,
+            "value": self.value
+        }
     
-    #TODO: Generalizzare le funzioni per la lettura e scrittura dei dati su file JSON e spostarle in una classe a parte
+    def from_dict(self, data: dict) -> None:
+        """Inizializza il faro dai dati presenti nel dizionario."""
+        self.name = data.get("name")
+        self.channel = data.get("channel")
+        self.value = data.get("value")
+        self.dmx.set_channel(self.channel, self.value)
 
-
-    def __str__(self):
-        """Restituisce una rappresentazione testuale del faro."""
-        return f"Faro {self.name} - Canale: {self.channel}, Valore: {self.value}"
+    def __str__(self) -> str:
+        """Restituisce una rappresentazione testuale del faro.
+           si invoca con print(faro) oppure str(faro)"""
+        return f"Faro: {self.name} - Canale: {self.channel}, Valore: {self.value}"
+    

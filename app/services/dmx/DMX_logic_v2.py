@@ -1,5 +1,5 @@
 from config import Config
-from app.utils.common import write_on_log
+from app.utils.common import write_device_info_on_json, init_device_from_json
 
 import time
 from threading import Event
@@ -22,13 +22,15 @@ faro1 = FaroController(dmx, 1, 1, "Faro1")
 faro2 = FaroController(dmx, 2, 1, "Faro2")
 faro3 = FaroController(dmx, 3, 1, "Faro3")
 faro4 = FaroController(dmx, 4, 1, "Faro4")
+faro5 = FaroController(dmx, 5, 1, "Faro5")
 
 def inizializzazione():
     """Inizializza l'interfaccia DMX."""
-    faro1.init_from_json(Config.JSON_FILE)
-    faro2.init_from_json(Config.JSON_FILE)
-    faro3.init_from_json(Config.JSON_FILE)
+    init_device_from_json(faro1)
+    init_device_from_json(faro2)
+    init_device_from_json(faro3)
     faro4.set_value(100)
+    init_device_from_json(faro5)
 
 
 def main_dmx_function():
@@ -111,9 +113,10 @@ def main_dmx_function():
 def closing_function():
     """Funzione di chiusura del programma."""
     state_manager.write_data_on_json()
-    faro1.write_data_on_json()
-    faro2.write_data_on_json()
-    faro3.write_data_on_json()
-    faro4.write_data_on_json()
+    write_device_info_on_json(faro1)
+    write_device_info_on_json(faro2)
+    write_device_info_on_json(faro3)
+    write_device_info_on_json(faro4)
+    write_device_info_on_json(faro5)
     dmx.close()
     print("Interfaccia DMX chiusa")

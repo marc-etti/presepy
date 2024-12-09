@@ -33,6 +33,7 @@ __pycache__/
 *.iml
 *.sublime-workspace
 *.sublime-project
+.cspell/
 
 # Sistema operativo
 *.bak

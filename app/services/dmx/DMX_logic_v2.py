@@ -18,11 +18,11 @@ running_event = Event()
 state_manager = StateManager()
 
 # inizializzazione
-faro1 = FaroController(dmx, 1, 1, "Faro1")
-faro2 = FaroController(dmx, 2, 1, "Faro2")
-faro3 = FaroController(dmx, 3, 1, "Faro3")
-faro4 = FaroController(dmx, 4, 1, "Faro4")
-faro5 = FaroController(dmx, 5, 1, "Faro5")
+faro1 = FaroController(dmx, 1, "Faro1", 1)
+faro2 = FaroController(dmx, 2, "Faro2", 1)
+faro3 = FaroController(dmx, 3, "Faro3", 1)
+faro4 = FaroController(dmx, 4, "Faro4", 1)
+faro5 = FaroController(dmx, 5, "Faro5", 1)
 
 def inizializzazione():
     """Inizializza l'interfaccia DMX."""

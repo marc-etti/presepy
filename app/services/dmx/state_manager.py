@@ -1,5 +1,6 @@
 import os, json
 from config import Config
+from threading import Event
 
 class StateManager:
     """Classe per la gestione dello stato del sistema."""
@@ -15,6 +16,7 @@ class StateManager:
         """Costruttore della classe."""
         if not hasattr(self, 'current_phase'):
             self.isOn = False
+            self.pause_event = None
             self.current_phase = 'inizializzazione'
             self.istante = 0
 
@@ -51,6 +53,28 @@ class StateManager:
     def get_istante(self):
         """Restituisce l'istante salvato."""
         return self.istante
+    
+    def set_paused_event(self, event: Event):
+        """Imposta l'evento di pausa.
+           param event: Evento di pausa."""
+        self.pause_event = event
+        self.pause_event.set()
+    
+    def pause(self):
+        """Mette in pausa il sistema.
+           Se il flag è True lo imposta a False, altrimenti dice che il sistema è già in pausa."""
+        if self.pause_event.is_set():
+            self.pause_event.clear()
+        else:
+            print("Il sistema è già in pausa.")
+
+    def resume(self):
+        """Riprende il sistema dalla pausa.
+           Se il flag è False lo imposta a True, altrimenti dice che il sistema non è in pausa."""
+        if not self.pause_event.is_set():
+            self.pause_event.set()
+        else:
+            print("Il sistema non è in pausa.")
     
     #TODO: decidere se è il caso di spostare questa funzione in un'altra classe
     def get_devices_info(self):

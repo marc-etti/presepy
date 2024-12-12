@@ -12,9 +12,13 @@
     <div>
         <button onclick="initialize()">Inizializza</button>
         <button onclick="reset()">Reset</button>
+        <button onclick="stampa()">Stampa</button>
+        <br>
         <button onclick="startLoop()">Avvia Loop</button>
         <button onclick="stopLoop()">Ferma Loop</button>
-        <button onclick="stampa()">Stampa</button>
+        <br>
+        <button onclick="pauseDMX()">Pausa</button>
+        <button onclick="resumeDMX()">Riprendi</button>        
     </div>
     <div>
         <button onclick="getDevicesInfo()">Info Dispositivi</button>
@@ -44,6 +48,16 @@
     // Ferma il loop di aggiornamento DMX
     async function stopLoop() {
         await fetch('stop_DMX', { method: 'POST' });
+    }
+
+    // Mette in pausa il loop di aggiornamento DMX
+    async function pauseDMX() {
+        await fetch('pause_DMX', { method: 'POST' });
+    }
+
+    // Riprende il loop di aggiornamento DMX
+    async function resumeDMX() {
+        await fetch('resume_DMX', { method: 'POST' });
     }
 
     // Stampa il valore dei canali DMX sul file di log

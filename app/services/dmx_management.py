@@ -34,7 +34,7 @@ def start_DMX():
     if not running_event.is_set():
         state_manager.turn_on()
         running_event.set()
-        thread = threading.Thread(target=main_dmx_function)
+        thread = threading.Thread(target=main_dmx_function, name = 'DMX_thread')
         thread.start()
     return jsonify({'message': 'Invio valori DMX avviato'})
 
@@ -45,6 +45,20 @@ def stop_DMX():
         state_manager.turn_off()
         running_event.clear()
     return jsonify({'message': 'Invio valori DMX fermato'})
+
+@dmx_bp.route('/pause_DMX', methods=['POST'])
+def pause_DMX():
+    """Mette in pausa l'invio dei valori DMX."""
+    if running_event.is_set():
+        state_manager.pause()
+    return jsonify({'message': 'Invio valori DMX in pausa'})
+
+@dmx_bp.route('/resume_DMX', methods=['POST'])
+def resume_DMX():
+    """Riprende l'invio dei valori DMX dalla pausa."""
+    if running_event.is_set():
+        state_manager.resume()
+    return jsonify({'message': 'Invio valori DMX ripreso'})
 
 @dmx_bp.route('/stampa_DMX', methods=['POST'])
 def stampa_DMX():
@@ -61,3 +75,5 @@ def get_current_status():
 def get_devices_info():
     """Restituisce le informazioni sui dispositivi DMX."""
     return jsonify(state_manager.get_devices_info())
+
+#TODO: spostare l'evento running_event all'interno di state_manager

@@ -2,7 +2,7 @@ from config import Config
 from app.utils.common import write_device_info_on_json, init_device_from_json
 
 import time
-from threading import Event
+import threading
 from app.services.dmx.DMX_data import DMXData
 from app.services.dmx.state_manager import StateManager
 
@@ -12,10 +12,15 @@ from app.services.controllers.faro_controller import FaroController
 dmx = DMXData()
 
 # Evento per la gestione del thread
-running_event = Event()
+running_event = threading.Event()
+
+# Evento per la pausa del thread
+pause_event = threading.Event()
 
 # Istanza della classe StateManager
 state_manager = StateManager()
+# Fornisco l'evento di pausa al StateManager
+state_manager.set_paused_event(pause_event)
 
 # inizializzazione
 faro1 = FaroController(dmx, 1, "Faro1", 1)
@@ -57,10 +62,15 @@ def main_dmx_function():
         
         for istante in range(ISTANTI_TOTALI):
 
+            if not running_event.is_set():                          # Controllo se il programma è in esecuzione
+                break
+            if not pause_event.is_set():                            # Controllo se il programma è in pausa
+                print(f"Programma in pausa nel thread: {threading.current_thread().name}")
+                pause_event.wait()
+                print(f"Programma ripreso nel thread: {threading.current_thread().name}")
+
             start_time = time.time()                                # Salvo il tempo di inizio
 
-            if not running_event.is_set():                          # Controllo se il programma è in esecuzione
-                break                                               # Se non è in esecuzione esco dal ciclo
             if istante < ISTANTI_ALBA:                                              # ALBA
                 if istante == 0:                                    # Controllo se è l'istante iniziale
                     print("Alba in corso")                          # Stampo il messaggio di inizio alba
@@ -118,5 +128,6 @@ def closing_function():
     write_device_info_on_json(faro3)
     write_device_info_on_json(faro4)
     write_device_info_on_json(faro5)
+    print("Salvataggio dati completato")
     dmx.close()
     print("Interfaccia DMX chiusa")

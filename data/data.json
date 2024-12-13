@@ -1,28 +1,28 @@
 {
     "stateManager": {
         "current_phase": "ALBA",
-        "istante": 11
+        "istante": 16
     },
     "devices_info": [
         {
             "name": "Faro1",
             "channel": 1,
-            "value": 42
+            "value": 64
         },
         {
             "name": "Faro2",
             "channel": 2,
-            "value": 42
+            "value": 64
         },
         {
             "name": "Faro3",
             "channel": 3,
-            "value": 42
+            "value": 64
         },
         {
             "name": "Faro4",
             "channel": 4,
-            "value": 42
+            "value": 64
         },
         {
             "name": "Faro5",

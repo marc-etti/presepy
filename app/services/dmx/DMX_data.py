@@ -96,12 +96,14 @@ class DMXData:
         """
         Invia i valori dei canali DMX alla porta specificata.
         """
+        #TODO: implementare la connessione DMX
         pass
 
     def close(self):
         """
         Chiude la connessione DMX.
         """
+        #TODO: implementare la chiusura della connessione DMX
         pass
 
     def write_channels_on_log(self, log_file):

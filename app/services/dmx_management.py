@@ -3,18 +3,17 @@ from app.services.dmx.DMX_logic_v2 import dmx
 
 from app.services.dmx.DMX_logic_v2 import state_manager
 
-from app.services.dmx.DMX_logic_v2 import running_event
 from app.services.dmx.DMX_logic_v2 import main_dmx_function
 from app.services.dmx.DMX_logic_v2 import inizializzazione
 
 from flask import Blueprint, request, jsonify
 import threading
 
-# Creazione del Blueprint
-dmx_bp = Blueprint('dmx', __name__)
-
 # Variabile globale per il thread 
 thread = None
+
+# Creazione del Blueprint
+dmx_bp = Blueprint('dmx', __name__)
 
 @dmx_bp.route('/initialize_DMX', methods=['POST'])
 def initialize_DMX():
@@ -31,34 +30,40 @@ def reset_DMX():
 @dmx_bp.route('/start_DMX', methods=['POST'])
 def start_DMX():
     """Avvia la funzione di invio dei valori DMX."""
-    if not running_event.is_set():
+    if state_manager.is_on():
+        return jsonify({'message': 'Il sistema è già acceso'})
+    else:
         state_manager.turn_on()
-        running_event.set()
         thread = threading.Thread(target=main_dmx_function, name = 'DMX_thread')
         thread.start()
-    return jsonify({'message': 'Invio valori DMX avviato'})
+        return jsonify({'message': 'Invio valori DMX avviato'})
 
 @dmx_bp.route('/stop_DMX', methods=['POST'])
 def stop_DMX():
     """Ferma l'invio dei valori DMX."""
-    if running_event.is_set():
+    if state_manager.is_on():
         state_manager.turn_off()
-        running_event.clear()
-    return jsonify({'message': 'Invio valori DMX fermato'})
+        return jsonify({'message': 'Invio valori DMX fermato'})
+    else:
+        return jsonify({'message': 'Il sistema è già spento'})
 
 @dmx_bp.route('/pause_DMX', methods=['POST'])
 def pause_DMX():
     """Mette in pausa l'invio dei valori DMX."""
-    if running_event.is_set():
+    if state_manager.is_on():
         state_manager.pause()
-    return jsonify({'message': 'Invio valori DMX in pausa'})
+        return jsonify({'message': 'Invio valori DMX in pausa'})
+    else:
+        return jsonify({'message': 'Il sistema è spento'})
 
 @dmx_bp.route('/resume_DMX', methods=['POST'])
 def resume_DMX():
     """Riprende l'invio dei valori DMX dalla pausa."""
-    if running_event.is_set():
+    if state_manager.is_on():
         state_manager.resume()
-    return jsonify({'message': 'Invio valori DMX ripreso'})
+        return jsonify({'message': 'Invio valori DMX ripreso'})
+    else:
+        return jsonify({'message': 'Il sistema è spento'})
 
 @dmx_bp.route('/stampa_DMX', methods=['POST'])
 def stampa_DMX():
@@ -76,4 +81,4 @@ def get_devices_info():
     """Restituisce le informazioni sui dispositivi DMX."""
     return jsonify(state_manager.get_devices_info())
 
-#TODO: spostare l'evento running_event all'interno di state_manager
+#TODO: capire se è meglio fermare il ciclo con una variabile globale o con un evento

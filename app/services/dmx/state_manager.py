@@ -15,21 +15,21 @@ class StateManager:
     def __init__(self):
         """Costruttore della classe."""
         if not hasattr(self, 'current_phase'):
-            self.isOn = False
             self.pause_event = None
+            self.isOn = False
             self.current_phase = 'inizializzazione'
             self.istante = 0
 
-    def is_on(self):
+    def is_on(self) -> bool:
         """Restituisce True se il sistema è acceso, False altrimenti."""
         return self.isOn
     
     def turn_on(self):
         """Accende il sistema."""
-        if not self.isOn:
-            self.isOn = True
-        else:
+        if self.isOn:
             print("Il sistema è già acceso.")
+        else:
+            self.isOn = True
 
     def turn_off(self):
         """Spegne il sistema."""

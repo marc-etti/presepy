@@ -38,6 +38,6 @@ class MotoreServoDMX:
         self.r_escursione_max_cicli = 0.0
         self.r_255_div_escursione_massima = 0.0
         self.sg_nome_ini_servo_dmx = ""             # identificativo del motore servo
-        self.retta_motore = CribLinea()           # per calcolo delle triettorie rettilinee
+        self.retta_motore = CribLinea()           # per calcolo delle traiettorie rettilinee
         self.b_is_on_frm_diagno_luci = False        # il motore è gestito come grafica su frmdiagnoluci
     

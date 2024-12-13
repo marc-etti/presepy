@@ -11,14 +11,12 @@ from app.services.controllers.faro_controller import FaroController
 # Creazione dell'istanza DMX
 dmx = DMXData()
 
-# Evento per la gestione del thread
-running_event = threading.Event()
-
 # Evento per la pausa del thread
 pause_event = threading.Event()
 
 # Istanza della classe StateManager
 state_manager = StateManager()
+
 # Fornisco l'evento di pausa al StateManager
 state_manager.set_paused_event(pause_event)
 
@@ -58,15 +56,15 @@ def main_dmx_function():
     # Inizializzazione
     inizializzazione()
 
-    while running_event.is_set():                                   # Ciclo principale
+    while state_manager.is_on():                                # Controllo se il sistema è acceso
         
         for istante in range(ISTANTI_TOTALI):
 
-            if not running_event.is_set():                          # Controllo se il programma è in esecuzione
+            if not state_manager.is_on():                           # Controllo l'evento di stop
                 break
-            if not pause_event.is_set():                            # Controllo se il programma è in pausa
+            if not pause_event.is_set():                            # Controllo l'evento di pausa
                 print(f"Programma in pausa nel thread: {threading.current_thread().name}")
-                pause_event.wait()
+                pause_event.wait()                                  # Mi metto in attesa finchè l'evento di pausa non viene resettato
                 print(f"Programma ripreso nel thread: {threading.current_thread().name}")
 
             start_time = time.time()                                # Salvo il tempo di inizio

@@ -47,3 +47,6 @@ __pycache__/
 *.m4a
 *.aac
 *.ogg
+
+# File json nella cartella data
+data/*.json

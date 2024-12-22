@@ -27,7 +27,7 @@
         {
             "name": "Faro5",
             "channel": 5,
-            "value": 1
+            "value": 32
         }
     ]
 }

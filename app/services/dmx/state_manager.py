@@ -32,8 +32,11 @@ class StateManager:
             self.isOn = True
 
     def turn_off(self):
-        """Spegne il sistema."""
+        """Spegne il sistema.
+           se il sistema è acceso e in pausa, lo spegne e toglie la pausa."""
         if self.isOn:
+            if self.pause_event.is_set():
+                self.pause_event.clear()
             self.isOn = False
         else:
             print("Il sistema è già spento.")

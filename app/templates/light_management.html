@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Gestione Luci{% endblock %}
+
+{% block styles %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    .slider-container {
+        margin-bottom: 20px;
+    }
+
+    .color-preview {
+        width: 200px;
+        height: 200px;
+        margin: 20px auto;
+        border: 1px solid #000;
+    }
+</style>
+{% endblock %}
+
+{% block header %}
+    <h1>Pagina di gestione Luci</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="slider-container">
+        <label for="redRange">Red:</label>
+        <input type="range" id="redRange" min="0" max="255" value="128">
+        <span id="redValue">128</span>
+    </div>
+
+    <div class="slider-container">
+        <label for="greenRange">Green:</label>
+        <input type="range" id="greenRange" min="0" max="255" value="128">
+        <span id="greenValue">128</span>
+    </div>
+
+    <div class="slider-container">
+        <label for="blueRange">Blue:</label>
+        <input type="range" id="blueRange" min="0" max="255" value="128">
+        <span id="blueValue">128</span>
+    </div>
+
+    <div class="slider-container">
+        <label for="brightnessRange">Brightness:</label>
+        <input type="range" id="brightnessRange" min="0" max="255" value="255">
+        <span id="brightnessValue">255</span>
+    </div>
+
+    <div class="cascading-dropdown-container">
+        <form id="lightForm">
+            <label for="lightSelector">Seleziona la luce:</label>
+            <select id="lightSelector">
+            </select>
+            <button type="submit">Invia</button>
+        </form>
+    </div>
+
+    <div class="color-preview" id="colorPreview"></div>
+
+    
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const redRange = document.getElementById('redRange');
+    const greenRange = document.getElementById('greenRange');
+    const blueRange = document.getElementById('blueRange');
+    const brightnessRange = document.getElementById('brightnessRange');
+
+    const redValue = document.getElementById('redValue');
+    const greenValue = document.getElementById('greenValue');
+    const blueValue = document.getElementById('blueValue');
+    const brightnessValue = document.getElementById('brightnessValue');
+
+    const colorPreview = document.getElementById('colorPreview');
+
+    function updateColor() {
+        const red = parseInt(redRange.value);
+        const green = parseInt(greenRange.value);
+        const blue = parseInt(blueRange.value);
+        const brightness = parseInt(brightnessRange.value);
+
+        // Update the color preview box
+        colorPreview.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+
+        // Update displayed values
+        redValue.textContent = red;
+        greenValue.textContent = green;
+        blueValue.textContent = blue;
+        brightnessValue.textContent = brightnessRange.value;
+    }
+
+    // Attach event listeners to update color on slider input
+    redRange.addEventListener('input', updateColor);
+    greenRange.addEventListener('input', updateColor);
+    blueRange.addEventListener('input', updateColor);
+    brightnessRange.addEventListener('input', updateColor);
+
+    // Initialize the color preview
+    updateColor();
+
+    // Fetch the lights and populate the dropdown
+    function fetchLights() {
+        fetch('get_lights')
+            .then(response => response.json())
+            .then(data => {
+                const lightSelector = document.getElementById('lightSelector');
+                lightSelector.innerHTML = '';
+
+                data.lights.forEach(light => {
+                    const option = document.createElement('option');
+                    option.value = { name: light.name, subtype: light.subtype };
+                    option.textContent = light.name;
+                    lightSelector.appendChild(option);
+                });
+            });
+    }
+
+    fetchLights();
+</script>
+{% endblock %}

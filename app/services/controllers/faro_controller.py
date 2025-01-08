@@ -4,7 +4,7 @@ class FaroController:
     MAX_VALUE = 255
     MIN_VALUE = 0
     
-    def __init__(self, dmx_instance, channel, name, value=0) -> None:
+    def __init__(self, dmx_instance, channel, name, value=0, type="light", subtype="faro") -> None:
         """Inizializza il faro.
         param dmx_instance: Istanza del DMX
         param channel: Canale del faro
@@ -17,6 +17,8 @@ class FaroController:
         self.value = value                  # Intensità del faro
         self.name = name                    # Nome del faro
         self.dmx.set_channel(self.channel, self.value)
+        self.type = type                    # Tipo del dispositivo
+        self.subtype = subtype              # Sottotipo del dispositivo
         
     def increase(self, value):
         """Aumenta il valore del faro."""
@@ -56,7 +58,9 @@ class FaroController:
         return {
             "name": self.name,
             "channel": self.channel,
-            "value": self.value
+            "value": self.value,
+            "type": self.type,
+            "subtype": self.subtype
         }
     
     def from_dict(self, data: dict) -> None:

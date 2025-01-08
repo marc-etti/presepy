@@ -6,6 +6,9 @@
     <title>{% block title %}Titolo Predefinito{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    {% block styles %} 
+        {# Inserire eventuali stili specifici per la pagina #}
+    {% endblock %}
 </head>
 <body>
     <header>
@@ -16,6 +19,7 @@
             <li><a href="{{ url_for('main.index') }}">Home</a></li>
             <li><a href="{{ url_for('main.dmx_management') }}">Gestione DMX</a></li>
             <li><a href="{{ url_for('main.audio_management') }}">Gestione Musica</a></li>
+            <li><a href="{{ url_for('main.light_management') }}">Gestione Luci</a></li>
             <li><a href="{{ url_for('main.test') }}">Pagina di test</a></li>
         </ul>
     </nav>

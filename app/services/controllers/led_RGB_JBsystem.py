@@ -11,7 +11,9 @@ class ledRGB_JBsystem:
                  dimmer_offset=3,
                  strobo_offset=4,
                  strobo_max_value=255,
-                 strobo_min_value=0
+                 strobo_min_value=0,
+                 type="light",
+                 subtype="ledRGB_JBsystem"
                  ) -> None:
         """Inizializza il LED RGB di tipo JB system.
         param dmx: Istanza del DMX
@@ -41,6 +43,8 @@ class ledRGB_JBsystem:
         self.blue_value = 0
         self.dimmer_value = 0
         self.strobo_value = 0
+        self.type = type
+        self.subtype = subtype
 
     def __str__(self) -> str:
         """Rappresentazione testuale del LED RGB."""
@@ -62,7 +66,9 @@ class ledRGB_JBsystem:
             'green_value': self.green_value,
             'blue_value': self.blue_value,
             'dimmer_value': self.dimmer_value,
-            'strobo_value': self.strobo_value
+            'strobo_value': self.strobo_value,
+            'type': self.type,
+            'subtype': self.subtype
         }
     
     def from_dict(self, data: dict) -> None:
@@ -81,5 +87,7 @@ class ledRGB_JBsystem:
         self.blue_value = data.get('blue_value')
         self.dimmer_value = data.get('dimmer_value')
         self.strobo_value = data.get('strobo_value')
+        self.type = data.get('type')
+        self.subtype = data.get('subtype')
 
         

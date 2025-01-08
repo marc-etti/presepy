@@ -1,14 +1,16 @@
 class LedController:
     """Classe per la gestione dei LED RGB."""
 
-    def __init__(self, dmx, channel, name, red_value=0, green_value=0, blue_value=0) -> None:
+    def __init__(self, dmx, channel, name, red_value=0, green_value=0, blue_value=0, type="light", subtype="led_rgb") -> None:
         """Inizializza il LED RGB.
            param dmx: Istanza del DMX
            param channel: Indirizzo DMX del LED RGB
            param name: Nome del LED RGB
            param red_value: Valore del canale rosso (default: 0)
            param green_value: Valore del canale verde (default: 0)
-           param blue_value: Valore del canale blu (default: 0)"""
+           param blue_value: Valore del canale blu (default: 0)
+           param type: Tipo del dispositivo (default: "light")
+           param subtype: Sottotipo del dispositivo (default: "led_rgb")"""
         if channel is None or channel == 0:
             raise ValueError("Il canale del LED RGB non può essere zero o vuoto.")
         self.dmx = dmx
@@ -17,6 +19,8 @@ class LedController:
         self.red = red_value
         self.green = green_value
         self.blue = blue_value
+        self.type = type
+        self.subtype = subtype
         self.dmx.set_channel(self.channel, self.red)
         self.dmx.set_channel(self.channel + 1, self.green)
         self.dmx.set_channel(self.channel + 2, self.blue)
@@ -74,6 +78,8 @@ class LedController:
         """Restituisce un dizionario con i dati del LED RGB."""
         return {
             "name": self.name,
+            "type": self.type,
+            "subtype": self.subtype,
             "channel": self.channel,
             "red": self.red,
             "green": self.green,
@@ -90,6 +96,8 @@ class LedController:
         self.dmx.set_channel(self.channel, self.red)
         self.dmx.set_channel(self.channel + 1, self.green)
         self.dmx.set_channel(self.channel + 2, self.blue)
+        self.type = data.get("type")
+        self.subtype = data.get("subtype")
 
     def __str__(self) -> str:
         """Restituisce una rappresentazione testuale del LED RGB."""

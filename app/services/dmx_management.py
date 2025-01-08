@@ -1,10 +1,10 @@
 from config import Config
-from app.services.dmx.DMX_logic_v2 import dmx
+from app.services.dmx.DMX_logic import dmx
 
-from app.services.dmx.DMX_logic_v2 import state_manager
+from app.services.dmx.DMX_logic import state_manager
 
-from app.services.dmx.DMX_logic_v2 import main_dmx_function
-from app.services.dmx.DMX_logic_v2 import inizializzazione
+from app.services.dmx.DMX_logic import main_dmx_function
+from app.services.dmx.DMX_logic import inizializzazione
 
 from flask import Blueprint, request, jsonify
 import threading
@@ -75,6 +75,7 @@ def stampa_DMX():
 def get_current_status():
     """Restituisce lo stato corrente."""
     return jsonify({'current_phase': state_manager.get_phase(), 'is_on': state_manager.is_on()})
+#TODO: usare la variabile is_on per colorare il bottone di start/stop
 
 @dmx_bp.route('/get_devices_info', methods=['GET'])
 def get_devices_info():

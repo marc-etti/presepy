@@ -18,7 +18,7 @@ def get_lights():
 
         lights = [device for device in devices if device['type'] == 'light']
         
-        return {'lights': lights}
+        return jsonify({'lights': lights})
     except FileNotFoundError:
         return jsonify({'message': 'File non trovato'})
     except json.JSONDecodeError:

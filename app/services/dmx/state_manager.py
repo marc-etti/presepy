@@ -30,13 +30,15 @@ class StateManager:
             print("Il sistema è già acceso.")
         else:
             self.isOn = True
+            if not self.pause_event.is_set():
+                self.pause_event.set()
 
     def turn_off(self):
         """Spegne il sistema.
            se il sistema è acceso e in pausa, lo spegne e toglie la pausa."""
         if self.isOn:
-            if self.pause_event.is_set():
-                self.pause_event.clear()
+            if not self.pause_event.is_set():
+                self.pause_event.set()
             self.isOn = False
         else:
             print("Il sistema è già spento.")
@@ -108,8 +110,10 @@ class StateManager:
                 try:
                     existing_data = json.load(file)  # Legge i dati esistenti
                 except json.JSONDecodeError:
+                    print("Errore durante la lettura del file JSON. Il file è corrotto.")
                     existing_data = {}  # Se il file è corrotto o vuoto, inizializza come dizionario vuoto
         else:
+            print(f"Il file {Config.JSON_FILE} non esiste.")
             existing_data = {}
 
         # Aggiorna o aggiungi i dati

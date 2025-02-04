@@ -64,7 +64,7 @@ def main_dmx_function():
                 break
             if not pause_event.is_set():                            # Controllo l'evento di pausa
                 print(f"Programma in pausa nel thread: {threading.current_thread().name}")
-                pause_event.wait()                                  # Mi metto in attesa finchè l'evento di pausa non viene resettato
+                pause_event.wait()                                  # Mi metto in attesa finché l'evento di pausa non viene resettato
                 print(f"Programma ripreso nel thread: {threading.current_thread().name}")
 
             start_time = time.time()                                # Salvo il tempo di inizio

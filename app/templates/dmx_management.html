@@ -9,6 +9,7 @@
 {% block content %}
     <p>Stato: <span id="is_on"> . . . </span></p>
     <p>Fase corrente: <span id="current_phase_box"> . . . </span></p>
+    <p>Messaggio: <span id="message_box"> . . . </span></p>
     <div>
         <button onclick="initialize()">Inizializza</button>
         <button onclick="reset()">Reset</button>
@@ -32,37 +33,51 @@
 <script>
     // Inizializza il sistema DMX
     async function initialize() {
-        await fetch('initialize_DMX', { method: 'POST' });
+        const response = await fetch('initialize_DMX', { method: 'POST' });
+        const data = await response.json();
+        document.getElementById('message_box').textContent = data.message;
     }
 
     // Resetta il sistema DMX
     async function reset() {
-        await fetch('reset_DMX', { method: 'POST' });
+        const response = await fetch('reset_DMX', { method: 'POST' });
+        const data = await response.json();
+        document.getElementById('message_box').textContent = data.message;
     }
 
     // Avvia il loop di aggiornamento DMX
     async function startLoop() {
-        await fetch('start_DMX', { method: 'POST' });
+        const response = await fetch('start_DMX', { method: 'POST' });
+        const data = await response.json();
+        document.getElementById('message_box').textContent = data.message;
     }
 
     // Ferma il loop di aggiornamento DMX
     async function stopLoop() {
-        await fetch('stop_DMX', { method: 'POST' });
+        const response = await fetch('stop_DMX', { method: 'POST' });
+        const data = await response.json();
+        document.getElementById('message_box').textContent = data.message;
     }
 
     // Mette in pausa il loop di aggiornamento DMX
     async function pauseDMX() {
-        await fetch('pause_DMX', { method: 'POST' });
+        const response = await fetch('pause_DMX', { method: 'POST' });
+        const data = await response.json();
+        document.getElementById('message_box').textContent = data.message;
     }
 
     // Riprende il loop di aggiornamento DMX
     async function resumeDMX() {
-        await fetch('resume_DMX', { method: 'POST' });
+        const response = await fetch('resume_DMX', { method: 'POST' });
+        const data = await response.json();
+        document.getElementById('message_box').textContent = data.message;
     }
 
     // Stampa il valore dei canali DMX sul file di log
     async function stampa() {
-        await fetch('stampa_DMX', { method: 'POST' });
+        const response = await fetch('stampa_DMX', { method: 'POST' });
+        const data = await response.json();
+        document.getElementById('message_box').textContent = data.message;
     }
 
     // Ottiene la fase corrente
@@ -83,6 +98,7 @@
     async function getDevicesInfo() {
         const response = await fetch('get_devices_info');
         const data = await response.json();
+        document.getElementById('message_box').textContent = data.message;
         document.getElementById('devices_info').innerHTML = jsonToTable(data).outerHTML;
     }
 

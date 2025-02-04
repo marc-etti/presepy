@@ -30,29 +30,30 @@ def write_device_info_on_json(myDevice, file_path=Config.JSON_FILE):
     """
     # Assicuriamoci che il dispositivo abbia un metodo `to_dict`
     if not hasattr(myDevice, 'to_dict') or not callable(myDevice.to_dict):
-        raise ValueError("Il dispositivo deve avere un metodo 'to_dict' che restituisca un dizionario dei suoi dati.")
+        raise ValueError(f"Il dispositivo {myDevice} deve avere un metodo 'to_dict' che restituisca un dizionario dei suoi dati.")
     
     # Otteniamo i dati del dispositivo
     myDevice_data = myDevice.to_dict()
     if 'name' not in myDevice_data:
-        raise ValueError("Il dizionario restituito da 'to_dict' deve contenere una chiave 'name'.")
+        raise ValueError(f"Errore durante la lettura di {myDevice}. Il dizionario restituito da 'to_dict' deve contenere una chiave 'name'.")
     
     # Controlla se il file esiste, altrimenti creane uno vuoto
     if not os.path.exists(file_path):
         with open(file_path, 'w') as file:
             json.dump({}, file)
+        print(f"Il file {file_path} non esiste. Creazione di un nuovo file JSON.")
 
     # Leggi i dati esistenti dal file
     with open(file_path, 'r') as file:
         try:
             existing_data = json.load(file)
         except json.JSONDecodeError:
-            raise ValueError("Il file JSON non è valido.")
+            raise ValueError(f"Errore durante la lettura di {myDevice.name}. Il file JSON non è valido.")
         
     # Trova l'indice del dispositivo se già esiste
     devices = existing_data.get("devices_info", [])
     if not isinstance(devices, list):
-        raise ValueError("Il file JSON non contiene una lista di dispositivi.")
+        raise ValueError(f"Errore durante la lettura di {myDevice.name}. Il file JSON non contiene una lista di dispositivi.")
     
     for device in devices:
         if device.get("name") == myDevice_data["name"]:
@@ -67,6 +68,7 @@ def write_device_info_on_json(myDevice, file_path=Config.JSON_FILE):
     existing_data["devices_info"] = devices
     with open(file_path, 'w') as file:
         json.dump(existing_data, file, indent=4)
+        print(f"Dati di {myDevice.name} scritti sul file JSON.")
 
 
 def init_device_from_json(myDevice, file_path=Config.JSON_FILE):
@@ -78,7 +80,7 @@ def init_device_from_json(myDevice, file_path=Config.JSON_FILE):
     """
     # Assicuriamoci che il dispositivo abbia un metodo `from_dict`
     if not hasattr(myDevice, 'from_dict') or not callable(myDevice.from_dict):
-        raise ValueError("Il dispositivo deve avere un metodo 'from_dict' per inizializzarsi da un dizionario.")
+        raise ValueError(f"Il dispositivo {myDevice} deve avere un metodo 'from_dict' per inizializzarsi da un dizionario.")
     
     # Controlla se il file esiste
     if not os.path.exists(file_path):
@@ -89,18 +91,19 @@ def init_device_from_json(myDevice, file_path=Config.JSON_FILE):
         try:
             data = json.load(file)
         except json.JSONDecodeError:
-            raise ValueError("Il file JSON non è valido.")
+            raise ValueError(f"Il file JSON {file_path} non è valido.")
     
     devices = data.get("devices_info", [])
     if devices == []:
         # Se non ci sono dispositivi, non fare nulla
         return
     elif not isinstance(devices, list):
-        raise ValueError("Il file JSON non contiene una lista di dispositivi.")
+        raise ValueError(f"Il file JSON {file_path} non contiene una lista di dispositivi.")
     
     for device in devices:
         if device.get("name") == myDevice.name:
             myDevice.from_dict(device)
+            print(f"Dispositivo {myDevice.name} inizializzato con i dati presenti nel file JSON.")
             return
     
     # Se il dispositivo non è stato trovato verrà inizializzato con i valori di default

@@ -27,38 +27,45 @@
 {% endblock %}
 
 {% block content %}
+<form id="rgbForm">
+    <div>
+        <label for="deviceSelect">Seleziona Dispositivo:</label>
+        <select id="deviceSelect">
+            <!-- Le opzioni verranno popolate dinamicamente da JavaScript -->
+        </select>
+    </div>
+    <div>
+        <label for="phaseSelect">Seleziona Fase:</label>
+        <select id="phaseSelect">
+            <option value="ALBA">ALBA</option>
+            <option value="GIORNO">GIORNO</option>
+            <option value="SERA">SERA</option>
+            <option value="NOTTE">NOTTE</option>
+        </select>
+    </div>
     <div class="slider-container">
-        <label for="redRange">Red:</label>
-        <input type="range" id="redRange" min="0" max="255" value="128">
-        <span id="redValue">128</span>
+        <label for="redSlider">Rosso:</label>
+        <input type="range" id="redSlider" min="0" max="255" value="0">
+        <span id="redValue">0</span>
     </div>
-
     <div class="slider-container">
-        <label for="greenRange">Green:</label>
-        <input type="range" id="greenRange" min="0" max="255" value="128">
-        <span id="greenValue">128</span>
+        <label for="greenSlider">Verde:</label>
+        <input type="range" id="greenSlider" min="0" max="255" value="0">
+        <span id="greenValue">0</span>
     </div>
-
     <div class="slider-container">
-        <label for="blueRange">Blue:</label>
-        <input type="range" id="blueRange" min="0" max="255" value="128">
-        <span id="blueValue">128</span>
+        <label for="blueSlider">Blu:</label>
+        <input type="range" id="blueSlider" min="0" max="255" value="0">
+        <span id="blueValue">0</span>
     </div>
-
     <div class="slider-container">
-        <label for="brightnessRange">Brightness:</label>
-        <input type="range" id="brightnessRange" min="0" max="255" value="255">
-        <span id="brightnessValue">255</span>
+        <label for="brightnessSlider">Luminosità:</label>
+        <input type="range" id="brightnessSlider" min="0" max="255" value="0">
+        <span id="brightnessValue">0</span>
     </div>
-
-    <div class="cascading-dropdown-container">
-        <form id="lightForm">
-            <label for="lightSelector">Seleziona la luce:</label>
-            <select id="lightSelector">
-            </select>
-            <button type="submit">Invia</button>
-        </form>
-    </div>
+    <button type="button" id="testButton">Test</button>
+    <button type="submit">Salva</button>
+</form>
 
     <div class="color-preview" id="colorPreview"></div>
 
@@ -67,11 +74,47 @@
 
 {% block scripts %}
 <script>
-    const redRange = document.getElementById('redRange');
-    const greenRange = document.getElementById('greenRange');
-    const blueRange = document.getElementById('blueRange');
-    const brightnessRange = document.getElementById('brightnessRange');
+    // Funzione per ottenere i dispositivi (esempio)
+    function get_devices() {
+        return [
+            { id: 'device1', name: 'Dispositivo 1' },
+            { id: 'device2', name: 'Dispositivo 2' },
+            { id: 'device3', name: 'Dispositivo 3' }
+        ];
+    }
 
+    // Funzione per caricare i valori dal file di configurazione (esempio)
+    function load_config(deviceId, phase) {
+        // Simula il caricamento dei valori dal file di configurazione
+        const config = {
+            device1: { ALBA: { red: 100, green: 50, blue: 75 }, GIORNO: { red: 200, green: 100, blue: 150 } },
+            device2: { ALBA: { red: 150, green: 75, blue: 100 }, GIORNO: { red: 250, green: 150, blue: 200 } }
+        };
+        return config[deviceId]?.[phase] || { red: 0, green: 0, blue: 0 };
+    }
+
+    // Funzione per salvare i valori nel file di configurazione (esempio)
+    function save_config(deviceId, phase, red, green, blue) {
+        console.log(`Salvataggio configurazione per ${deviceId} (${phase}): R=${red}, G=${green}, B=${blue}`);
+        // Qui andrebbe il codice per salvare i valori nel file di configurazione
+    }
+
+    // Popola il menu dei dispositivi
+    const deviceSelect = document.getElementById('deviceSelect');
+    const devices = get_devices();
+    devices.forEach(device => {
+        const option = document.createElement('option');
+        option.value = device.id;
+        option.textContent = device.name;
+        deviceSelect.appendChild(option);
+    });
+
+    // Aggiorna gli slider quando si seleziona un dispositivo e una fase
+    const phaseSelect = document.getElementById('phaseSelect');
+    const redSlider = document.getElementById('redSlider');
+    const greenSlider = document.getElementById('greenSlider');
+    const blueSlider = document.getElementById('blueSlider');
+    const brightnessSlider = document.getElementById('brightnessSlider');
     const redValue = document.getElementById('redValue');
     const greenValue = document.getElementById('greenValue');
     const blueValue = document.getElementById('blueValue');
@@ -79,30 +122,65 @@
 
     const colorPreview = document.getElementById('colorPreview');
 
-    function updateColor() {
-        const red = parseInt(redRange.value);
-        const green = parseInt(greenRange.value);
-        const blue = parseInt(blueRange.value);
-        const brightness = parseInt(brightnessRange.value);
+    function updateSliders() {
+        const deviceId = deviceSelect.value;
+        const phase = phaseSelect.value;
+        const config = load_config(deviceId, phase);
+        redSlider.value = config.red;
+        greenSlider.value = config.green;
+        blueSlider.value = config.blue;
+        brightnessSlider.value = config.brightness;
+        redValue.textContent = config.red;
+        greenValue.textContent = config.green;
+        blueValue.textContent = config.blue;
+        brightnessValue.textContent = config.brightness;
 
-        // Update the color preview box
-        colorPreview.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
-
-        // Update displayed values
-        redValue.textContent = red;
-        greenValue.textContent = green;
-        blueValue.textContent = blue;
-        brightnessValue.textContent = brightnessRange.value;
+        colorPreview.style.backgroundColor = `rgb(${config.red}, ${config.green}, ${config.blue})`;
     }
 
-    // Attach event listeners to update color on slider input
-    redRange.addEventListener('input', updateColor);
-    greenRange.addEventListener('input', updateColor);
-    blueRange.addEventListener('input', updateColor);
-    brightnessRange.addEventListener('input', updateColor);
+    deviceSelect.addEventListener('change', updateSliders);
+    phaseSelect.addEventListener('change', updateSliders);
 
-    // Initialize the color preview
-    updateColor();
+    // Aggiorna i valori visualizzati quando si muovono gli slider
+    redSlider.addEventListener('input', () => {
+        redValue.textContent = redSlider.value;
+        colorPreview.style.backgroundColor = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+    });
+    greenSlider.addEventListener('input', () => {
+        greenValue.textContent = greenSlider.value;
+        colorPreview.style.backgroundColor = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+    });
+    blueSlider.addEventListener('input', () => {
+        blueValue.textContent = blueSlider.value;
+        colorPreview.style.backgroundColor = `rgb(${redSlider.value}, ${greenSlider.value}, ${blueSlider.value})`;
+    });
+
+    brightnessSlider.addEventListener('input', () => {
+        brightnessValue.textContent = brightnessSlider.value;
+    });
+
+    // Bottone di test
+    document.getElementById('testButton').addEventListener('click', () => {
+        const deviceId = deviceSelect.value;
+        const phase = phaseSelect.value;
+        const red = redSlider.value;
+        const green = greenSlider.value;
+        const blue = blueSlider.value;
+        console.log(`Test dispositivo ${deviceId} (${phase}): R=${red}, G=${green}, B=${blue}`);
+        // Qui andrebbe il codice per testare il dispositivo con i valori attuali
+    });
+
+    // Submit del form
+    document.getElementById('rgbForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const deviceId = deviceSelect.value;
+        const phase = phaseSelect.value;
+        const red = redSlider.value;
+        const green = greenSlider.value;
+        const blue = blueSlider.value;
+        save_config(deviceId, phase, red, green, blue);
+        alert('Configurazione salvata con successo!');
+    });
 
     // Fetch the lights and populate the dropdown
     function fetchLights() {

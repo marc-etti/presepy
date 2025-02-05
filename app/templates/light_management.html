@@ -75,6 +75,12 @@
 {% block scripts %}
 <script>
     // Funzione per ottenere i dispositivi (esempio)
+    async function get_lights_info() {
+        const response = await fetch('get_lights_info');
+        const data = await response.json();
+        return data;
+    }
+    
     function get_devices() {
         return [
             { id: 'device1', name: 'Dispositivo 1' },
@@ -120,6 +126,7 @@
     const blueValue = document.getElementById('blueValue');
     const brightnessValue = document.getElementById('brightnessValue');
 
+    // Elemento per visualizzare il colore selezionato
     const colorPreview = document.getElementById('colorPreview');
 
     function updateSliders() {

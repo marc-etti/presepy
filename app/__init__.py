@@ -3,7 +3,7 @@ import os
 from app.routes import main_bp
 from app.services.audio_management import audio_bp
 from app.services.dmx_management import dmx_bp
-from app.services.light_management import light_bp
+from app.services.devices_management import light_bp
 from app.services.test import test_bp
 
 def create_app():

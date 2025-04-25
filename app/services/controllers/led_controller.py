@@ -1,3 +1,11 @@
+###################################
+# Controller del LED RGB
+# CANALI:
+# 0 - Rosso
+# 1 - Verde
+# 2 - Blu
+###################################
+
 class LedController:
     """Classe per la gestione dei LED RGB."""
 

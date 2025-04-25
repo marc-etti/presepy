@@ -1,3 +1,10 @@
+###################################
+# Controller del faro
+# CANALI:
+# 0 - Luminosità
+###################################
+
+
 class FaroController:
     """Classe per la gestione dei fari."""
 

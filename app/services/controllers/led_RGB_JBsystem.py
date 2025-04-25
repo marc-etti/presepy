@@ -1,3 +1,13 @@
+###################################
+# Controller del led RGB JBsystem
+# CANALI:
+# 0 - Rosso
+# 1 - Verde
+# 2 - Blu
+# 3 - Dimmer
+# 4 - Strobo
+###################################
+
 class ledRGB_JBsystem:
     """Classe per la gestione dei LED RGB di tipo JB system."""
 

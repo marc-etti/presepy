@@ -1,4 +1,11 @@
+###################################
 # Controller del dimmer lite puter
+# CANALI:
+# 0 - Luminosità
+# 1 - Rosso
+# 2 - Verde
+# 3 - Blu
+###################################
 
 class DimmerLitePuterController:
     """Classe per la gestione del dimmer lite puter."""

@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template
 
+from app.auth import login_required
+
 main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
@@ -7,6 +9,7 @@ def index():
     return render_template('index.html')
 
 @main_bp.route('/dmx_management')
+@login_required
 def dmx_management():
     return render_template('dmx_management.html')
 

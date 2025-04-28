@@ -91,3 +91,6 @@ presepy/
 └── README.md                # Documentazione del progetto
 
 ``` 
+
+# Inizializzazione database
+flask --app app init-db    

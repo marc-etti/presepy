@@ -9,3 +9,6 @@ class Config:
     DEBUG = True
     TEST = True
 
+    DATA_SQL = 'data/data.sql'
+    SCHEMA_SQL = 'data/schema.sql'
+    DATABASE = 'data/presepy.sqlite'

@@ -9,6 +9,68 @@
     {% block styles %} 
         {# Inserire eventuali stili specifici per la pagina #}
     {% endblock %}
+    <style>
+        /* Reset e stili base */
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #2c3e50; /* Colore di sfondo scuro */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Allineamento orizzontale */
+        nav li {
+            float: left;
+        }
+
+        /* Stile dei link */
+        nav li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Cambia colore al hover */
+        nav li a:hover {
+            background-color: #34495e;
+        }
+
+        /* Stile per la scheda corrente */
+        nav li a.current {
+            background-color: #3498db;
+            font-weight: bold;
+        }
+
+        nav ul li.user-account {
+            margin-right: auto;
+        }
+
+        /* Stile per l'header */
+        header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Clearfix per il float */
+        nav::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -16,11 +78,18 @@
     </header>
     <nav>
         <ul>
-            <li><a href="{{ url_for('main.index') }}">Home</a></li>
-            <li><a href="{{ url_for('main.dmx_management') }}">Gestione DMX</a></li>
-            <li><a href="{{ url_for('main.audio_management') }}">Gestione Musica</a></li>
-            <li><a href="{{ url_for('main.light_management') }}">Gestione Luci</a></li>
-            <li><a href="{{ url_for('main.test') }}">Pagina di test</a></li>
+            <li><a href="{{ url_for('main.index') }}" {% if request.endpoint == 'main.index' %}class="current"{% endif %}>Home</a></li>
+            <li><a href="{{ url_for('main.dmx_management') }}" {% if request.endpoint == 'main.dmx_management' %}class="current"{% endif %}>Gestione DMX</a></li>
+            <li><a href="{{ url_for('main.audio_management') }}" {% if request.endpoint == 'main.audio_management' %}class="current"{% endif %}>Gestione Musica</a></li>
+            <li><a href="{{ url_for('main.light_management') }}" {% if request.endpoint == 'main.light_management' %}class="current"{% endif %}>Gestione Luci</a></li>
+            <li><a href="{{ url_for('main.test') }}" {% if request.endpoint == 'main.test' %}class="current"{% endif %}>Pagina di test</a></li>
+            {% if g.user %}
+                <li class="user-account"><a href="#">{{ g.user['username'] }}</a></li>
+                <li class="user-account"><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+            {% else %}
+                <li class="user-account"><a href="{{ url_for('auth.login') }}" {% if request.endpoint == 'auth.login' %}class="current"{% endif %}>Login</a></li>
+                <li class="user-account"><a href="{{ url_for('auth.register') }}" {% if request.endpoint == 'auth.register' %}class="current"{% endif %}>Registrati</a></li>
+            {% endif %}
         </ul>
     </nav>
 

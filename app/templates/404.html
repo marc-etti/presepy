@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}404{% endblock %}
+
+{% block styles %} 
+<style>
+    .container-handler404 {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70vh;
+        text-align: center;
+    }
+    
+    .div-handler404 {
+        font-size: 4rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #dc3545;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        padding: 20px;
+    }
+      
+    .emoji {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block header %}
+    <h1>404 - Pagina non trovata</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="container-handler404">
+        <div class="div-handler404">404 - Pagina non trovata</div>
+        <span class="emoji">😕</span>
+    </div>
+{% endblock %}

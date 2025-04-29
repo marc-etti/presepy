@@ -1,0 +1,58 @@
+/* Stile specifico per il form di login */
+.content form {
+    width: 80%;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.content form label {
+    display: block;
+    margin: 1rem 0 0.5rem;
+    color: #555;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.content form input[type="text"],
+.content form input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.content form input[type="text"]:focus,
+.content form input[type="password"]:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.content form input[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.content form input[type="submit"]:hover {
+    background-color: #3a7bc8;
+}
+
+/* Messaggi di errore (se presenti nel tuo template) */
+.content .flash-messages {
+    margin-bottom: 1.5rem;
+}

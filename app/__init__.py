@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import os
 from app.routes import main_bp
 from app.services.audio_management import audio_bp
@@ -31,7 +31,6 @@ def create_app():
     # handle the 404 error
     @app.errorhandler(404)
     def page_not_found(e):
-        # return render_template('404.html'), 404
-        return "404 Not Found"
+        return render_template('404.html'), 404
 
     return app

@@ -1,3 +1,5 @@
+import os
+
 class Config:
     DMX_PORT = 'change_me'
     AUDIO_PATH = 'audio'
@@ -9,6 +11,6 @@ class Config:
     DEBUG = True
     TEST = True
 
-    DATA_SQL = 'data/data.sql'
-    SCHEMA_SQL = 'data/schema.sql'
-    DATABASE = 'data/presepy.sqlite'
+    # Configurazione del database
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///presepy.sqlite'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False

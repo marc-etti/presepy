@@ -21,8 +21,8 @@
             <li><a href="{{ url_for('main.audio_management') }}" {% if request.endpoint == 'main.audio_management' %}class="current"{% endif %}>Gestione Musica</a></li>
             <li><a href="{{ url_for('main.light_management') }}" {% if request.endpoint == 'main.light_management' %}class="current"{% endif %}>Gestione Luci</a></li>
             <li><a href="{{ url_for('main.test') }}" {% if request.endpoint == 'main.test' %}class="current"{% endif %}>Pagina di test</a></li>
-            {% if g.user %}
-                <li class="user-account"><a href="#">{{ g.user['username'] }}</a></li>
+            {% if current_user.is_authenticated %}
+                <li class="user-account"><a href="{{ url_for('auth.profile') }}">{{ current_user.username }}</a></li>
                 <li class="user-account"><a href="{{ url_for('auth.logout') }}">Logout</a></li>
             {% else %}
                 <li class="user-account"><a href="{{ url_for('auth.login') }}" {% if request.endpoint == 'auth.login' %}class="current"{% endif %}>Login</a></li>

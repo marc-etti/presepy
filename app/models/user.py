@@ -10,15 +10,26 @@ class User(UserMixin, db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(128), nullable=True)
+    is_admin: Mapped[bool] = mapped_column(default=False)
+    is_active: Mapped[bool] = mapped_column(default=True)
 
-    def __init__(self, username, password):
+    def __init__(self, 
+                 username, 
+                 password, 
+                 is_admin=False,
+                 is_active=True) -> None:
         self.username = username
         self.password = generate_password_hash(password)
+        self.is_admin = is_admin
+        self.is_active = is_active
 
-    def set_password(self, password):
+    def __repr__(self) -> str:
+        return f'<User {self.username}>'
+
+    def set_password(self, password) -> None:
         self.password = generate_password_hash(password)
     
-    def check_password(self, password):
+    def check_password(self, password) -> bool:
         return check_password_hash(self.password, password)
         
     def get_id(self):

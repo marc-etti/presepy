@@ -73,11 +73,15 @@ def init_db():
         fixtures = {
             'admin': {
                 'username': 'admin',
-                'password': 'admin'
+                'password': 'admin',
+                'is_admin': True,
+                'is_active': True
             },
             'user': {
                 'username': 'user',
-                'password': 'user'
+                'password': 'user',
+                'is_admin': False,
+                'is_active': True
             }
         }
         # Aggiungi gli utenti al database

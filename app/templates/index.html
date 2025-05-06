@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Presepy{% endblock %}
 
 {% block header %}
-    <h1>Benvenuto nella Home</h1>
+    <h1>Presepy</h1>
 {% endblock %}
 
 {% block content %}
-    <p>Benvenuto nella tua applicazione Flask!</p>
+<div class="centered-logo">
+        <img src="{{ url_for('static', filename='images/presepy-logo.png') }}" alt="Presepy" class="presepy-logo">
+</div>
 {% endblock %}

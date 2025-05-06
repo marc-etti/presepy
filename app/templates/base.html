@@ -16,20 +16,54 @@
     </header>
     <nav class="base-nav">
         <ul>
-            <li><a href="{{ url_for('main.index') }}" {% if request.endpoint == 'main.index' %}class="current"{% endif %}>Home</a></li>
-            <li><a href="{{ url_for('main.dmx_management') }}" {% if request.endpoint == 'main.dmx_management' %}class="current"{% endif %}>Gestione DMX</a></li>
-            <li><a href="{{ url_for('main.audio_management') }}" {% if request.endpoint == 'main.audio_management' %}class="current"{% endif %}>Gestione Musica</a></li>
-            <li><a href="{{ url_for('main.light_management') }}" {% if request.endpoint == 'main.light_management' %}class="current"{% endif %}>Gestione Luci</a></li>
-            <li><a href="{{ url_for('main.test') }}" {% if request.endpoint == 'main.test' %}class="current"{% endif %}>Pagina di test</a></li>
+            <li>
+                <a href="{{ url_for('main.index') }}" {% if request.endpoint == 'main.index' %}class="current"{% endif %}>Home</a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.dmx_management') }}" {% if request.endpoint == 'main.dmx_management' %}class="current"{% endif %}>Gestione DMX</a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.audio_management') }}" {% if request.endpoint == 'main.audio_management' %}class="current"{% endif %}>Gestione Musica</a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.light_management') }}" {% if request.endpoint == 'main.light_management' %}class="current"{% endif %}>Gestione Luci</a>
+            </li>
             {% if current_user.is_authenticated %}
-                <li class="user-account"><a href="{{ url_for('auth.profile') }}">{{ current_user.username }}</a></li>
-                <li class="user-account"><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                <li>
+                    <a href="{{ url_for('auth.profile') }}" {% if request.endpoint == 'auth.profile' %}class="current"{% endif %}>{{ current_user.username }}</a>
+                </li>
+                {% if current_user.is_admin %}
+                    <li>
+                        <a href="{{ url_for('auth.admin') }}" {% if request.endpoint == 'auth.admin' %}class="current"{% endif %}>Pannello Admin</a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="{{ url_for('auth.logout') }}">Logout</a>
+                </li>
             {% else %}
-                <li class="user-account"><a href="{{ url_for('auth.login') }}" {% if request.endpoint == 'auth.login' %}class="current"{% endif %}>Login</a></li>
-                <li class="user-account"><a href="{{ url_for('auth.register') }}" {% if request.endpoint == 'auth.register' %}class="current"{% endif %}>Registrati</a></li>
+                <li>
+                    <a href="{{ url_for('auth.login') }}" {% if request.endpoint == 'auth.login' %}class="current"{% endif %}>Login</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('auth.register') }}" {% if request.endpoint == 'auth.register' %}class="current"{% endif %}>Registrati</a>
+                </li>
             {% endif %}
         </ul>
     </nav>
+
+    <!-- Messaggi flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flashes" id="flashes-container">
+            {% for category, message in messages %}
+                <div class="flash-message {% if category %}{{ category }}{% endif %}">
+                    {{ message }}
+                    <button onclick="getElementById('flashes-container').style.display='none';" aria-label="Close">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
 
 
     <main>

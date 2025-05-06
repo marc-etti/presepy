@@ -29,7 +29,6 @@ def register():
                 return redirect(url_for("auth.login"))
 
         flash(error)
-        print(error)
 
     return render_template('auth/register.html')
 
@@ -51,7 +50,6 @@ def login():
             return redirect(url_for('main.index'))
 
         flash(error)
-        print(error)
 
     return render_template('auth/login.html')
 
@@ -66,6 +64,14 @@ def logout():
 def profile():
     return render_template('auth/profile.html', user=current_user)
 
+@auth_bp.route('/admin')
+@login_required
+def admin():
+    if not current_user.is_admin:
+        flash('You do not have permission to access this page.')
+        return redirect(url_for('main.index'))
+    return render_template('auth/admin.html', users=User.query.all())
+
 @auth_bp.route('/delete', methods=('POST',))
 @login_required
 def delete():
@@ -77,5 +83,30 @@ def delete():
         flash('Your account has been deleted.')
     else:
         flash('User not found.')
-
     return redirect(url_for('main.index'))
+
+@auth_bp.route('/deactivate', methods=('POST',))
+@login_required
+def deactivate():
+    user_id = request.form['user_id']
+    user = User.query.filter_by(id=user_id).first()
+    if user:
+        user.is_active = False
+        db.session.commit()
+        flash(f'User {user.username} has been deactivated.')
+    else:
+        flash('User not found.')
+    return redirect(url_for('auth.admin'))
+
+@auth_bp.route('/activate', methods=('POST',))
+@login_required
+def activate():
+    user_id = request.form['user_id']
+    user = User.query.filter_by(id=user_id).first()
+    if user:
+        user.is_active = True
+        db.session.commit()
+        flash(f'User {user.username} has been activated.')
+    else:
+        flash('User not found.')
+    return redirect(url_for('auth.admin'))

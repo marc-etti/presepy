@@ -22,7 +22,6 @@ def create_app():
     from app.services.audio_management import audio_bp
     from app.services.dmx_management import dmx_bp
     from app.services.devices_management import light_bp
-    from app.services.test import test_bp
     from app.auth import auth_bp
 
     # Registra i blueprint
@@ -30,7 +29,6 @@ def create_app():
     app.register_blueprint(audio_bp)
     app.register_blueprint(dmx_bp)
     app.register_blueprint(light_bp)
-    app.register_blueprint(test_bp)
     app.register_blueprint(auth_bp)
 
     # controllo che il file data.json esista e in caso contrario lo creo
@@ -88,7 +86,8 @@ def init_db():
         try:
             for user_data in fixtures.values():
                 # Crea un nuovo utente
-                user = User(username=user_data['username'], password=user_data['password'])
+                user = User(username=user_data['username'], password=user_data['password'],
+                            is_admin=user_data['is_admin'], is_active=user_data['is_active'])
                 # Aggiungi l'utente alla sessione
                 db.session.add(user)
             # Commit the changes to the database

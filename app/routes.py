@@ -20,7 +20,3 @@ def audio_management():
 @main_bp.route('/light_management')
 def light_management():
     return render_template('light_management.html')
-
-@main_bp.route('/test')
-def test():
-    return render_template('test.html')

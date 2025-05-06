@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Profilo di amministrazione
+{% endblock %}
+
+{% block header %}
+    <h1>Profilo di amministrazione </h1>
+{% endblock %}
+
+{% block content %}
+    <p>Benvenuto {{ current_user.username }} </p>
+
+    <h2>Gestione Utenti</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Ruolo</th>
+                <th>Stato</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ 'Admin' if user.is_admin else 'Utente' }}</td>
+                    <td>{{ 'Attivo' if user.is_active else 'Disattivato' }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <form action="{{ url_for('auth.deactivate') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <button type="submit">Disattiva</button>
+                            </form>
+                        {% else %}
+                            <form action="{{ url_for('auth.activate') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <button type="submit">Attiva</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+    </table>
+{% endblock %}

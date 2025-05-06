@@ -47,10 +47,6 @@ main {
     font-weight: bold;
 }
 
-.base-nav ul li.user-account {
-    margin-right: auto;
-}
-
 /* Stile per l'header */
 .base-header {
     background-color: #3498db;
@@ -107,4 +103,55 @@ footer {
 .button:disabled {
     background-color: #bdc3c7;
     cursor: not-allowed;
+}
+
+/* Stile per il logo nella home page */
+.centered-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10vh;
+}
+
+/* Animazione del logo */
+.presepy-logo {
+    width: 60vh;
+    animation: logoAnimation 1s ease-in-out;
+}
+@keyframes logoAnimation {
+    0% { transform: scale(0.50); }
+    100% { transform: scale(1); }
+}
+
+/* Stili per i messaggi flash */
+.flashes {
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.flash-message {
+    background-color: #3498db;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.flash-message button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    float: right;
+}
+
+.flash-message button:hover {
+    color: #2980b9;
+}
+
+.flash-message button:focus {
+    outline: none;
 }

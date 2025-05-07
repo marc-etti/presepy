@@ -7,7 +7,7 @@ import threading
 import time
 
 # Creazione del Blueprint
-audio_bp = Blueprint('audio', __name__)
+audio_bp = Blueprint('audio', __name__, url_prefix='/audio')
 
 # variabili globali
 current_track = None

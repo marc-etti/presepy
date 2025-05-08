@@ -3,14 +3,9 @@ import click
 
 from flask import Flask, render_template
 from flask.cli import with_appcontext
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
+from app.db import db, init_db, seed_development_db
 
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
 login_manager = LoginManager()
 
 def create_app():
@@ -58,53 +53,10 @@ def create_app():
 
     return app
 
-def init_db():
-    # Ottieni l'app corrente
-    from app.models.user import User
-    from flask import current_app
-
-    with current_app.app_context():
-        db.drop_all()
-        db.create_all()
-
-        # Crea le fixture
-        fixtures = {
-            'admin': {
-                'username': 'admin',
-                'password': 'admin',
-                'is_admin': True,
-                'is_active': True
-            },
-            'user': {
-                'username': 'user',
-                'password': 'user',
-                'is_admin': False,
-                'is_active': True
-            }
-        }
-        # Aggiungi gli utenti al database
-        try:
-            for user_data in fixtures.values():
-                # Crea un nuovo utente
-                user = User(username=user_data['username'], password=user_data['password'],
-                            is_admin=user_data['is_admin'], is_active=user_data['is_active'])
-                # Aggiungi l'utente alla sessione
-                db.session.add(user)
-            # Commit the changes to the database
-            db.session.commit()
-            print("Users added successfully.")
-        except Exception as e:
-            # Rollback in caso di errore
-            db.session.rollback()
-            print(f"Error occurred while adding users: {e}")
-        # Chiudi la sessione
-        finally:    
-            db.session.close()
-
-
 @click.command("init-db")
 @with_appcontext
 def init_db_command():
     """Clear existing data and create new tables."""
-    init_db()
+    # init_db()
+    seed_development_db()
     click.echo("Initialized the database.")

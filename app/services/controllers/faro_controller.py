@@ -1,84 +1,54 @@
 ###################################
 # Controller del faro
 # CANALI:
-# 0 - Luminosità
+# 0 - Luminosità (0-255)
 ###################################
+from models import Device, Channel, Keyframe
 
+from app.utils.interpolation import interpolate_value
 
 class FaroController:
     """Classe per la gestione dei fari."""
 
-    MAX_VALUE = 255
-    MIN_VALUE = 0
-    
-    def __init__(self, dmx_instance, channel, name, value=0, type="light", subtype="faro") -> None:
-        """Inizializza il faro.
-        param dmx_instance: Istanza del DMX
-        param channel: Canale del faro
+    def __init__(self, name, dmx_instance) -> None:
+        """Inizializza il faro con i dati del database.
         param name: Nome del faro
-        param value: Intensità del faro (default: 0)"""
-        if channel is None or channel == 0:
-            raise ValueError("Il canale del faro non può essere zero o vuoto.")
-        self.dmx = dmx_instance             # Istanza del DMX
-        self.channel = channel              # Canale del faro
-        self.value = value                  # Intensità del faro
-        self.name = name                    # Nome del faro
-        self.dmx.set_channel(self.channel, self.value)
-        self.type = type                    # Tipo del dispositivo
-        self.subtype = subtype              # Sottotipo del dispositivo
+        param dmx_instance: Istanza del DMX"""
+        if not name:
+            raise ValueError("Il nome del faro non può essere vuoto.")
         
-    def increase(self, value):
-        """Aumenta il valore del faro."""
-        self.value = round(self.dmx.get_channel(self.channel) + value)
-        if self.value > 255:
-            self.value = 255
-        self.dmx.set_channel(self.channel, self.value)
+        # carico il device faro dal database
+        self.device = Device.query.filter_by(name=name).first()
+        if self.device is None:
+            raise ValueError(f"Il faro con nome {name} non esiste nel database.")
+        
+        # carico i canali associati al faro dal database
+        self.channels = Channel.query.filter_by(device_id=self.device.id).all()
+        if not self.channels:
+            raise ValueError(f"Il faro con nome {name} non ha canali associati nel database.")
+        
+        # carico i keyframe associati al faro dal database
+        self.keyframes = Keyframe.query.filter_by(device_id=self.device.id).all()
+        if not self.keyframes:
+            raise ValueError(f"Il faro con nome {name} non ha keyframe associati nel database.")
+        
+        self.dmx = dmx_instance             # Istanza del DMX
 
-    def decrease(self, value):
-        """Diminuisce il valore del faro."""
-        self.value = round(self.dmx.get_channel(self.channel) - value)
-        if self.value < 0:
-            self.value = 0
-        self.dmx.set_channel(self.channel, self.value)
-
-    def proportional_value(self, current_step, total_steps):
-        """Calcola il valore del faro in base al passo corrente e il numero di passi totali."""
-        self.value = round(self.MAX_VALUE * (current_step / total_steps))
-        if self.value > 255:
-            self.value = 255
-        if self.value < 0:
-            self.value = 0
-        self.dmx.set_channel(self.channel, self.value)
-
-    def set_value(self, value):
-        """Imposta il valore del faro."""
-        self.value = value
-        self.dmx.set_channel(self.channel, self.value)
-
-    def get_value(self) -> int:
-        """Restituisce il valore del faro."""
-        return self.dmx.get_channel(self.channel)
-    
-
-    def to_dict(self) -> dict:
-        """Restituisce un dizionario con i dati del faro."""
-        return {
-            "name": self.name,
-            "channel": self.channel,
-            "value": self.value,
-            "type": self.type,
-            "subtype": self.subtype
-        }
-    
-    def from_dict(self, data: dict) -> None:
-        """Inizializza il faro dai dati presenti nel dizionario."""
-        self.name = data.get("name")
-        self.channel = data.get("channel")
-        self.value = data.get("value")
-        self.dmx.set_channel(self.channel, self.value)
-
-    def __str__(self) -> str:
-        """Restituisce una rappresentazione testuale del faro.
-           si invoca con print(faro) oppure str(faro)"""
-        return f"Faro: {self.name} - Canale: {self.channel}, Valore: {self.value}"
-    
+    def update(self, phase, time, total_time):
+        """Aggiorna il faro in base alla fase e l'istante."""
+        for channel in self.channels:
+            keyframes = [ kf for kf in self.keyframes if kf.channel_id == channel.id and kf.phase_id == phase.id ]
+            for keyframe, next_keyframe in zip(keyframes, keyframes[1:]):
+                start_time = keyframe.position * total_time / 100
+                end_time = next_keyframe.position * total_time / 100
+                if start_time <= time <= end_time:
+                    # Interpolazione del valore del canale
+                    value = interpolate_value( 
+                        keyframe.value,
+                        next_keyframe.value,
+                        start_time,
+                        end_time,
+                        time
+                    )
+                    self.dmx.set_channel(channel.number, value)
+                    break

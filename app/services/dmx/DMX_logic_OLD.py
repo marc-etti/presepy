@@ -1,134 +1,131 @@
 from config import Config
-from app.utils.common import write_on_log
+from app.utils.common import write_device_info_on_json, init_device_from_json
 
 import time
-from threading import Event
+import threading
 from app.services.dmx.DMX_data import DMXData
 from app.services.dmx.state_manager import StateManager
 
 from app.services.controllers.faro_controller import FaroController
 
-# Frequenza di aggiornamento
-FREQUENCY = 0.5
-
 # Creazione dell'istanza DMX
 dmx = DMXData()
 
-# Evento per la gestione del thread
-running_event = Event()
+# Evento per la pausa del thread
+pause_event = threading.Event()
 
 # Istanza della classe StateManager
 state_manager = StateManager()
 
-# Istanze dei controller
-faro1 = FaroController(dmx, 1, 0, "Faro1")
-faro2 = FaroController(dmx, 2, 0, "Faro2")
-faro3 = FaroController(dmx, 3, 0, "Faro3")
-faro4 = FaroController(dmx, 4, 0, "Faro4")
+# Fornisco l'evento di pausa al StateManager
+state_manager.set_paused_event(pause_event)
 
-vettore_fari = [faro1, faro2, faro3, faro4]
-
+# inizializzazione
+faro1 = FaroController(dmx, 1, "Faro1", 1)
+faro2 = FaroController(dmx, 2, "Faro2", 1)
+faro3 = FaroController(dmx, 3, "Faro3", 1)
+faro4 = FaroController(dmx, 4, "Faro4", 1)
+faro5 = FaroController(dmx, 5, "Faro5", 1)
 
 def inizializzazione():
     """Inizializza l'interfaccia DMX."""
-    faro1.init_from_json(Config.JSON_FILE)
-    faro2.init_from_json(Config.JSON_FILE)
-    faro3.init_from_json(Config.JSON_FILE)
+    init_device_from_json(faro1)
+    init_device_from_json(faro2)
+    init_device_from_json(faro3)
     faro4.set_value(100)
+    init_device_from_json(faro5)
+
 
 def main_dmx_function():
-    """Funzione principale per il controllo della giornata."""
-    print("Programma avviato")
+    """Funzione principale di gestione della giornata.
+       aggiorna i valori istante per istante e in base alla fase del giorno"""
+    
+    # Costanti
+    FREQUENCY = 1/2 # Frequenza di invio dei dati al dmx (44Hz)
+    DURATA_ALBA = 30
+    DURATA_GIORNO = 60
+    DURATA_SERA = 30
+    DURATA_NOTTE = 60
+    DURATA_TOTALE = DURATA_ALBA + DURATA_GIORNO + DURATA_SERA + DURATA_NOTTE
+    ISTANTI_TOTALI = int(DURATA_TOTALE / FREQUENCY)
+    ISTANTI_ALBA = int(DURATA_ALBA / FREQUENCY)                     # Da 0 a ISTANTI_ALBA
+    ISTANTI_GIORNO = ISTANTI_ALBA + int(DURATA_GIORNO / FREQUENCY)  # Da ISTANTI_ALBA a ISTANTI_GIORNO
+    ISTANTI_SERA = ISTANTI_GIORNO + int(DURATA_SERA / FREQUENCY)    # Da ISTANTI_GIORNO a ISTANTI_SERA
+    ISTANTI_NOTTE = ISTANTI_SERA + int(DURATA_NOTTE / FREQUENCY)    # Da ISTANTI_SERA a ISTANTI_NOTTE
 
     # Inizializzazione
     inizializzazione()
 
-    # Loop principale
-    while running_event.is_set():
-        alba(30, FREQUENCY)
-        giorno(60, FREQUENCY)
-        sera(30, FREQUENCY)
-        notte(60, FREQUENCY)
+    while state_manager.is_on():                                # Controllo se il sistema è acceso
+        
+        for istante in range(ISTANTI_TOTALI):
+
+            if not state_manager.is_on():                           # Controllo l'evento di stop
+                break
+            if not pause_event.is_set():                            # Controllo l'evento di pausa
+                print(f"Programma in pausa nel thread: {threading.current_thread().name}")
+                pause_event.wait()                                  # Mi metto in attesa finché l'evento di pausa non viene resettato
+                print(f"Programma ripreso nel thread: {threading.current_thread().name}")
+
+            start_time = time.time()                                # Salvo il tempo di inizio
+
+            if istante < ISTANTI_ALBA:                                              # ALBA
+                if istante == 0:                                    # Controllo se è l'istante iniziale
+                    print("Alba in corso")                          # Stampo il messaggio di inizio alba
+                    state_manager.set_phase("ALBA")                 # Imposto la fase del giorno
+                faro1.proportional_value(istante, ISTANTI_ALBA)
+                faro2.proportional_value(istante, ISTANTI_ALBA)
+                faro3.proportional_value(istante, ISTANTI_ALBA)
+                faro4.proportional_value(istante, ISTANTI_ALBA)
+            elif istante < ISTANTI_GIORNO:                                          # GIORNO
+                if istante == ISTANTI_ALBA:
+                    print("Giorno in corso")
+                    state_manager.set_phase("GIORNO")
+                faro1.set_value(255)
+                faro2.set_value(255)
+                faro3.set_value(255)
+                faro4.set_value(255)
+            elif istante < ISTANTI_SERA:                                            # SERA
+                if istante == ISTANTI_GIORNO:
+                    print("Sera in corso")
+                    state_manager.set_phase("SERA")
+                faro1.proportional_value(ISTANTI_SERA - istante, ISTANTI_SERA - ISTANTI_GIORNO)
+                faro2.proportional_value(ISTANTI_SERA - istante, ISTANTI_SERA - ISTANTI_GIORNO)
+                faro3.proportional_value(ISTANTI_SERA - istante, ISTANTI_SERA - ISTANTI_GIORNO)
+                faro4.proportional_value(ISTANTI_SERA - istante, ISTANTI_SERA - ISTANTI_GIORNO)
+            elif istante < ISTANTI_NOTTE:                                           # NOTTE
+                if istante == ISTANTI_SERA:
+                    print("Notte in corso")
+                    state_manager.set_phase("NOTTE")
+                faro1.set_value(0)
+                faro2.set_value(0)
+                faro3.set_value(0)
+                faro4.set_value(0)
+            if Config.DEBUG:
+                dmx.write_channels_on_log(Config.LOG_FILE)
+            else:
+                dmx.send(Config.DMX_PORT)
+            stop_time = time.time()                                 # Salvo il tempo di fine
+            sleep_time = FREQUENCY - (stop_time - start_time)       # Calcolo il tempo di attesa per mantenere la frequenza
+            if sleep_time < 0:                                      # Controllo se il tempo di attesa è negativo
+                sleep_time = 0                                      # Se negativo lo imposto a 0
+                raise ValueError("Tempo di attesa negativo")        # Lancio un'eccezione
+            time.sleep(sleep_time)
+        print("Giornata terminata")
 
     # Chiusura
     print("Programma terminato")
+    state_manager.set_istante(istante)
     closing_function()
 
-def alba(duration = 30 , frequency = 0.5):
-    """Funzione per la gestione dell'alba.
-       Durata alba: 30 secondi
-       Frequenza di aggiornamento: 0,5 secondi"""
-    print("Alba")
-    state_manager.set_phase("alba")
-    total_steps = int(duration / frequency)
-    for step in range(total_steps):
-        if not running_event.is_set():
-            break
-        faro1.proportional_value(step, total_steps)
-        faro2.proportional_value(step, total_steps)
-        faro3.proportional_value(step, total_steps)
-        faro4.proportional_value(step, total_steps)
-        dmx.write_channels_on_log(Config.LOG_FILE)
-        time.sleep(frequency)
-    
-def giorno(duration = 60, frequency = 0.5):
-    """Funzione per la gestione del giorno.
-       Durata giorno: 60 secondi
-       Frequenza di aggiornamento: 0,5 secondi"""
-    print("Giorno")
-    state_manager.set_phase("GIORNO")
-    total_steps = int(duration / frequency)
-    for i in range(total_steps):
-        if not running_event.is_set():
-            break
-        faro1.set_value(255)
-        faro2.set_value(255)
-        faro3.set_value(255)
-        faro4.set_value(255)
-        dmx.write_channels_on_log(Config.LOG_FILE)
-        time.sleep(frequency)
-
-def sera(duration = 30, frequency = 0.5):
-    """Funzione per la gestione della sera.
-       Durata sera: 30 secondi
-       Frequenza di aggiornamento: 0,5 secondi"""
-    print("Sera")
-    state_manager.set_phase("SERA")
-    total_steps = int(duration / frequency)
-    for step in range(total_steps):
-        if not running_event.is_set():
-            break
-        faro1.proportional_value(total_steps-step, total_steps)
-        faro2.proportional_value(total_steps-step, total_steps)
-        faro3.proportional_value(total_steps-step, total_steps)
-        faro4.proportional_value(total_steps-step, total_steps)
-        dmx.write_channels_on_log(Config.LOG_FILE)
-        time.sleep(frequency)
-        
-
-def notte(duration = 60, frequency = 0.5):
-    """Funzione per la gestione della notte.
-       Durata notte: 60 secondi
-       Frequenza di aggiornamento: 0,5 secondi"""
-    print("Notte")
-    state_manager.set_phase("NOTTE")
-    total_steps  = int(duration / frequency)
-    for step in range(total_steps):
-        if not running_event.is_set():
-            break
-        faro1.set_value(0)
-        faro2.set_value(0)
-        faro3.set_value(0)
-        faro4.set_value(0)
-        dmx.write_channels_on_log(Config.LOG_FILE)
-        time.sleep(frequency)
-
-    
 def closing_function():
     """Funzione di chiusura del programma."""
-    faro1.write_data_on_json(Config.JSON_FILE)
-    faro2.write_data_on_json(Config.JSON_FILE)
-    faro3.write_data_on_json(Config.JSON_FILE)
-    faro4.write_data_on_json(Config.JSON_FILE)
+    state_manager.write_data_on_json()
+    write_device_info_on_json(faro1)
+    write_device_info_on_json(faro2)
+    write_device_info_on_json(faro3)
+    write_device_info_on_json(faro4)
+    write_device_info_on_json(faro5)
+    print("Salvataggio dati completato")
     dmx.close()
     print("Interfaccia DMX chiusa")

@@ -6,7 +6,7 @@ from app.services.dmx.DMX_data import DMXData
 from app.services.dmx.state_manager import StateManager
 
 from app.services.controllers.faro_controller import FaroController
-from models import Device, Channel, Keyframe, Phase
+from app.models import Phase
 
 # Creazione dell'istanza DMX
 dmx = DMXData()
@@ -21,24 +21,35 @@ state_manager = StateManager()
 state_manager.set_paused_event(pause_event)
 
 # inizializzazione
-faro1 = FaroController("Faro1", dmx)
-faro2 = FaroController("Faro2", dmx)
-faro3 = FaroController("Faro3", dmx)
-faro4 = FaroController("Faro4", dmx)
+faro1 = None
+faro2 = None
+faro3 = None
+faro4 = None
 
 def inizializzazione():
-    """Inizializza l'interfaccia DMX."""
-    pass
+    """Inizializzazioene dei controller"""
+    global faro1, faro2, faro3, faro4
+    faro1 = FaroController("Faro1", dmx)
+    print(f"Faro1: {faro1}")
+    faro2 = FaroController("Faro2", dmx)
+    print(f"Faro2: {faro2}")
+    faro3 = FaroController("Faro3", dmx)
+    print(f"Faro3: {faro3}")
+    faro4 = FaroController("Faro4", dmx)
+    print(f"Faro4: {faro4}")
 
+def run_main_dmx_function(app):
+    """Wrapper per la funzione principale di gestione della giornata."""
+    with app.app_context():
+        main_dmx_function()
 
 def main_dmx_function():
     """Funzione principale di gestione della giornata.
        aggiorna i valori istante per istante e in base alla fase del giorno"""
-    
-    # carico le fasi dal database ordinandole per nome
-    phases = Phase.query.order_by(Phase.order).all()
 
     FREQUENCY = 1/2 # Frequenza di invio dei dati al dmx (44Hz)
+
+    phases = Phase.get_phases() # Carico le fasi dal database
 
     # Inizializzazione
     inizializzazione()
@@ -47,8 +58,13 @@ def main_dmx_function():
         
         for phase in phases:
 
-            for istante in range(0, phase.duration/FREQUENCY):
-                 
+            # Controllo se il sistema è acceso
+            if not state_manager.is_on():
+                break
+
+            for istante in range(0, 2*phase.duration):
+                print(f"Fase: {phase.name} - Istante: {istante} - Durata: {phase.duration}")
+
                 if not state_manager.is_on():                           # Controllo l'evento di stop
                     break
                 if not pause_event.is_set():                            # Controllo l'evento di pausa
@@ -60,10 +76,12 @@ def main_dmx_function():
                 for faro in [faro1, faro2, faro3, faro4]:
                     faro.update(phase, istante, phase.duration)
 
+                # Aggiorno il DMX
+                dmx.write_channels_on_log(Config.LOG_FILE)
+                
                 # Attendo il tempo di aggiornamento
-                if istante < phase.duration/FREQUENCY - 1:
-                    time.sleep(FREQUENCY)
-                             
+                time.sleep(FREQUENCY)
+                            
         print("Giornata terminata")
 
     # Chiusura

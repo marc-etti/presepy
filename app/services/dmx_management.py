@@ -3,10 +3,11 @@ from app.services.dmx.DMX_logic import dmx
 
 from app.services.dmx.DMX_logic import state_manager
 
-from app.services.dmx.DMX_logic import main_dmx_function
+
+from app.services.dmx.DMX_logic import run_main_dmx_function
 from app.services.dmx.DMX_logic import inizializzazione
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 import threading
 
 # Variabile globale per il thread 
@@ -34,7 +35,8 @@ def start_DMX():
         return jsonify({'message': 'Il sistema è già acceso'})
     else:
         state_manager.turn_on()
-        thread = threading.Thread(target=main_dmx_function, name = 'DMX_thread')
+        app = current_app._get_current_object()
+        thread = threading.Thread(target=run_main_dmx_function, args=(app,), name = 'DMX_thread')
         thread.start()
         return jsonify({'message': 'Invio valori DMX avviato'})
 

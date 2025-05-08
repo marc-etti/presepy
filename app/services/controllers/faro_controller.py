@@ -3,7 +3,7 @@
 # CANALI:
 # 0 - Luminosità (0-255)
 ###################################
-from models import Device, Channel, Keyframe
+from app.models import Device, Channel, Keyframe
 
 from app.utils.interpolation import interpolate_value
 
@@ -27,8 +27,8 @@ class FaroController:
         if not self.channels:
             raise ValueError(f"Il faro con nome {name} non ha canali associati nel database.")
         
-        # carico i keyframe associati al faro dal database
-        self.keyframes = Keyframe.query.filter_by(device_id=self.device.id).all()
+        # carico i keyframe associati ai canali del faro dal database
+        self.keyframes = Keyframe.query.filter(Keyframe.channel_id.in_([channel.id for channel in self.channels])).all()
         if not self.keyframes:
             raise ValueError(f"Il faro con nome {name} non ha keyframe associati nel database.")
         
@@ -52,3 +52,8 @@ class FaroController:
                     )
                     self.dmx.set_channel(channel.number, value)
                     break
+
+    def __repr__(self):
+        """Restituisce una rappresentazione del faro."""
+        return f"Faro {self.device.name} con ID {self.device.id} e canali {[channel.number for channel in self.channels]}" +\
+               f" e keyframe {[keyframe.description for keyframe in self.keyframes]}"

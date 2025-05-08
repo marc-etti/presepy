@@ -24,3 +24,7 @@ class Phase(db.Model):
 
     def __repr__(self) -> str:
         return f'<Phase {self.name}>'
+    
+    def get_phases() -> list:
+        """Restituisce tutte le fasi."""
+        return Phase.query.order_by(Phase.order).all()

@@ -4,7 +4,7 @@ from app.services.dmx.DMX_logic import dmx
 from app.services.dmx.DMX_logic import state_manager
 
 
-from app.services.dmx.DMX_logic import run_main_dmx_function
+from app.services.dmx.DMX_logic import main_dmx_function
 from app.services.dmx.DMX_logic import inizializzazione
 
 from flask import Blueprint, request, jsonify, current_app
@@ -36,7 +36,7 @@ def start_DMX():
     else:
         state_manager.turn_on()
         app = current_app._get_current_object()
-        thread = threading.Thread(target=run_main_dmx_function, args=(app,), name = 'DMX_thread')
+        thread = threading.Thread(target=main_dmx_function, args=(app,), name = 'DMX_thread')
         thread.start()
         return jsonify({'message': 'Invio valori DMX avviato'})
 

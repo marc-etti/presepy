@@ -11,44 +11,6 @@ def init_db():
     # Ottieni l'app corrente
     from app.models import User
 
-    with current_app.app_context():
-        db.drop_all()
-        db.create_all()
-
-        # Crea le fixture
-        fixtures = {
-            'admin': {
-                'username': 'admin',
-                'password': 'admin',
-                'is_admin': True,
-                'is_active': True
-            },
-            'user': {
-                'username': 'user',
-                'password': 'user',
-                'is_admin': False,
-                'is_active': True
-            }
-        }
-        # Aggiungi gli utenti al database
-        try:
-            for user_data in fixtures.values():
-                # Crea un nuovo utente
-                user = User(username=user_data['username'], password=user_data['password'],
-                            is_admin=user_data['is_admin'], is_active=user_data['is_active'])
-                # Aggiungi l'utente alla sessione
-                db.session.add(user)
-            # Commit the changes to the database
-            db.session.commit()
-            print("Users added successfully.")
-        except Exception as e:
-            # Rollback in caso di errore
-            db.session.rollback()
-            print(f"Error occurred while adding users: {e}")
-        # Chiudi la sessione
-        finally:    
-            db.session.close()
-
 def seed_development_db():
     from app.models import User, Device, Channel, Keyframe, Phase
 
@@ -71,7 +33,8 @@ def seed_development_db():
                 Device(name='Faro1', type='light', subtype='faro', dmx_address=1, dmx_channels=1, status='on'),
                 Device(name='Faro2', type='light', subtype='faro', dmx_address=2, dmx_channels=1, status='on'),
                 Device(name='Faro3', type='light', subtype='faro', dmx_address=3, dmx_channels=1, status='on'),
-                Device(name='Faro4', type='light', subtype='faro', dmx_address=4, dmx_channels=1, status='on')
+                Device(name='Faro4', type='light', subtype='faro', dmx_address=4, dmx_channels=1, status='on'),
+                Device(name='LED1', type='light', subtype='led', dmx_address=5, dmx_channels=3, status='on')
             ]
             db.session.bulk_save_objects(devices)
             db.session.commit()
@@ -85,7 +48,11 @@ def seed_development_db():
                 Channel(device_id=devices_in_db[0].id, number=1, type='intensity', value=255),
                 Channel(device_id=devices_in_db[1].id, number=2, type='intensity', value=255),
                 Channel(device_id=devices_in_db[2].id, number=3, type='intensity', value=255),
-                Channel(device_id=devices_in_db[3].id, number=4, type='intensity', value=255)
+                Channel(device_id=devices_in_db[3].id, number=4, type='intensity', value=255),
+                # LED1 - 3 canali - RGB
+                Channel(device_id=devices_in_db[4].id, number=5, type='RED', value=255),
+                Channel(device_id=devices_in_db[4].id, number=6, type='BLUE', value=255),
+                Channel(device_id=devices_in_db[4].id, number=7, type='GREEN', value=255)
             ]
             db.session.bulk_save_objects(channels)
             db.session.commit()
@@ -173,7 +140,39 @@ def seed_development_db():
                 # Faretto 4 - NOTTE - inizio
                 Keyframe(channel_id=channels_in_db[3].id, phase_id=phases_in_db[3].id, description='Faretto4_notte_inizio', position=0, value=0),
                 # Faretto 4 - NOTTE - fine
-                Keyframe(channel_id=channels_in_db[3].id, phase_id=phases_in_db[3].id, description='Faretto4_notte_fine', position=100, value=0)
+                Keyframe(channel_id=channels_in_db[3].id, phase_id=phases_in_db[3].id, description='Faretto4_notte_fine', position=100, value=0),
+                # LED1 - ALBA - inizio - RGB
+                Keyframe(channel_id=channels_in_db[4].id, phase_id=phases_in_db[0].id, description='LED1_rosso_alba_inizio', position=0, value=0),
+                Keyframe(channel_id=channels_in_db[5].id, phase_id=phases_in_db[0].id, description='LED1_verde_alba_inizio', position=0, value=0),
+                Keyframe(channel_id=channels_in_db[6].id, phase_id=phases_in_db[0].id, description='LED1_blu_alba_inizio', position=0, value=0),
+                # LED1 - ALBA - fine - RGB
+                Keyframe(channel_id=channels_in_db[4].id, phase_id=phases_in_db[0].id, description='LED1_rosso_alba_fine', position=100, value=255),
+                Keyframe(channel_id=channels_in_db[5].id, phase_id=phases_in_db[0].id, description='LED1_verde_alba_fine', position=100, value=255),
+                Keyframe(channel_id=channels_in_db[6].id, phase_id=phases_in_db[0].id, description='LED1_blu_alba_fine', position=100, value=255),
+                # LED1 - GIORNO - inizio - RGB
+                Keyframe(channel_id=channels_in_db[4].id, phase_id=phases_in_db[1].id, description='LED1_rosso_giorno_inizio', position=0, value=255),
+                Keyframe(channel_id=channels_in_db[5].id, phase_id=phases_in_db[1].id, description='LED1_verde_giorno_inizio', position=0, value=255),
+                Keyframe(channel_id=channels_in_db[6].id, phase_id=phases_in_db[1].id, description='LED1_blu_giorno_inizio', position=0, value=255),
+                # LED1 - GIORNO - fine - RGB
+                Keyframe(channel_id=channels_in_db[4].id, phase_id=phases_in_db[1].id, description='LED1_rosso_giorno_fine', position=100, value=255),
+                Keyframe(channel_id=channels_in_db[5].id, phase_id=phases_in_db[1].id, description='LED1_verde_giorno_fine', position=100, value=255),
+                Keyframe(channel_id=channels_in_db[6].id, phase_id=phases_in_db[1].id, description='LED1_blu_giorno_fine', position=100, value=255),
+                # LED1 - SERA - inizio - RGB
+                Keyframe(channel_id=channels_in_db[4].id, phase_id=phases_in_db[2].id, description='LED1_rosso_sera_inizio', position=0, value=255),
+                Keyframe(channel_id=channels_in_db[5].id, phase_id=phases_in_db[2].id, description='LED1_verde_sera_inizio', position=0, value=255),
+                Keyframe(channel_id=channels_in_db[6].id, phase_id=phases_in_db[2].id, description='LED1_blu_sera_inizio', position=0, value=255),
+                # LED1 - SERA - fine - RGB
+                Keyframe(channel_id=channels_in_db[4].id, phase_id=phases_in_db[2].id, description='LED1_rosso_sera_fine', position=100, value=0),
+                Keyframe(channel_id=channels_in_db[5].id, phase_id=phases_in_db[2].id, description='LED1_verde_sera_fine', position=100, value=0),
+                Keyframe(channel_id=channels_in_db[6].id, phase_id=phases_in_db[2].id, description='LED1_blu_sera_fine', position=100, value=0),
+                # LED1 - NOTTE - inizio - RGB
+                Keyframe(channel_id=channels_in_db[4].id, phase_id=phases_in_db[3].id, description='LED1_rosso_notte_inizio', position=0, value=0),
+                Keyframe(channel_id=channels_in_db[5].id, phase_id=phases_in_db[3].id, description='LED1_verde_notte_inizio', position=0, value=0),
+                Keyframe(channel_id=channels_in_db[6].id, phase_id=phases_in_db[3].id, description='LED1_blu_notte_inizio', position=0, value=0),
+                # LED1 - NOTTE - fine - RGB
+                Keyframe(channel_id=channels_in_db[4].id, phase_id=phases_in_db[3].id, description='LED1_rosso_notte_fine', position=100, value=0),
+                Keyframe(channel_id=channels_in_db[5].id, phase_id=phases_in_db[3].id, description='LED1_verde_notte_fine', position=100, value=0),
+                Keyframe(channel_id=channels_in_db[6].id, phase_id=phases_in_db[3].id, description='LED1_blu_notte_fine', position=100, value=0)
             ]
             db.session.bulk_save_objects(keyframes)
             db.session.commit()

@@ -3,6 +3,8 @@
 from datetime import datetime
 import threading
 
+
+
 NUMBER_OF_CHANNELS = 512
 MAX_CHANNEL_VALUE = 255
 
@@ -65,25 +67,6 @@ class DMXData:
             raise ValueError("Il valore deve essere compreso tra 0 e 255")
         for i in range(start_channel, end_channel):
             self.channels[i] = value
-
-    def get_channel(self, channel):
-        """
-        Restituisce il valore di un canale DMX.
-
-        :param channel: il numero del canale da leggere
-        :return: il valore del canale
-        """
-        if channel < 1 or channel > 512:
-            raise ValueError("Il canale deve essere compreso tra 1 e 512")
-        return self.channels[channel]
-    
-    def get_channels(self):
-        """
-        Restituisce i valori di tutti i canali DMX.
-
-        :return: i valori dei canali
-        """
-        return self.channels
     
     def reset(self):
         """

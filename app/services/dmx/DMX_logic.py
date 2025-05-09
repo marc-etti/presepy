@@ -21,72 +21,69 @@ state_manager = StateManager()
 state_manager.set_paused_event(pause_event)
 
 # inizializzazione
-faro1 = None
-faro2 = None
-faro3 = None
-faro4 = None
-
 def inizializzazione():
-    """Inizializzazioene dei controller"""
-    global faro1, faro2, faro3, faro4
+    """Inizializzazione dei controller"""
     faro1 = FaroController("Faro1", dmx)
-    print(f"Faro1: {faro1}")
     faro2 = FaroController("Faro2", dmx)
-    print(f"Faro2: {faro2}")
     faro3 = FaroController("Faro3", dmx)
-    print(f"Faro3: {faro3}")
     faro4 = FaroController("Faro4", dmx)
-    print(f"Faro4: {faro4}")
+    led1 = FaroController("LED1", dmx)
 
-def run_main_dmx_function(app):
-    """Wrapper per la funzione principale di gestione della giornata."""
-    with app.app_context():
-        main_dmx_function()
+    # Lista dei device divisi per tipo
+    devices = {
+        "faro": [faro1, faro2, faro3, faro4],
+        "led": [led1]
+    }
+    return devices
 
-def main_dmx_function():
+def main_dmx_function(app):
     """Funzione principale di gestione della giornata.
        aggiorna i valori istante per istante e in base alla fase del giorno"""
+    with app.app_context():
 
-    FREQUENCY = 1/2 # Frequenza di invio dei dati al dmx (44Hz)
+        FREQUENCY = 1/20 # Frequenza di invio dei dati al dmx (44Hz)
 
-    phases = Phase.get_phases() # Carico le fasi dal database
+        phases = Phase.get_phases() # Carico le fasi dal database
 
-    # Inizializzazione
-    inizializzazione()
+        # Inizializzazione
+        devices = inizializzazione()
 
-    while state_manager.is_on():                                # Controllo se il sistema è acceso
-        
-        for phase in phases:
+        while state_manager.is_on():                                # Controllo se il sistema è acceso
+            
+            for phase in phases:
 
-            # Controllo se il sistema è acceso
-            if not state_manager.is_on():
-                break
-
-            for istante in range(0, 2*phase.duration):
-                print(f"Fase: {phase.name} - Istante: {istante} - Durata: {phase.duration}")
-
-                if not state_manager.is_on():                           # Controllo l'evento di stop
+                # Controllo se il sistema è acceso
+                if not state_manager.is_on():
                     break
-                if not pause_event.is_set():                            # Controllo l'evento di pausa
-                    print(f"Programma in pausa nel thread: {threading.current_thread().name}")
-                    pause_event.wait()                                  # Mi metto in attesa finché l'evento di pausa non viene resettato
-                    print(f"Programma ripreso nel thread: {threading.current_thread().name}")
+                istanti_totali = int(phase.duration/FREQUENCY) # Calcolo il numero totale di istanti per la fase
+                for istante in range(0, istanti_totali): # Per ogni fase, aggiorno i valori istante per istante
+                    print(f"Fase: {phase.name} - Istante: {istante} di {istanti_totali} - Tempo: {phase.duration} secondi")
 
-                # Aggiorno i fari in base alla fase
-                for faro in [faro1, faro2, faro3, faro4]:
-                    faro.update(phase, istante, phase.duration)
+                    if not state_manager.is_on():                           # Controllo l'evento di stop
+                        break
+                    if not pause_event.is_set():                            # Controllo l'evento di pausa
+                        print(f"Programma in pausa nel thread: {threading.current_thread().name}")
+                        pause_event.wait()                                  # Mi metto in attesa finché l'evento di pausa non viene resettato
+                        print(f"Programma ripreso nel thread: {threading.current_thread().name}")
 
-                # Aggiorno il DMX
-                dmx.write_channels_on_log(Config.LOG_FILE)
-                
-                # Attendo il tempo di aggiornamento
-                time.sleep(FREQUENCY)
-                            
-        print("Giornata terminata")
+                    # Aggiorno i fari in base alla fase
+                    for faro in devices["faro"]:
+                        faro.update(phase, istante, istanti_totali)
+                    
+                    for led in devices["led"]:
+                        led.update(phase, istante, istanti_totali)
 
-    # Chiusura
-    print("Programma terminato")
-    closing_function()
+                    # Aggiorno il DMX
+                    dmx.write_channels_on_log(Config.LOG_FILE)
+                    
+                    # Attendo il tempo di aggiornamento
+                    time.sleep(FREQUENCY)
+                                
+            print("Giornata terminata")
+
+        # Chiusura
+        print("Programma terminato")
+        closing_function()
 
 def closing_function():
     """Funzione di chiusura del programma."""

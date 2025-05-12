@@ -16,14 +16,14 @@ def create_app():
     from app.routes import main_bp
     from app.services.audio_management import audio_bp
     from app.services.dmx_management import dmx_bp
-    from app.services.devices_management import light_bp
+    from app.services.devices_management import devices_bp
     from app.auth import auth_bp
 
     # Registra i blueprint
     app.register_blueprint(main_bp)
     app.register_blueprint(audio_bp)
     app.register_blueprint(dmx_bp)
-    app.register_blueprint(light_bp)
+    app.register_blueprint(devices_bp)
     app.register_blueprint(auth_bp)
 
     # controllo che il file data.json esista e in caso contrario lo creo

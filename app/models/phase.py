@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 #####################################################################
 # Phase Model
@@ -17,10 +17,8 @@ class Phase(db.Model):
     duration: Mapped[int] = mapped_column(Integer, nullable=False)
     order: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    def __init__(self, name, duration, order) -> None:
-        self.name = name
-        self.duration = duration
-        self.order = order
+    # Relationships one to many with Keyframe
+    keyframes: Mapped[list["Keyframe"]] = relationship("Keyframe", back_populates="phase") # type: ignore
 
     def __repr__(self) -> str:
         return f'<Phase {self.name}>'

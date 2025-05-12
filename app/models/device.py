@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 #####################################################################
 # Device Model
@@ -24,13 +24,8 @@ class Device(db.Model):
     dmx_channels: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[str] = mapped_column(String(80), nullable=False)
 
-    def __init__(self, name, type, subtype, dmx_address, dmx_channels, status) -> None:
-        self.name = name
-        self.type = type
-        self.subtype = subtype
-        self.dmx_address = dmx_address
-        self.dmx_channels = dmx_channels
-        self.status = status
+    # Relationships one to many with Channel
+    channels: Mapped[list["Channel"]] = relationship("Channel", back_populates="device") # type: ignore
 
     def __repr__(self) -> str:
         return f'<Device {self.name}>'

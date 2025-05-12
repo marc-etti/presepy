@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Keyframes Form{% endblock %}
+
+{% block header %}
+    <h1>Keyframes Form</h1>
+{% endblock %}
+
+{% block content %}
+{% if keyframes %}
+    <h2>Modifica Keyframes</h2>
+    <form method="POST" action="{{ url_for('devices.update_keyframe') }}">
+        {% for keyframe in keyframes %}
+            <div class="slider-container">
+                <label for="keyframeID-{{ keyframe.id }}">Keyframe {{ keyframe.description}}:</label>
+                <input type="range" id="keyframeID-{{ keyframe.id }}" name="keyframeID-{{ keyframe.id }}" min="0" max="255" value="{{ keyframe.value }}">
+                <span id="keyframeValue-{{ keyframe.id }}">{{ keyframe.value }}</span>
+            </div>
+        {% endfor %}
+        <input type="hidden" name="device_id" id="device_id" value="{{ device.id }}">
+        <button type="submit">Salva</button>
+        <button type="button" onclick=>Reset</button> 
+    </form>
+{% else %}
+    <h2>Aggiungi nuovo Keyframe</h2>
+    <form method="POST" action="">
+        TODO: Aggiungi i campi per il nuovo keyframe
+    </form>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // Funzione per aggiornare il valore del keyframe
+        function updateKeyframeValue(keyframeId) {
+            const slider = document.getElementById(`keyframe-${keyframeId}`);
+            const valueDisplay = document.getElementById(`keyframeValue-${keyframeId}`);
+            valueDisplay.textContent = slider.value;
+        }
+
+        // Aggiungi un event listener a tutti gli slider
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            slider.addEventListener('input', () => {
+                const keyframeId = slider.id.split('-')[1];
+                updateKeyframeValue(keyframeId);
+            });
+        });
+
+    </script>
+{% endblock %}

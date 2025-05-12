@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Gestione Dispositivi{% endblock %}
+
+{% block styles %}
+    <style>
+        .on {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .off {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+    <h1>Gestione Dispositivi</h1>
+{% endblock %}
+
+{% block content %}
+    {% if devices %}
+    <div class="device-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Sottotipo</th>
+                    <th>Numero di canali DMX</th>
+                    <th>Indirizzi DMX</th>
+                    <th>Stato</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                    <tr>
+                        <td>{{ device.id }}</td>
+                        <td>{{ device.name }}</td>
+                        <td>{{ device.type }}</td>
+                        <td>{{ device.subtype }}</td>
+                        <td>{{ device.dmx_channels }}</td>
+                        <td>
+                            {% for channel in device.channels %}
+                                {{ channel.number }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="{{ device.status }}">{{ device.status }}</td>
+                        <td>
+                            <button onclick="showHideChannels( '{{ device.id }}' )">Mostra</button>
+                            <a href="{{ url_for('devices.keyframes_management', device_id=device.id) }}">Mostra Keyframes</a>
+                        </td>
+                        
+                    </tr>
+<!-- Sotto tabella dei canali --> 
+                    <tr id="channels-{{ device.id }}" 
+                        style="visibility: hidden; display: none;">
+                        <td></td>
+                        <td> 
+                            Canali {{ device.name }}
+                        </td>
+                        <td colspan="7">
+                            <div class="channels-subtable">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Numero Canale</th>
+                                            <th>Tipo Canale</th>
+                                            <th>Valore Default</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for channel in device.channels %}
+                                            <tr>
+                                                <td>{{ channel.number }}</td>
+                                                <td>{{ channel.type }}</td>
+                                                <td>{{ channel.value }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        Nessun dispositivo trovato.
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // Funzione per mostrare/nascondere la tabella dei canali
+        function showHideChannels(deviceId) {
+            var channelsRow = document.getElementById('channels-' + deviceId);
+            var button = event.target;
+            if (channelsRow.style.display === 'none' || channelsRow.style.visibility === 'hidden') {
+                channelsRow.style.display = 'table-row';
+                channelsRow.style.visibility = 'visible';
+                button.innerText = 'Nascondi';
+            } else {
+                channelsRow.style.display = 'none';
+                channelsRow.style.visibility = 'hidden';
+                button.innerText = 'Mostra';
+            }
+        }
+        
+    </script>
+{% endblock %}

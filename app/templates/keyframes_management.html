@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Gestione Keyframes{% endblock %}
+
+{% block header %}
+    <h1>Gestione Keyframes {{device.name}}</h1>
+{% endblock %}
+
+{% block content %}
+
+    <div class="device-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fase</th>
+                    <th>Durata</th>
+                    <th>Ordine</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for phase in phases %}
+                <tr>
+                    <td>{{ phase.name }}</td>
+                    <td>{{ phase.duration }} secondi</td>
+                    <td>{{ phase.order }}</td>
+                    <td>
+                        <button onclick="showHideKeyframes('{{ phase.id }}')">Mostra</button>
+                    </td>
+                </tr>
+                    <tr id="keyframes-{{ phase.id }}"
+                        style="visibility: hidden; display: none;">
+                        <td>Keyframes <br> {{ phase.name }}</td>
+                        <td colspan="3">
+                            <table>
+                                {% for channel in channels %}
+                                    <tr>
+                                        <td>
+                                            Canale DMX: {{ channel.number }} <br>
+                                            Tipo: {{ channel.type }}
+                                        </td>
+
+                                    {% for keyframe in channel.keyframes %}
+                                    {% if keyframe.phase_id == phase.id %}
+                                        <td>
+                                            {{ keyframe.description }} <br>
+                                            Posizione: {{ keyframe.position }} <br>
+                                            Valore: {{ keyframe.value }} <br>
+                                            <a href="{{ url_for('devices.edit_keyframe_form', 
+                                                        device_id=device.id,
+                                                        phase_id=phase.id,
+                                                        position=keyframe.position) }}">
+                                                Modifica
+                                            </a>
+                                        </td>
+                                    {% endif %}
+                                    {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // Funzione per mostrare/nascondere la tabella dei keyframes
+        function showHideKeyframes(phaseId) {
+            var keyframesRow = document.getElementById('keyframes-' + phaseId);
+            var button = event.target;
+            if (keyframesRow.style.display === 'none' || keyframesRow.style.visibility === 'hidden') {
+                keyframesRow.style.display = 'table-row';
+                keyframesRow.style.visibility = 'visible';
+                button.innerText = 'Nascondi';
+            } else {
+                keyframesRow.style.display = 'none';
+                keyframesRow.style.visibility = 'hidden';
+                button.innerText = 'Mostra';
+            }
+        }
+    </script>
+{% endblock %}

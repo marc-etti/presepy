@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 
 #####################################################################
@@ -10,7 +10,7 @@ from sqlalchemy import ForeignKey
 # device_id: Foreign key referencing the device to which the channel belongs.
 # number: Number of the channel within the device. (1 to 512)
 # type: Type of the channel (e.g., led_red, led_green).
-# value: Current value of the channel (0-255).
+# value: Default value of the channel (0-255).
 
 
 class Channel(db.Model):
@@ -21,11 +21,11 @@ class Channel(db.Model):
     type: Mapped[str] = mapped_column(String(80), nullable=False)
     value: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    def __init__(self, device_id, number, type, value) -> None:
-        self.device_id = device_id
-        self.number = number
-        self.type = type
-        self.value = value
+    # Relationships many to one with Device
+    device: Mapped["Device"] = relationship("Device", back_populates="channels") # type: ignore
+
+    # Relationships one to many with Keyframe
+    keyframes: Mapped[list["Keyframe"]] = relationship("Keyframe", back_populates="channel") # type: ignore
 
     def __repr__(self) -> str:
         return f'<Channel {self.number} of Device {self.device_id}>'

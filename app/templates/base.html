@@ -28,6 +28,9 @@
             <li>
                 <a href="{{ url_for('main.light_management') }}" {% if request.endpoint == 'main.light_management' %}class="current"{% endif %}>Gestione Luci</a>
             </li>
+            <li>
+                <a href="{{ url_for('main.devices_management') }}" {% if request.endpoint == 'main.devices_management' %}class="current"{% endif %}>Gestione Dispositivi</a>
+            </li>
             {% if current_user.is_authenticated %}
                 <li>
                     <a href="{{ url_for('auth.profile') }}" {% if request.endpoint == 'auth.profile' %}class="current"{% endif %}>{{ current_user.username }}</a>

@@ -68,7 +68,7 @@ def edit_keyframe_form(device_id, phase_id, position):
 def update_keyframe():
     form_data = request.form
     for key, value in form_data.items():
-        if key.startswith('keyframeID-'):
+        if key.startswith('slider-'):
             keyframe_id = int(key.split('-')[1])
             keyframe = Keyframe.query.get(keyframe_id)
             if keyframe:

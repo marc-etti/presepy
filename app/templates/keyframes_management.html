@@ -25,13 +25,24 @@
                     <td>{{ phase.duration }} secondi</td>
                     <td>{{ phase.order }}</td>
                     <td>
-                        <button onclick="showHideKeyframes('{{ phase.id }}')">Mostra</button>
+                        <div class="table-button-container">
+                            <button onclick="showHideKeyframes('{{ phase.id }}')">Mostra</button>
+                        </div>
                     </td>
                 </tr>
                     <tr id="keyframes-{{ phase.id }}"
                         style="visibility: hidden; display: none;">
-                        <td>Keyframes <br> {{ phase.name }}</td>
-                        <td colspan="2">
+                        <td>
+                            <div class="table-button-container">
+                                <h2>
+                                    Keyframes <br> {{ phase.name }}
+                                </h2>
+                                <a href="{{ url_for('devices.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
+                                    <button>Aggiungi<br>Keyframe</button>
+                                </a>
+                            </div>
+                        </td>
+                        <td colspan="3">
                             <table>
                                 {% for channel in channels %}
                                     <tr>
@@ -59,15 +70,15 @@
                                 {% endfor %}
                             </table>
                         </td>
-                        <td>
-                            <a href="{{ url_for('devices.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
-                                Aggiungi Keyframe
-                            </a>
-                        </td>
                     </tr>
             {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="button-container">
+        <button onclick=goBack()>
+            Torna ai dispositivi
+        </button>
     </div>
 {% endblock %}
 
@@ -86,6 +97,10 @@
                 keyframesRow.style.visibility = 'hidden';
                 button.innerText = 'Mostra';
             }
+        }
+        // Funzione per tornare alla pagina dei dispositivi
+        function goBack() {
+            window.location.href = "{{ url_for('main.devices_management') }}";
         }
     </script>
 {% endblock %}

@@ -124,18 +124,6 @@
         .keyframes-form button[type="button"]:hover {
             background-color: #c0392b;
         }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .keyframes-form {
-                padding: 1.5rem;
-                margin: 1rem;
-            }
-            
-            .slider-container {
-                padding: 0.8rem;
-            }
-        }
     </style>
 {% endblock %}
 
@@ -159,6 +147,7 @@
         <input type="hidden" name="device_id" id="device_id" value="{{ device.id }}">
         <button type="submit">Salva</button>
         <button type="button" onclick=resetSliders()>Reset</button> 
+        <button type="button" onclick=goBack()>Annulla</button>
     </form>
 {% elif channels %}
     <h2>Aggiungi nuovo Keyframe alla fase {{phase.name}}</h2>
@@ -183,6 +172,7 @@
         <input type="hidden" name="phase_id" id="phase_id" value="{{ phase.id }}">
         <button type="submit">Aggiungi Keyframe</button>
         <button type="button" onclick=resetSliders()>Reset</button>
+        <button type="button" onclick=goBack()>Annulla</button>
     </form>
 {% else %}
     <h2>Parametri non disponibili</h2>
@@ -190,6 +180,14 @@
 {% endif %}
 </div>
 {% endblock %}
+
+    {% if keyframes %}
+        {% set sliderIDs = keyframes|map(attribute='id')|list %}
+    {% elif channels %}
+        {% set sliderIDs = channels|map(attribute='id')|list %}
+    {% else %}
+        {% set sliderIDs = [] %}
+    {% endif %}
 
 {% block scripts %}
     <script>
@@ -200,14 +198,6 @@
             valueDisplay.textContent = slider.value;
         }
 
-    {% if keyframes %}
-        {% set sliderIDs = [keyframes|map(attribute='id')|join(', ')] %}
-    {% elif channels %}
-        {% set sliderIDs = [channels|map(attribute='id')|join(', ')] %}
-    {% else %}
-        {% set sliderIDs = [] %}
-    {% endif %}
-
         // Aggiungi un event listener a tutti gli slider
         {% for id in sliderIDs %}
             document.getElementById(`slider-{{ id }}`).addEventListener('input', function() {
@@ -217,10 +207,15 @@
 
         // Funzione per resettare gli slider
         function resetSliders() {
-            {% for id in sliderIDs %}
-                document.getElementById(`slider-{{ id }}`).value = document.getElementById(`resetSlider-{{ id }}`).value;
-                updateSlidersValue({{ id }});
-            {% endfor %}
+        {% for id in sliderIDs %}
+            document.getElementById(`slider-{{ id }}`).value = document.getElementById(`resetSlider-{{ id }}`).value;
+            updateSlidersValue({{ id }});
+        {% endfor %}
+        }
+
+        // Funzione per tornare indietro
+        function goBack() {
+            window.history.back();
         }
 
     </script>

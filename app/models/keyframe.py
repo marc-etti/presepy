@@ -37,3 +37,28 @@ class Keyframe(db.Model):
         """
         # TODO: implement control logic to update the keyframe
         db.session.commit()
+
+    def add(self) -> None:
+        """
+        Add the keyframe to the database.
+        """
+        # Controllo che il valore sia compreso tra 0 e 255
+        if not (0 <= self.value <= 255):
+            raise ValueError(f"Value {self.value} is out of range (0-255)")
+        # Controllo che la posizione sia compresa tra 0 e 100
+        if not (0 <= self.position <= 100):
+            raise ValueError(f"Position {self.position} is out of range (0-100)")
+        # Controllo che la descrizione non sia vuota
+        if not self.description:
+            raise ValueError("Description cannot be empty")
+        # Controllo che non esista già un keyframe nella stessa posizione
+        existing_keyframe = Keyframe.query.filter_by(
+            channel_id=self.channel_id,
+            phase_id=self.phase_id,
+            position=self.position
+        ).first()
+        if existing_keyframe:
+            raise ValueError(f"Keyframe already exists at position {self.position} for channel {self.channel_id} in phase {self.phase_id}")
+
+        db.session.add(self)
+        db.session.commit()

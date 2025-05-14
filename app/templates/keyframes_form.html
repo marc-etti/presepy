@@ -2,18 +2,156 @@
 
 {% block title %}Keyframes Form{% endblock %}
 
+{% block styles %}
+    <style>
+        /* Stile generale del form */
+        .keyframes-form {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .keyframes-form h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        /* Contenitore degli slider */
+        .slider-container {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .slider-container:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Etichette */
+        .slider-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #34495e;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        /* Stile degli input range */
+        .slider-container input[type="range"] {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e0e0e0;
+            border-radius: 4px;
+            outline: none;
+            margin: 0.5rem 0;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover {
+            background: #2980b9;
+        }
+
+        /* Valore dello slider */
+        .slider-container span {
+            display: inline-block;
+            margin-left: 0.5rem;
+            min-width: 3rem;
+            text-align: center;
+            padding: 0.2rem 0.5rem;
+            background-color: #3498db;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        /* Contenitore del testo */
+        .text-container {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Pulsanti */
+        .keyframes-form button {
+            padding: 0.6rem 1.2rem;
+            margin-right: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .keyframes-form button[type="submit"] {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .keyframes-form button[type="submit"]:hover {
+            background-color: #27ae60;
+        }
+
+        .keyframes-form button[type="button"] {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .keyframes-form button[type="button"]:hover {
+            background-color: #c0392b;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .keyframes-form {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .slider-container {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block header %}
     <h1>Keyframes Form</h1>
 {% endblock %}
 
 {% block content %}
+<div class="keyframes-form">
 {% if keyframes %}
     <h2>Modifica Keyframes</h2>
     <form method="POST" action="{{ url_for('devices.update_keyframe') }}">
         {% for keyframe in keyframes %}
             <div class="slider-container">
                 <label for="slider-{{ keyframe.id }}">Keyframe {{ keyframe.description}}:</label>
-                <input type="range" id="slider-{{ keyframe.id }}" name="slider-{{ keyframe.id }}" min="0" max="255" value="{{ keyframe.value }}">
+                <input type="range" id="slider-{{ keyframe.id }}" name="slider-{{ keyframe.id }}" min="0" max="255" value="{{ keyframe.value }}" step="1">
                 <input type="hidden" id="resetSlider-{{ keyframe.id }}" name="resetSlider-{{ keyframe.id }}" value="{{ keyframe.value }}">
                 <span id="showSliderValue-{{ keyframe.id }}">{{ keyframe.value }}</span>
             </div>
@@ -22,12 +160,35 @@
         <button type="submit">Salva</button>
         <button type="button" onclick=resetSliders()>Reset</button> 
     </form>
-{% else %}
-    <h2>Aggiungi nuovo Keyframe</h2>
-    <form method="POST" action="">
-        TODO: Aggiungi i campi per il nuovo keyframe
+{% elif channels %}
+    <h2>Aggiungi nuovo Keyframe alla fase {{phase.name}}</h2>
+    <form method="POST" action="{{ url_for('devices.add_keyframe') }}">
+        {% for channel in channels %}
+            <div class="text-container">
+                <label for="description-{{ channel.id }}">Descrizione:</label>
+                <input type="text" id="description-{{ channel.id }}" name="description-{{ channel.id }}" value="" placeholder="Descrizione del keyframe" required> 
+            </div>
+            <div class="slider-container">
+                <label for="slider-{{ channel.id }}">Valore canale {{ channel.number}}</label>
+                <input type="range" id="slider-{{ channel.id }}" name="slider-{{ channel.id }}" min="0" max="255" value="0" step="1">
+                <input type="hidden" id="resetSlider-{{ channel.id }}" name="resetSlider-{{ channel.id }}" value="0">
+                <span id="showSliderValue-{{ channel.id }}">0</span>
+            </div>
+        {% endfor %}
+            <div class="text-container">
+                <label for="position">Posizione (0-100):</label>
+                <input type="number" id="position" name="position" min="0" max="100" step="1" value="0">
+            </div>
+        <input type="hidden" name="device_id" id="device_id" value="{{ device.id }}">
+        <input type="hidden" name="phase_id" id="phase_id" value="{{ phase.id }}">
+        <button type="submit">Aggiungi Keyframe</button>
+        <button type="button" onclick=resetSliders()>Reset</button>
     </form>
+{% else %}
+    <h2>Parametri non disponibili</h2>
+    <p>Non sono stati trovati keyframes o canali per il dispositivo selezionato.</p>
 {% endif %}
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -39,18 +200,26 @@
             valueDisplay.textContent = slider.value;
         }
 
+    {% if keyframes %}
+        {% set sliderIDs = [keyframes|map(attribute='id')|join(', ')] %}
+    {% elif channels %}
+        {% set sliderIDs = [channels|map(attribute='id')|join(', ')] %}
+    {% else %}
+        {% set sliderIDs = [] %}
+    {% endif %}
+
         // Aggiungi un event listener a tutti gli slider
-        {% for keyframe in keyframes %}
-            document.getElementById(`slider-{{ keyframe.id }}`).addEventListener('input', function() {
-                updateSlidersValue({{ keyframe.id }});
+        {% for id in sliderIDs %}
+            document.getElementById(`slider-{{ id }}`).addEventListener('input', function() {
+                updateSlidersValue({{ id }});
             });
         {% endfor %}
 
         // Funzione per resettare gli slider
         function resetSliders() {
-            {% for keyframe in keyframes %}
-                document.getElementById(`slider-{{ keyframe.id }}`).value = document.getElementById(`resetSlider-{{ keyframe.id }}`).value;
-                updateSlidersValue({{ keyframe.id }});
+            {% for id in sliderIDs %}
+                document.getElementById(`slider-{{ id }}`).value = document.getElementById(`resetSlider-{{ id }}`).value;
+                updateSlidersValue({{ id }});
             {% endfor %}
         }
 

@@ -31,7 +31,7 @@
                     <tr id="keyframes-{{ phase.id }}"
                         style="visibility: hidden; display: none;">
                         <td>Keyframes <br> {{ phase.name }}</td>
-                        <td colspan="3">
+                        <td colspan="2">
                             <table>
                                 {% for channel in channels %}
                                     <tr>
@@ -58,6 +58,11 @@
                                     </tr>
                                 {% endfor %}
                             </table>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('devices.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
+                                Aggiungi Keyframe
+                            </a>
                         </td>
                     </tr>
             {% endfor %}

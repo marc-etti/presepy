@@ -66,14 +66,62 @@ def edit_keyframe_form(device_id, phase_id, position):
 
 @devices_bp.route('/update_keyframe', methods=['POST'])
 def update_keyframe():
+    """
+    Aggiorna un keyframe esistente nel database.
+    """
     form_data = request.form
     for key, value in form_data.items():
         if key.startswith('slider-'):
             keyframe_id = int(key.split('-')[1])
             keyframe = Keyframe.query.get(keyframe_id)
             if keyframe:
-                keyframe.value = value
+                keyframe.value = int(value)
                 keyframe.update()
     device_id = int(form_data.get('device_id'))
     flash('Keyframe updated successfully', 'success')
+    return redirect(url_for('devices.keyframes_management', device_id=device_id))
+
+@devices_bp.route('/add_keyframe_form/<int:device_id>/<int:phase_id>', methods=['GET'])
+def add_keyframe_form(device_id, phase_id):
+    """
+    Restituisce il form per aggiungere un keyframe.
+    """
+    device = Device.query.filter_by(id=device_id).first()
+    channels = (
+        Channel.query
+        .filter_by(device_id=device_id)
+        .order_by(Channel.number)
+        .all()
+    )
+    phase = Phase.query.filter_by(id=phase_id).first()
+    return render_template('keyframes_form.html', device=device, channels=channels, phase=phase)
+
+@devices_bp.route('/add_keyframe', methods=['POST'])
+def add_keyframe():
+    """
+    Aggiunge un nuovo keyframe al database.
+    """
+    form_data = request.form
+    device_id = int(form_data.get('device_id'))
+    phase_id = int(form_data.get('phase_id'))
+    position = int(form_data.get('position'))
+    
+    for key, value in form_data.items():
+        if key.startswith('slider-'):
+            channel_id = int(key.split('-')[1])
+            description = form_data.get(f'description-{channel_id}')
+            new_keyframe = Keyframe(
+                channel_id=channel_id,
+                phase_id=phase_id,
+                description=description,
+                position=position,
+                value=int(value)
+            )
+            try:
+                new_keyframe.add()
+            except ValueError as e:
+                flash(str(e), 'error')
+                return redirect(url_for('devices.keyframes_management', device_id=device_id))
+
+    flash('Keyframe aggiunto correttamente', 'success')
     return redirect(url_for('devices.keyframes_management', device_id=device_id))

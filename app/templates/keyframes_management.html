@@ -33,14 +33,9 @@
                     <tr id="keyframes-{{ phase.id }}"
                         style="visibility: hidden; display: none;">
                         <td>
-                            <div class="table-button-container">
-                                <h2>
-                                    Keyframes <br> {{ phase.name }}
-                                </h2>
-                                <a href="{{ url_for('devices.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
-                                    <button>Aggiungi<br>Keyframe</button>
-                                </a>
-                            </div>
+                            <h2>
+                                Keyframes <br> {{ phase.name }}
+                            </h2>
                         </td>
                         <td colspan="3">
                             <table>
@@ -57,17 +52,34 @@
                                             {{ keyframe.description }} <br>
                                             Posizione: {{ keyframe.position }} <br>
                                             Valore: {{ keyframe.value }} <br>
-                                            <a href="{{ url_for('devices.edit_keyframe_form', 
-                                                        device_id=device.id,
-                                                        phase_id=phase.id,
-                                                        position=keyframe.position) }}">
-                                                Modifica
-                                            </a>
                                         </td>
                                     {% endif %}
                                     {% endfor %}
                                     </tr>
                                 {% endfor %}
+                                {% if channels[0] %}
+                                <tr>
+                                    <td>
+                                        <div class="table-button-container">
+                                            <a href="{{ url_for('devices.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
+                                                <button>Aggiungi<br>Keyframe</button>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    {% for keyframe in channels[0].keyframes %}
+                                    {% if keyframe.phase_id == phase.id %}
+                                        <td>
+                                            <div class="table-button-container">
+                                                <a href="{{ url_for('devices.edit_keyframe_form', device_id=device.id, phase_id=phase.id, position=keyframe.position) }}">
+                                                    <button class="yellow-btn">Modifica</button>
+                                                </a>
+                                                    <button class="red-btn" onclick="confirmDelete( {{ device.id }}, {{ phase.id }}, {{ keyframe.position }} )">Elimina</button>
+                                            </div>
+                                        </td>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                {% endif %}
                             </table>
                         </td>
                     </tr>
@@ -80,6 +92,13 @@
             Torna ai dispositivi
         </button>
     </div>
+
+    <form id="delete-keyframe-form" method="POST" action="{{ url_for('devices.delete_keyframe') }}">
+        <input type="hidden" name="device_id" id="device_id">
+        <input type="hidden" name="phase_id" id="phase_id">
+        <input type="hidden" name="position" id="position">
+    </form>
+
 {% endblock %}
 
 {% block scripts %}
@@ -101,6 +120,22 @@
         // Funzione per tornare alla pagina dei dispositivi
         function goBack() {
             window.location.href = "{{ url_for('main.devices_management') }}";
+        }
+
+        // Funzione per chiedere la conferma prima di eliminare un keyframe
+        function confirmDelete(deviceId, phaseId, position) {
+            // Imposta i valori nei campi nascosti del form di eliminazione
+            document.getElementById('device_id').value = deviceId;
+            document.getElementById('phase_id').value = phaseId;
+            document.getElementById('position').value = position;
+            // Mostra un messaggio di conferma
+            if (confirm("Sei sicuro di voler eliminare questo keyframe?")) {
+                // Se l'utente conferma, invia il form
+                document.getElementById('delete-keyframe-form').submit();
+            } else {
+                // Se l'utente annulla, non fare nulla
+                return false;
+            }
         }
     </script>
 {% endblock %}

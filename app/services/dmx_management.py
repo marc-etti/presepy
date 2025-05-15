@@ -16,12 +16,6 @@ thread = None
 # Creazione del Blueprint
 dmx_bp = Blueprint('dmx', __name__)
 
-@dmx_bp.route('/initialize_DMX', methods=['POST'])
-def initialize_DMX():
-    """Inizializza l'interfaccia DMX."""
-    inizializzazione()
-    return jsonify({'message': 'Interfaccia DMX inizializzata'})
-
 @dmx_bp.route('/reset_DMX', methods=['POST'])
 def reset_DMX():
     """Resetta i valori dei canali DMX."""

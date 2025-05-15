@@ -18,7 +18,7 @@ class Keyframe(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     channel_id: Mapped[int] = mapped_column(ForeignKey('channel.id'), nullable=False)
     phase_id: Mapped[int] = mapped_column(ForeignKey('phase.id'), nullable=False)
-    description: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    description: Mapped[str] = mapped_column(String(80), nullable=False)
     position: Mapped[int] = mapped_column(Integer, nullable=False)
     value: Mapped[int] = mapped_column(Integer, nullable=False)
 
@@ -62,3 +62,12 @@ class Keyframe(db.Model):
 
         db.session.add(self)
         db.session.commit()
+
+    def delete(self) -> None:
+        """
+        Delete the keyframe from the database.
+        """
+        db.session.delete(self)
+        db.session.commit()
+
+

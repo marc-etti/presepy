@@ -49,8 +49,8 @@ def edit_keyframe_form(device_id, phase_id, position):
     
     return render_template('keyframes_form.html', device=device, keyframes=keyframes)
 
-@devices_bp.route('/update_keyframe', methods=['POST'])
-def update_keyframe():
+@devices_bp.route('/edit_keyframe', methods=['POST'])
+def edit_keyframe():
     """
     Aggiorna un keyframe esistente nel database.
     """
@@ -58,9 +58,11 @@ def update_keyframe():
     for key, value in form_data.items():
         if key.startswith('slider-'):
             keyframe_id = int(key.split('-')[1])
+            description = form_data.get(f'description-{keyframe_id}')
             keyframe = Keyframe.query.get(keyframe_id)
             if keyframe:
                 keyframe.value = int(value)
+                keyframe.description = description
                 keyframe.update()
     device_id = int(form_data.get('device_id'))
     flash('Keyframe updated successfully', 'success')
@@ -91,22 +93,66 @@ def add_keyframe():
     phase_id = int(form_data.get('phase_id'))
     position = int(form_data.get('position'))
     
+    new_keyframes = []
     for key, value in form_data.items():
         if key.startswith('slider-'):
             channel_id = int(key.split('-')[1])
             description = form_data.get(f'description-{channel_id}')
-            new_keyframe = Keyframe(
-                channel_id=channel_id,
-                phase_id=phase_id,
-                description=description,
-                position=position,
-                value=int(value)
+            new_keyframes.append(
+                Keyframe(
+                    channel_id=channel_id,
+                    phase_id=phase_id,
+                    description=description,
+                    position=position,
+                    value=int(value)
+                )
             )
-            try:
-                new_keyframe.add()
-            except ValueError as e:
-                flash(str(e), 'error')
-                return redirect(url_for('devices.keyframes_management', device_id=device_id))
-
+    # Check if the number of keyframes matches the number of channels
+    device = Device.query.filter_by(id=device_id).first()
+    channels_ids = [channel.id for channel in device.channels]
+    if len(new_keyframes) != len(channels_ids):
+        flash('Il numero di keyframe non corrisponde al numero di canali', 'error')
+        return redirect(url_for('devices.keyframes_management', device_id=device_id))
+    for keyframe in new_keyframes:
+        try:
+            keyframe.add()
+        except Exception as e:
+            flash(f'Error adding keyframe: {str(e)}', 'error')
+            return redirect(url_for('devices.keyframes_management', device_id=device_id))
+            
     flash('Keyframe aggiunto correttamente', 'success')
+    return redirect(url_for('devices.keyframes_management', device_id=device_id))
+
+@devices_bp.route('/delete_keyframe', methods=['POST'])
+def delete_keyframe():
+    """
+    Elimina un keyframe esistente dal database.
+    """
+    form_data = request.form
+    device_id = int(form_data.get('device_id'))
+    phase_id = int(form_data.get('phase_id'))
+    position = int(form_data.get('position'))
+    
+    device = Device.query.filter_by(id=device_id).first()
+
+    channels_ids = [channel.id for channel in device.channels]
+
+    keyframes = Keyframe.query.filter_by(
+        phase_id=phase_id,
+        position=position
+    ).filter(Keyframe.channel_id.in_(channels_ids)).all()
+
+    if len(keyframes) != len(channels_ids):
+        flash('Il numero di keyframe da eliminare non corrisponde al numero di canali', 'error')
+        return redirect(url_for('devices.keyframes_management', device_id=device_id))
+    
+    try:
+        for keyframe in keyframes:
+            keyframe.delete()
+    except Exception as e:
+        flash(f'Error deleting keyframe: {str(e)}', 'error')
+        return redirect(url_for('devices.keyframes_management', device_id=device_id))
+
+    flash('Keyframe deleted successfully', 'success')
+
     return redirect(url_for('devices.keyframes_management', device_id=device_id))

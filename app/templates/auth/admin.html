@@ -9,9 +9,8 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Benvenuto {{ current_user.username }} </h2>
-
-    <h2>Gestione Utenti</h2>
+<h2>Gestione Utenti</h2>
+<div class="device-table">
     <table>
         <thead>
             <tr>
@@ -28,19 +27,22 @@
                     <td>{{ 'Admin' if user.is_admin else 'Utente' }}</td>
                     <td>{{ 'Attivo' if user.is_active else 'Disattivato' }}</td>
                     <td>
+                        <div class="table-button-container">
                         {% if user.is_active %}
                             <form action="{{ url_for('auth.deactivate') }}" method="post" style="display:inline;">
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button type="submit">Disattiva</button>
+                                <button class="red-btn" type="submit">Disattiva</button>
                             </form>
                         {% else %}
                             <form action="{{ url_for('auth.activate') }}" method="post" style="display:inline;">
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button type="submit">Attiva</button>
+                                <button class="green-btn" type="submit">Attiva</button>
                             </form>
                         {% endif %}
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
     </table>
+</div>
 {% endblock %}

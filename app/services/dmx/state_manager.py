@@ -1,4 +1,3 @@
-import os, json
 from config import Config
 from threading import Event
 

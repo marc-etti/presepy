@@ -23,6 +23,14 @@
             font-weight: 600;
         }
 
+        .keyframes-form h3 {
+            color: #34495e;
+            text-align: left;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
         /* Contenitore degli slider */
         .slider-container {
             margin-bottom: 1.5rem;
@@ -124,6 +132,25 @@
         .keyframes-form button[type="button"]:hover {
             background-color: #c0392b;
         }
+
+        .keyframes-form input[type="text"] {
+            width: 90%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: #34495e;
+        }
+        .keyframes-form input[type="number"] {
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: #34495e;
+        }
+        
     </style>
 {% endblock %}
 
@@ -135,10 +162,17 @@
 <div class="keyframes-form">
 {% if keyframes %}
     <h2>Modifica Keyframes</h2>
-    <form method="POST" action="{{ url_for('devices.update_keyframe') }}">
+    <h3>
+        Dispositivo: {{ device.name }} <br>
+        Posizione: {{ keyframes[0].position }} <br>
+    </h3>
+
+    <form method="POST" action="{{ url_for('devices.edit_keyframe') }}">
         {% for keyframe in keyframes %}
             <div class="slider-container">
-                <label for="slider-{{ keyframe.id }}">Keyframe {{ keyframe.description}}:</label>
+                <label for="description-{{ keyframe.id }}">Descrizione:</label>
+                <input type="text" id="description-{{ keyframe.id }}" name="description-{{ keyframe.id }}" value="{{ keyframe.description }}" placeholder="Descrizione del keyframe" required>
+                <label for="slider-{{ keyframe.id }}">Canale: {{ keyframe.channel_id}}</label>
                 <input type="range" id="slider-{{ keyframe.id }}" name="slider-{{ keyframe.id }}" min="0" max="255" value="{{ keyframe.value }}" step="1">
                 <input type="hidden" id="resetSlider-{{ keyframe.id }}" name="resetSlider-{{ keyframe.id }}" value="{{ keyframe.value }}">
                 <span id="showSliderValue-{{ keyframe.id }}">{{ keyframe.value }}</span>
@@ -150,7 +184,11 @@
         <button type="button" onclick=goBack()>Annulla</button>
     </form>
 {% elif channels %}
-    <h2>Aggiungi nuovo Keyframe alla fase {{phase.name}}</h2>
+    <h2>Aggiungi nuovo Keyframe</h2>
+    <h3>
+        Dispositivo: {{ device.name }} <br>
+        Fase: {{ phase.name }} <br>
+    </h3>
     <form method="POST" action="{{ url_for('devices.add_keyframe') }}">
         {% for channel in channels %}
             <div class="text-container">

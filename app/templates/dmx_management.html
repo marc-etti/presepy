@@ -7,31 +7,31 @@
 {% endblock %}
 
 {% block content %}
-    <p>Stato: <span id="is_on"> . . . </span></p>
-    <p>Fase corrente: <span id="current_phase_box"> . . . </span></p>
-    <p>Messaggio: <span id="message_box"> . . . </span></p>
-    <div class="button-container">
-        <button class="button" onclick="initialize()">Inizializza</button>
-        <button class="button" onclick="reset()">Reset</button>
-        <button class="button" onclick="stampa()">Stampa</button>
-        <br>
-        <button class="button" onclick="startLoop()">Avvia Loop</button>
-        <button class="button" onclick="stopLoop()">Ferma Loop</button>
-        <br>
-        <button class="button" onclick="pauseDMX()">Pausa</button>
-        <button class="button" onclick="resumeDMX()">Riprendi</button>        
+<div class="dmx-div">
+    <div class="dmx-status-div">    
+        <p>Stato: <span id="is_on"> . . . </span></p>
+        <p>Fase corrente: <span id="current_phase_box"> . . . </span></p>
+        <p>Messaggio: <span id="message_box"> . . . </span></p>
+    </div>   
+    <div>
+        <div class="btn-div">
+            <button class="button" onclick="startLoop()">Avvia Loop</button>
+            <button class="button" onclick="stopLoop()">Ferma Loop</button>
+        </div>    
+        <div class="btn-div">
+            <button class="button" onclick="pauseDMX()">Pausa</button>
+            <button class="button" onclick="resumeDMX()">Riprendi</button>
+        </div>
+        <div class="btn-div">
+            <button class="button" onclick="reset()">Reset</button>
+            <button class="button" onclick="stampa()">Stampa</button>
+        </div>
     </div>
+</div>  
 {% endblock %}
 
 {% block scripts %}
 <script>
-    // Inizializza il sistema DMX
-    async function initialize() {
-        const response = await fetch('initialize_DMX', { method: 'POST' });
-        const data = await response.json();
-        document.getElementById('message_box').textContent = data.message;
-    }
-
     // Resetta il sistema DMX
     async function reset() {
         const response = await fetch('reset_DMX', { method: 'POST' });

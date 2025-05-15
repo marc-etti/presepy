@@ -37,16 +37,20 @@
                         <a href="{{ url_for('auth.admin') }}" {% if request.endpoint == 'auth.admin' %}class="current"{% endif %}>Pannello Admin</a>
                     </li>
                 {% endif %}
+                <div class="onRight">
                 <li>
                     <a href="{{ url_for('auth.logout') }}">Logout</a>
                 </li>
+                </div>
             {% else %}
+                <div class="onRight">
                 <li>
                     <a href="{{ url_for('auth.login') }}" {% if request.endpoint == 'auth.login' %}class="current"{% endif %}>Login</a>
                 </li>
                 <li>
                     <a href="{{ url_for('auth.register') }}" {% if request.endpoint == 'auth.register' %}class="current"{% endif %}>Registrati</a>
                 </li>
+                </div>
             {% endif %}
         </ul>
     </nav>

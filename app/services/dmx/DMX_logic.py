@@ -51,7 +51,7 @@ def main_dmx_function(app):
         while state_manager.is_on():                                # Controllo se il sistema è acceso
             
             for phase in phases:
-
+                state_manager.set_phase(phase.name)                 # Imposto la fase corrente
                 # Controllo se il sistema è acceso
                 if not state_manager.is_on():
                     break

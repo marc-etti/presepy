@@ -79,9 +79,4 @@ def get_current_status():
     return jsonify({'current_phase': state_manager.get_phase(), 'is_on': state_manager.is_on()})
 #TODO: usare la variabile is_on per colorare il bottone di start/stop
 
-@dmx_bp.route('/get_devices_info', methods=['GET'])
-def get_devices_info():
-    """Restituisce le informazioni sui dispositivi DMX."""
-    return jsonify(state_manager.get_devices_info())
-
 #TODO: capire se è meglio fermare il ciclo con una variabile globale o con un evento

@@ -10,7 +10,7 @@
     <p>Stato: <span id="is_on"> . . . </span></p>
     <p>Fase corrente: <span id="current_phase_box"> . . . </span></p>
     <p>Messaggio: <span id="message_box"> . . . </span></p>
-    <div>
+    <div class="button-container">
         <button class="button" onclick="initialize()">Inizializza</button>
         <button class="button" onclick="reset()">Reset</button>
         <button class="button" onclick="stampa()">Stampa</button>
@@ -20,12 +20,6 @@
         <br>
         <button class="button" onclick="pauseDMX()">Pausa</button>
         <button class="button" onclick="resumeDMX()">Riprendi</button>        
-    </div>
-    <div>
-        <button class="button" onclick="getDevicesInfo()">Info Dispositivi</button>
-        <div id="devices_info">
-            . . .
-        </div>
     </div>
 {% endblock %}
 
@@ -93,52 +87,5 @@
     
     // Aggiorna la fase corrente ogni 5 secondi
     setInterval(getCurrentStatus, 5000);
-
-    // Ottiene le informazioni sui dispositivi
-    async function getDevicesInfo() {
-        const response = await fetch('get_devices_info');
-        const data = await response.json();
-        document.getElementById('message_box').textContent = data.message;
-        document.getElementById('devices_info').innerHTML = jsonToTable(data).outerHTML;
-    }
-
-    function jsonToTable(json) {
-        // Controlla se il JSON è un array di oggetti
-        if (!Array.isArray(json)) {
-            throw new Error('Il formato del JSON non è un array di oggetti.');
-        }
-    
-        // Crea la tabella
-        let table = document.createElement('table');
-        table.border = 1;
-    
-        let thead = document.createElement('thead');
-        let tbody = document.createElement('tbody');
-    
-        // Intestazioni della tabella
-        let headerRow = document.createElement('tr');
-        Object.keys(json[0]).forEach(key => {
-            let th = document.createElement('th');
-            th.textContent = key;
-            headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-    
-        // Righe del corpo della tabella
-        json.forEach(item => {
-            let row = document.createElement('tr');
-            Object.values(item).forEach(value => {
-                let td = document.createElement('td');
-                td.textContent = value;
-                row.appendChild(td);
-            });
-            tbody.appendChild(row);
-        });
-        table.appendChild(tbody);
-    
-        return table;
-    }
-
 </script>
 {% endblock %}

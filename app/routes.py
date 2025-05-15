@@ -21,10 +21,6 @@ def dmx_management():
 def audio_management():
     return render_template('audio_management.html')
 
-@main_bp.route('/light_management')
-def light_management():
-    return render_template('light_management.html')
-
 @main_bp.route('/devices_management/', methods=['GET', 'POST'])
 def devices_management():
     devices = (

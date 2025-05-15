@@ -10,8 +10,12 @@ body {
 
 main {
     flex: 1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff; /* Colore di sfondo chiaro */
+    color: #000000; /* Colore del testo */
 }
 
+/* Stile per la barra di navigazione principale*/
 .base-nav ul {
     list-style-type: none;
     margin: 0;

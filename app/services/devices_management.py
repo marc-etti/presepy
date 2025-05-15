@@ -1,27 +1,12 @@
 from config import Config
 
-from flask import Blueprint, jsonify, render_template, flash, request, redirect, url_for
+from flask import Blueprint, render_template, flash, request, redirect, url_for
 
 from sqlalchemy.orm import joinedload
 from app.models import Device, Channel, Phase, Keyframe
 
-from app.services.devices_utils.lights_utils import get_lights
-
 # Creazione del Blueprint
 devices_bp = Blueprint('devices', __name__)
-
-@devices_bp.route('/get_lights_info', methods=['GET'])
-def get_lights_info():
-    lights = get_lights()
-    return jsonify(lights)
-
-@devices_bp.route('/get_devices_info', methods=['GET'])
-def get_devices_info():
-    """
-    Restituisce tutti i dispositivi presenti nel database.
-    """
-    devices = Device.query.all()
-    return render_template('devices_management.html', devices=devices)
 
 @devices_bp.route('/keyframes_management/<int:device_id>', methods=['GET', 'POST'])
 def keyframes_management(device_id):

@@ -26,11 +26,6 @@ def create_app():
     app.register_blueprint(devices_bp)
     app.register_blueprint(auth_bp)
 
-    # controllo che il file data.json esista e in caso contrario lo creo
-    if not os.path.exists(app.config['JSON_FILE']):
-        with open(app.config['JSON_FILE'], 'w') as file:
-            file.write('{devices_info: []}')
-
     # Inizializza SQLAlchemy
     db.init_app(app)
     app.cli.add_command(init_db_command)

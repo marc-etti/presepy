@@ -55,11 +55,18 @@
                             <a href="{{ url_for('devices.keyframes_management', device_id=device.id) }}">
                                 <button>Mostra<br>Keyframes</button>
                             </a>
+                            <a href="{{ url_for('devices.turn_on_off_device', device_id=device.id) }}">
+                                {% if device.status == 'on' %}
+                                    <button class="red-btn">Spegni<br>Dispositivo</button>
+                                {% else %}
+                                    <button class="green-btn">Accendi<br>Dispositivo</button>
+                                {% endif %}
+                            </a>
                             </div>
                         </td>
                         
                     </tr>
-<!-- Sotto tabella dei canali --> 
+                    <!-- Sotto tabella dei canali --> 
                     <tr id="channels-{{ device.id }}" 
                         style="visibility: hidden; display: none;">
                         <td></td>

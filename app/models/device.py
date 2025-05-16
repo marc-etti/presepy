@@ -30,3 +30,9 @@ class Device(db.Model):
     def __repr__(self) -> str:
         return f'<Device {self.name}>'
     
+    def update(self) -> None:
+        """
+        Update the device in the database.
+        """
+        db.session.commit()
+    

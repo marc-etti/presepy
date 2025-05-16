@@ -16,6 +16,8 @@ class FaroController:
         param dmx_instance: Istanza del DMX"""
         if not name:
             raise ValueError("Il nome del faro non può essere vuoto.")
+        if not dmx_instance:
+            raise ValueError("L'istanza del DMX non può essere vuota.")
         
         # carico il device faro dal database
         self.device = Device.query.filter_by(name=name).first()
@@ -52,23 +54,30 @@ class FaroController:
 
     def update(self, phase, time, total_time):
         """Aggiorna il faro in base alla fase e l'istante."""
-        for channel in self.channels:
-            for keyframe, next_keyframe in self.keyframes[phase.id][channel.id]:
-                # Calcola il tempo di inizio e fine del keyframe
-                start_time = keyframe.position * total_time / 100
-                end_time = next_keyframe.position * total_time / 100
+        if self.device is None:
+            raise ValueError("Il faro non è stato inizializzato correttamente.")
+        if self.device.status == "on":
+            for channel in self.channels:
+                for keyframe, next_keyframe in self.keyframes[phase.id][channel.id]:
+                    # Calcola il tempo di inizio e fine del keyframe
+                    start_time = keyframe.position * total_time / 100
+                    end_time = next_keyframe.position * total_time / 100
 
-                if start_time <= time <= end_time:
-                    # Interpolazione del valore del canale
-                    value = interpolate_value( 
-                        keyframe.value,
-                        next_keyframe.value,
-                        start_time,
-                        end_time,
-                        time
-                    )
-                    self.dmx.set_channel(channel.number, value)
-                    break
+                    if start_time <= time <= end_time:
+                        # Interpolazione del valore del canale
+                        value = interpolate_value( 
+                            keyframe.value,
+                            next_keyframe.value,
+                            start_time,
+                            end_time,
+                            time
+                        )
+                        self.dmx.set_channel(channel.number, value)
+                        break
+        else:
+            # Se il faro è spento non faccio nulla
+            pass
+
 
     def __repr__(self):
         """Restituisce una rappresentazione del faro."""

@@ -8,6 +8,25 @@ from app.models import Device, Channel, Phase, Keyframe
 # Creazione del Blueprint
 devices_bp = Blueprint('devices', __name__)
 
+@devices_bp.route('/turn_on_off_device/<int:device_id>', methods=['GET'])
+def turn_on_off_device(device_id):
+    """
+    Accende o spegne un dispositivo.
+    """
+    device = Device.query.filter_by(id=device_id).first()
+    if device:
+        if device.status == "on":
+            device.status = "off"
+            flash(f"Dispositivo {device.name} spento", 'success')
+        else:
+            device.status = "on"
+            flash(f"Dispositivo {device.name} acceso", 'success')
+        device.update()
+    else:
+        flash('Dispositivo non trovato', 'error')
+    
+    return redirect(url_for('main.devices_management'))
+
 @devices_bp.route('/keyframes_management/<int:device_id>', methods=['GET', 'POST'])
 def keyframes_management(device_id):
     """

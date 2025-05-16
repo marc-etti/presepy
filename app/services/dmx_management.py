@@ -71,6 +71,3 @@ def stampa_DMX():
 def get_current_status():
     """Restituisce lo stato corrente."""
     return jsonify({'current_phase': state_manager.get_phase(), 'is_on': state_manager.is_on()})
-#TODO: usare la variabile is_on per colorare il bottone di start/stop
-
-#TODO: capire se è meglio fermare il ciclo con una variabile globale o con un evento

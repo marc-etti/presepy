@@ -72,5 +72,6 @@ class FaroController:
 
     def __repr__(self):
         """Restituisce una rappresentazione del faro."""
-        return f"Faro {self.device.name} con ID {self.device.id} e canali {[channel.number for channel in self.channels]}"+\
+        return f"Faro {self.device.name} con ID {self.device.id}"+\
+            f" e canali {[channel.number for channel in self.channels]}"+\
             f" e keyframes {self.keyframes}"

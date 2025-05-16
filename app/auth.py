@@ -47,7 +47,7 @@ def login():
 
         if error is None:
             login_user(user)
-            return redirect(url_for('main.index'))
+            return redirect(url_for('dmx.index'))
 
         flash(error)
 
@@ -57,7 +57,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('main.index'))
+    return redirect(url_for('dmx.index'))
 
 @auth_bp.route('/profile')
 @login_required
@@ -69,7 +69,7 @@ def profile():
 def admin():
     if not current_user.is_admin:
         flash('You do not have permission to access this page.')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('dmx.index'))
     return render_template('auth/admin.html', users=User.query.all())
 
 @auth_bp.route('/delete', methods=('POST',))
@@ -83,7 +83,7 @@ def delete():
         flash('Your account has been deleted.')
     else:
         flash('User not found.')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('dmx.index'))
 
 @auth_bp.route('/deactivate', methods=('POST',))
 @login_required

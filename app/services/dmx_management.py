@@ -7,7 +7,8 @@ from app.services.dmx.DMX_logic import state_manager
 from app.services.dmx.DMX_logic import main_dmx_function
 from app.services.dmx.DMX_logic import inizializzazione
 
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, render_template
+from flask_login import login_required
 import threading
 
 # Variabile globale per il thread 
@@ -15,6 +16,15 @@ thread = None
 
 # Creazione del Blueprint
 dmx_bp = Blueprint('dmx', __name__)
+
+@dmx_bp.route('/')
+def index():
+    return render_template('index.html')
+
+@dmx_bp.route('/dmx_management')
+@login_required
+def dmx_management():
+    return render_template('dmx_management.html')
 
 @dmx_bp.route('/reset_DMX', methods=['POST'])
 def reset_DMX():

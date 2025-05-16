@@ -1,7 +1,7 @@
 from config import Config
 
 import pygame
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 import os
 import threading
 import time
@@ -31,6 +31,10 @@ def background_player():
 
 # Avvia il thread in background
 threading.Thread(target=background_player, daemon=True).start()
+
+@audio_bp.route('/audio_management')
+def audio_management():
+    return render_template('audio_management.html')
 
 @audio_bp.route('/play', methods=['POST'])
 def play():

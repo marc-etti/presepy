@@ -17,13 +17,13 @@
     <nav class="base-nav">
         <ul>
             <li>
-                <a href="{{ url_for('main.index') }}" {% if request.endpoint == 'main.index' %}class="current"{% endif %}>Home</a>
+                <a href="{{ url_for('dmx.index') }}" {% if request.endpoint == 'dmx.index' %}class="current"{% endif %}>Home</a>
             </li>
             <li>
-                <a href="{{ url_for('main.dmx_management') }}" {% if request.endpoint == 'main.dmx_management' %}class="current"{% endif %}>Gestione DMX</a>
+                <a href="{{ url_for('dmx.dmx_management') }}" {% if request.endpoint == 'dmx.dmx_management' %}class="current"{% endif %}>Gestione DMX</a>
             </li>
             <li>
-                <a href="{{ url_for('main.audio_management') }}" {% if request.endpoint == 'main.audio_management' %}class="current"{% endif %}>Gestione Musica</a>
+                <a href="{{ url_for('audio.audio_management') }}" {% if request.endpoint == 'audio.audio_management' %}class="current"{% endif %}>Gestione Musica</a>
             </li>
             <li>
                 <a href="{{ url_for('devices.devices_management') }}" {% if request.endpoint == 'devices.devices_management' %}class="current"{% endif %}>Gestione Dispositivi</a>

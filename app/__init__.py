@@ -13,7 +13,6 @@ def create_app():
 
     app.config.from_object('config.Config')
 
-    from app.routes import main_bp
     from app.services.audio_management import audio_bp
     from app.services.dmx_management import dmx_bp
     from app.services.devices_management import devices_bp
@@ -21,7 +20,6 @@ def create_app():
     from app.auth import auth_bp
 
     # Registra i blueprint
-    app.register_blueprint(main_bp)
     app.register_blueprint(audio_bp)
     app.register_blueprint(dmx_bp)
     app.register_blueprint(devices_bp)

@@ -1,5 +1,5 @@
 /* Stile generale del form */
-.keyframes-form {
+.add-edit-form {
     max-width: 800px;
     margin: 2rem auto;
     padding: 2rem;
@@ -9,7 +9,7 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.keyframes-form h2 {
+.add-edit-form h2 {
     color: #2c3e50;
     text-align: center;
     margin-bottom: 1.5rem;
@@ -17,7 +17,7 @@
     font-weight: 600;
 }
 
-.keyframes-form h3 {
+.add-edit-form h3 {
     color: #34495e;
     text-align: left;
     margin-bottom: 1.5rem;
@@ -98,7 +98,7 @@
 }
 
 /* Pulsanti */
-.keyframes-form button {
+.add-edit-form button {
     padding: 0.6rem 1.2rem;
     margin-right: 0.8rem;
     border: none;
@@ -109,25 +109,25 @@
     transition: all 0.3s ease;
 }
 
-.keyframes-form button[type="submit"] {
+.add-edit-form button[type="submit"] {
     background-color: #2ecc71;
     color: white;
 }
 
-.keyframes-form button[type="submit"]:hover {
+.add-edit-form button[type="submit"]:hover {
     background-color: #27ae60;
 }
 
-.keyframes-form button[type="button"] {
+.add-edit-form button[type="button"] {
     background-color: #e74c3c;
     color: white;
 }
 
-.keyframes-form button[type="button"]:hover {
+.add-edit-form button[type="button"]:hover {
     background-color: #c0392b;
 }
 
-.keyframes-form input[type="text"] {
+.add-edit-form input[type="text"] {
     width: 90%;
     padding: 0.5rem;
     margin-top: 0.5rem;
@@ -136,7 +136,7 @@
     font-size: 1rem;
     color: #34495e;
 }
-.keyframes-form input[type="number"] {
+.add-edit-form input[type="number"] {
     padding: 0.5rem;
     margin-top: 0.5rem;
     border: 1px solid #bdc3c7;

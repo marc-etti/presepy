@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Devices Form{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
+
+{% block header %}
+    <h1>Devices Form</h1>
+{% endblock %}
+
+{% block content %}
+<div class="add-edit-form">
+    <h2>Aggiungi dispositivo</h2>
+
+    <form method="POST" action="{{ url_for('devices.add_device') }}">
+        <div class="text-container">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" 
+            {% if form_data.name %}
+                value="{{ form_data.name }}"
+            {% else %}
+                value=""
+            {% endif %}
+                placeholder="Nome del dispositivo" required>
+        </div>
+
+        <div class="text-container">
+            <label for="type">Tipo:</label>
+            <input type="text" id="type" name="type"
+            {% if form_data.type %}
+                value="{{ form_data.type }}"
+            {% else %}
+                value=""
+            {% endif %}
+                placeholder="Tipo del dispositivo" required>
+        </div>
+
+        <div class="text-container">
+            <label for="subtype">Sottotipo:</label>
+            <input type="text" id="subtype" name="subtype"
+            {% if form_data.subtype %}
+                value="{{ form_data.subtype }}"
+            {% else %}
+                value=""
+            {% endif %}            
+            placeholder="Sottotipo del dispositivo" required>
+        </div>
+
+        <div class="text-container">
+            <label for="dmx_channels">Numero di canali DMX:</label>
+            <input type="number" id="dmx_channels" name="dmx_channels" min="1" max="512" step="1"
+            {% if form_data.dmx_channels %}
+                value="{{ form_data.dmx_channels }}"
+            {% else %}
+                value="0"
+            {% endif %}
+                required>
+        </div>
+        <div id="channels-container">
+            <!-- Channels sliders will be generated here -->
+        </div>
+
+        <button type="submit">Salva</button>
+        <button type="button" onclick=goBack()>Annulla</button>
+        
+    </form>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        document.getElementById("dmx_channels").addEventListener("input", function() {
+            generateSliders(this.value);
+        });
+
+        function generateSliders(num) {
+            const container = document.getElementById("channels-container");
+            container.innerHTML = ""; // Clear previous sliders
+
+            for (let i = 1; i <= num; i++) {
+                const sliderDiv = document.createElement("div");
+                sliderDiv.className = "text-container";
+                sliderDiv.innerHTML = `
+                    <label for="channel-type-${i}">Tipo canale ${i}:</label>
+                    <input type="text" id="channel-type-${i}" name="channel-type-${i}" required>
+                    <label for="channel-number-${i}">Indirizzo canale ${i}:</label>
+                    <input type="number" id="channel-number-${i}" name="channel-number-${i}" min="1" max="512" value="0" step="1" required>
+                    <input type="hidden" id="channel-value-${i}" name="channel-value-${i}" value="0">
+                `;
+                container.appendChild(sliderDiv);
+            }
+        }
+    </script>
+{% endblock %}

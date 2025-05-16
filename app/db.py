@@ -30,11 +30,11 @@ def seed_development_db():
 
             # Popolamento Tabella Device
             devices = [
-                Device(name='Faro1', type='light', subtype='faro', dmx_address=1, dmx_channels=1, status='on'),
-                Device(name='Faro2', type='light', subtype='faro', dmx_address=2, dmx_channels=1, status='on'),
-                Device(name='Faro3', type='light', subtype='faro', dmx_address=3, dmx_channels=1, status='on'),
-                Device(name='Faro4', type='light', subtype='faro', dmx_address=4, dmx_channels=1, status='on'),
-                Device(name='LED1', type='light', subtype='led', dmx_address=5, dmx_channels=3, status='on')
+                Device(name='Faro1', type='light', subtype='faro', dmx_channels=1, status='on'),
+                Device(name='Faro2', type='light', subtype='faro', dmx_channels=1, status='on'),
+                Device(name='Faro3', type='light', subtype='faro', dmx_channels=1, status='on'),
+                Device(name='Faro4', type='light', subtype='faro', dmx_channels=1, status='on'),
+                Device(name='LED1', type='light', subtype='led', dmx_channels=3, status='on')
             ]
             db.session.bulk_save_objects(devices)
             db.session.commit()

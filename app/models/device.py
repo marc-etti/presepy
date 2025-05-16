@@ -9,7 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 # name: Name of the device.
 # type: Type of the device (e.g., light, mechanical, audio).
 # subtype: Subtype of the device (e.g., LED, speaker).
-# dmx_address: DMX address of the device.
 # dmx_channels: Number of DMX channels used by the device.
 # status: Status of the device (e.g., on, off, error).
 # 
@@ -20,7 +19,6 @@ class Device(db.Model):
     name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     type: Mapped[str] = mapped_column(String(80), nullable=False)
     subtype: Mapped[str] = mapped_column(String(80), nullable=False)
-    dmx_address: Mapped[int] = mapped_column(Integer, nullable=False)
     dmx_channels: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[str] = mapped_column(String(80), nullable=False)
 
@@ -34,5 +32,12 @@ class Device(db.Model):
         """
         Update the device in the database.
         """
+        db.session.commit()
+
+    def add(self) -> None:
+        """
+        Add the device to the database.
+        """
+        db.session.add(self)
         db.session.commit()
     

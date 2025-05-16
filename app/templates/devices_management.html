@@ -5,12 +5,14 @@
 {% block styles %}
     <style>
         .on {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #4CAF50 !important;
+            color: white !important;
+            font-weight: bold !important;
         }
         .off {
-            background-color: #f44336;
-            color: white;
+            background-color: #f44336 !important;
+            color: white !important;
+            font-weight: bold !important;
         }
     </style>
 {% endblock %}
@@ -101,8 +103,15 @@
         </table>
     </div>
     {% else %}
-        Nessun dispositivo trovato.
+    <h2>Nessun dispositivo trovato.</h2>
     {% endif %}
+<div class="button-container">
+    <a href="{{ url_for('devices.add_device_form') }}">
+    <button>
+        Aggiungi Dispositivo
+    </button>
+    </a>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -121,6 +130,5 @@
                 button.innerText = 'Mostra\nDettagli';
             }
         }
-        
     </script>
 {% endblock %}

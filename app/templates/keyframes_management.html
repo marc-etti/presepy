@@ -44,7 +44,11 @@
                                         Canale DMX: {{ channel.number }} <br>
                                         Tipo: {{ channel.type }}
                                     </td>
-
+                                {% if not channel.keyframes %}
+                                    <td>
+                                        <h3>Nessun Keyframes</h3>
+                                    </td>
+                                {% endif %}
                                 {% for keyframe in channel.keyframes %}
                                 {% if keyframe.phase_id == phase.id %}
                                     <td>

@@ -29,3 +29,23 @@ class Channel(db.Model):
 
     def __repr__(self) -> str:
         return f'<Channel {self.number} of Device {self.device_id}>'
+    
+    def update(self) -> None:
+        """
+        Update the channel in the database.
+        """
+        db.session.commit()
+
+    def add(self) -> None:
+        """
+        Add the channel to the database.
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self) -> None:
+        """
+        Delete the channel from the database.
+        """
+        db.session.delete(self)
+        db.session.commit()

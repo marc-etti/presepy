@@ -28,6 +28,11 @@
             <li>
                 <a href="{{ url_for('devices.devices_management') }}" {% if request.endpoint == 'devices.devices_management' %}class="current"{% endif %}>Gestione Dispositivi</a>
             </li>
+            {% if request.endpoint == 'keyframes.keyframes_management' %}
+            <li>
+                <a href="#" {% if request.endpoint == 'keyframes.keyframes_management' %}class="current"{% endif %}>Gestione Keyframes</a>
+            </li>
+            {% endif %}
             {% if current_user.is_authenticated %}
                 <li>
                     <a href="{{ url_for('auth.profile') }}" {% if request.endpoint == 'auth.profile' %}class="current"{% endif %}>{{ current_user.username }}</a>

@@ -1,0 +1,146 @@
+/* Stile generale del form */
+.keyframes-form {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.keyframes-form h2 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.keyframes-form h3 {
+    color: #34495e;
+    text-align: left;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* Contenitore degli slider */
+.slider-container {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.slider-container:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Etichette */
+.slider-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #34495e;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* Stile degli input range */
+.slider-container input[type="range"] {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #e0e0e0;
+    border-radius: 4px;
+    outline: none;
+    margin: 0.5rem 0;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3498db;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb:hover {
+    background: #2980b9;
+}
+
+/* Valore dello slider */
+.slider-container span {
+    display: inline-block;
+    margin-left: 0.5rem;
+    min-width: 3rem;
+    text-align: center;
+    padding: 0.2rem 0.5rem;
+    background-color: #3498db;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+/* Contenitore del testo */
+.text-container {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Pulsanti */
+.keyframes-form button {
+    padding: 0.6rem 1.2rem;
+    margin-right: 0.8rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.keyframes-form button[type="submit"] {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.keyframes-form button[type="submit"]:hover {
+    background-color: #27ae60;
+}
+
+.keyframes-form button[type="button"] {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.keyframes-form button[type="button"]:hover {
+    background-color: #c0392b;
+}
+
+.keyframes-form input[type="text"] {
+    width: 90%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #34495e;
+}
+.keyframes-form input[type="number"] {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #34495e;
+}

@@ -7,135 +7,133 @@
 {% endblock %}
 
 {% block content %}
-
-    <div class="device-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Fase</th>
-                    <th>Durata</th>
-                    <th>Ordine</th>
-                    <th>Azioni</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for phase in phases %}
-                <tr>
-                    <td>{{ phase.name }}</td>
-                    <td>{{ phase.duration }} secondi</td>
-                    <td>{{ phase.order }}</td>
+<div class="device-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Fase</th>
+                <th>Durata</th>
+                <th>Ordine</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for phase in phases %}
+            <tr>
+                <td>{{ phase.name }}</td>
+                <td>{{ phase.duration }} secondi</td>
+                <td>{{ phase.order }}</td>
+                <td>
+                    <div class="table-button-container">
+                        <button onclick="showHideKeyframes('{{ phase.id }}')">Mostra</button>
+                    </div>
+                </td>
+            </tr>
+                <tr id="keyframes-{{ phase.id }}"
+                    style="visibility: hidden; display: none;">
                     <td>
-                        <div class="table-button-container">
-                            <button onclick="showHideKeyframes('{{ phase.id }}')">Mostra</button>
-                        </div>
+                        <h2>
+                            Keyframes <br> {{ phase.name }}
+                        </h2>
                     </td>
-                </tr>
-                    <tr id="keyframes-{{ phase.id }}"
-                        style="visibility: hidden; display: none;">
-                        <td>
-                            <h2>
-                                Keyframes <br> {{ phase.name }}
-                            </h2>
-                        </td>
-                        <td colspan="3">
-                            <table>
-                                {% for channel in channels %}
-                                    <tr>
-                                        <td>
-                                            Canale DMX: {{ channel.number }} <br>
-                                            Tipo: {{ channel.type }}
-                                        </td>
-
-                                    {% for keyframe in channel.keyframes %}
-                                    {% if keyframe.phase_id == phase.id %}
-                                        <td>
-                                            {{ keyframe.description }} <br>
-                                            Posizione: {{ keyframe.position }} <br>
-                                            Valore: {{ keyframe.value }} <br>
-                                        </td>
-                                    {% endif %}
-                                    {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                                {% if channels[0] %}
+                    <td colspan="3">
+                        <table>
+                            {% for channel in channels %}
                                 <tr>
                                     <td>
+                                        Canale DMX: {{ channel.number }} <br>
+                                        Tipo: {{ channel.type }}
+                                    </td>
+
+                                {% for keyframe in channel.keyframes %}
+                                {% if keyframe.phase_id == phase.id %}
+                                    <td>
+                                        {{ keyframe.description }} <br>
+                                        Posizione: {{ keyframe.position }} <br>
+                                        Valore: {{ keyframe.value }} <br>
+                                    </td>
+                                {% endif %}
+                                {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            {% if channels[0] %}
+                            <tr>
+                                <td>
+                                    <div class="table-button-container">
+                                        <a href="{{ url_for('keyframes.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
+                                            <button>Aggiungi<br>Keyframe</button>
+                                        </a>
+                                    </div>
+                                </td>
+                                {% for keyframe in channels[0].keyframes %}
+                                {% if keyframe.phase_id == phase.id %}
+                                    <td>
                                         <div class="table-button-container">
-                                            <a href="{{ url_for('keyframes.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
-                                                <button>Aggiungi<br>Keyframe</button>
+                                            <a href="{{ url_for('keyframes.edit_keyframe_form', device_id=device.id, phase_id=phase.id, position=keyframe.position) }}">
+                                                <button class="yellow-btn">Modifica</button>
                                             </a>
+                                                <button class="red-btn" onclick="confirmDelete( {{ device.id }}, {{ phase.id }}, {{ keyframe.position }} )">Elimina</button>
                                         </div>
                                     </td>
-                                    {% for keyframe in channels[0].keyframes %}
-                                    {% if keyframe.phase_id == phase.id %}
-                                        <td>
-                                            <div class="table-button-container">
-                                                <a href="{{ url_for('keyframes.edit_keyframe_form', device_id=device.id, phase_id=phase.id, position=keyframe.position) }}">
-                                                    <button class="yellow-btn">Modifica</button>
-                                                </a>
-                                                    <button class="red-btn" onclick="confirmDelete( {{ device.id }}, {{ phase.id }}, {{ keyframe.position }} )">Elimina</button>
-                                            </div>
-                                        </td>
-                                    {% endif %}
-                                    {% endfor %}
-                                </tr>
                                 {% endif %}
-                            </table>
-                        </td>
-                    </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="button-container">
-        <button onclick=goBack()>
-            Torna ai dispositivi
-        </button>
-    </div>
+                                {% endfor %}
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </td>
+                </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="button-container">
+    <button onclick=goBack()>
+        Torna ai dispositivi
+    </button>
+</div>
 
-    <form id="delete-keyframe-form" method="POST" action="{{ url_for('keyframes.delete_keyframe') }}">
-        <input type="hidden" name="device_id" id="device_id">
-        <input type="hidden" name="phase_id" id="phase_id">
-        <input type="hidden" name="position" id="position">
-    </form>
-
+<form id="delete-keyframe-form" method="POST" action="{{ url_for('keyframes.delete_keyframe') }}">
+    <input type="hidden" name="device_id" id="device_id">
+    <input type="hidden" name="phase_id" id="phase_id">
+    <input type="hidden" name="position" id="position">
+</form>
 {% endblock %}
 
 {% block scripts %}
-    <script>
-        // Funzione per mostrare/nascondere la tabella dei keyframes
-        function showHideKeyframes(phaseId) {
-            var keyframesRow = document.getElementById('keyframes-' + phaseId);
-            var button = event.target;
-            if (keyframesRow.style.display === 'none' || keyframesRow.style.visibility === 'hidden') {
-                keyframesRow.style.display = 'table-row';
-                keyframesRow.style.visibility = 'visible';
-                button.innerText = 'Nascondi';
-            } else {
-                keyframesRow.style.display = 'none';
-                keyframesRow.style.visibility = 'hidden';
-                button.innerText = 'Mostra';
-            }
+<script>
+    // Funzione per mostrare/nascondere la tabella dei keyframes
+    function showHideKeyframes(phaseId) {
+        var keyframesRow = document.getElementById('keyframes-' + phaseId);
+        var button = event.target;
+        if (keyframesRow.style.display === 'none' || keyframesRow.style.visibility === 'hidden') {
+            keyframesRow.style.display = 'table-row';
+            keyframesRow.style.visibility = 'visible';
+            button.innerText = 'Nascondi';
+        } else {
+            keyframesRow.style.display = 'none';
+            keyframesRow.style.visibility = 'hidden';
+            button.innerText = 'Mostra';
         }
-        // Funzione per tornare alla pagina dei dispositivi
-        function goBack() {
-            window.location.href = "{{ url_for('devices.devices_management') }}";
-        }
+    }
+    // Funzione per tornare alla pagina dei dispositivi
+    function goBack() {
+        window.location.href = "{{ url_for('devices.devices_management') }}";
+    }
 
-        // Funzione per chiedere la conferma prima di eliminare un keyframe
-        function confirmDelete(deviceId, phaseId, position) {
-            // Imposta i valori nei campi nascosti del form di eliminazione
-            document.getElementById('device_id').value = deviceId;
-            document.getElementById('phase_id').value = phaseId;
-            document.getElementById('position').value = position;
-            // Mostra un messaggio di conferma
-            if (confirm("Sei sicuro di voler eliminare questo keyframe?")) {
-                // Se l'utente conferma, invia il form
-                document.getElementById('delete-keyframe-form').submit();
-            } else {
-                // Se l'utente annulla, non fare nulla
-                return false;
-            }
+    // Funzione per chiedere la conferma prima di eliminare un keyframe
+    function confirmDelete(deviceId, phaseId, position) {
+        // Imposta i valori nei campi nascosti del form di eliminazione
+        document.getElementById('device_id').value = deviceId;
+        document.getElementById('phase_id').value = phaseId;
+        document.getElementById('position').value = position;
+        // Mostra un messaggio di conferma
+        if (confirm("Sei sicuro di voler eliminare questo keyframe?")) {
+            // Se l'utente conferma, invia il form
+            document.getElementById('delete-keyframe-form').submit();
+        } else {
+            // Se l'utente annulla, non fare nulla
+            return false;
         }
-    </script>
+    }
+</script>
 {% endblock %}

@@ -52,7 +52,7 @@
                         <td>
                             <div class="table-button-container">
                             <button onclick="showHideChannels( '{{ device.id }}' )">Mostra<br>Dettagli</button>
-                            <a href="{{ url_for('devices.keyframes_management', device_id=device.id) }}">
+                            <a href="{{ url_for('keyframes.keyframes_management', device_id=device.id) }}">
                                 <button>Mostra<br>Keyframes</button>
                             </a>
                             <a href="{{ url_for('devices.turn_on_off_device', device_id=device.id) }}">

@@ -167,7 +167,7 @@
         Posizione: {{ keyframes[0].position }} <br>
     </h3>
 
-    <form method="POST" action="{{ url_for('devices.edit_keyframe') }}">
+    <form method="POST" action="{{ url_for('keyframes.edit_keyframe') }}">
         {% for keyframe in keyframes %}
             <div class="slider-container">
                 <label for="description-{{ keyframe.id }}">Descrizione:</label>
@@ -189,7 +189,7 @@
         Dispositivo: {{ device.name }} <br>
         Fase: {{ phase.name }} <br>
     </h3>
-    <form method="POST" action="{{ url_for('devices.add_keyframe') }}">
+    <form method="POST" action="{{ url_for('keyframes.add_keyframe') }}">
         {% for channel in channels %}
             <div class="text-container">
                 <label for="description-{{ channel.id }}">Descrizione:</label>

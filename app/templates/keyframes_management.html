@@ -61,7 +61,7 @@
                                 <tr>
                                     <td>
                                         <div class="table-button-container">
-                                            <a href="{{ url_for('devices.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
+                                            <a href="{{ url_for('keyframes.add_keyframe_form', device_id=device.id, phase_id=phase.id) }}">
                                                 <button>Aggiungi<br>Keyframe</button>
                                             </a>
                                         </div>
@@ -70,7 +70,7 @@
                                     {% if keyframe.phase_id == phase.id %}
                                         <td>
                                             <div class="table-button-container">
-                                                <a href="{{ url_for('devices.edit_keyframe_form', device_id=device.id, phase_id=phase.id, position=keyframe.position) }}">
+                                                <a href="{{ url_for('keyframes.edit_keyframe_form', device_id=device.id, phase_id=phase.id, position=keyframe.position) }}">
                                                     <button class="yellow-btn">Modifica</button>
                                                 </a>
                                                     <button class="red-btn" onclick="confirmDelete( {{ device.id }}, {{ phase.id }}, {{ keyframe.position }} )">Elimina</button>
@@ -93,7 +93,7 @@
         </button>
     </div>
 
-    <form id="delete-keyframe-form" method="POST" action="{{ url_for('devices.delete_keyframe') }}">
+    <form id="delete-keyframe-form" method="POST" action="{{ url_for('keyframes.delete_keyframe') }}">
         <input type="hidden" name="device_id" id="device_id">
         <input type="hidden" name="phase_id" id="phase_id">
         <input type="hidden" name="position" id="position">
@@ -119,7 +119,7 @@
         }
         // Funzione per tornare alla pagina dei dispositivi
         function goBack() {
-            window.location.href = "{{ url_for('main.devices_management') }}";
+            window.location.href = "{{ url_for('devices.devices_management') }}";
         }
 
         // Funzione per chiedere la conferma prima di eliminare un keyframe

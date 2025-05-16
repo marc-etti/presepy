@@ -26,7 +26,7 @@
                 <a href="{{ url_for('main.audio_management') }}" {% if request.endpoint == 'main.audio_management' %}class="current"{% endif %}>Gestione Musica</a>
             </li>
             <li>
-                <a href="{{ url_for('main.devices_management') }}" {% if request.endpoint == 'main.devices_management' %}class="current"{% endif %}>Gestione Dispositivi</a>
+                <a href="{{ url_for('devices.devices_management') }}" {% if request.endpoint == 'devices.devices_management' %}class="current"{% endif %}>Gestione Dispositivi</a>
             </li>
             {% if current_user.is_authenticated %}
                 <li>

@@ -2,9 +2,6 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 
 from app.auth import login_required
 
-from sqlalchemy.orm import joinedload
-from app.models import Device
-
 
 main_bp = Blueprint('main', __name__)
 
@@ -20,13 +17,3 @@ def dmx_management():
 @main_bp.route('/audio_management')
 def audio_management():
     return render_template('audio_management.html')
-
-@main_bp.route('/devices_management/', methods=['GET', 'POST'])
-def devices_management():
-    devices = (
-        Device.query
-        .order_by(Device.id)
-        .options(joinedload(Device.channels))
-        .all()
-    )
-    return render_template('devices_management.html', devices=devices)

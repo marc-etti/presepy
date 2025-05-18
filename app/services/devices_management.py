@@ -124,3 +124,30 @@ def add_device():
     flash(f'Canali per il dispositivo {name} aggiunti con successo', 'success')
 
     return redirect(url_for('devices.devices_management'))
+
+
+@devices_bp.route('/delete_device', methods=['POST'])
+def delete_device():
+    """
+    Elimina un dispositivo dal database.
+    """
+    device_id = int(request.form.get('device_id'))
+    device = Device.query.filter_by(id=device_id).first()
+    if device:
+        # Elimina i canali e i keyframes associati al dispositivo
+        channels = Channel.query.filter_by(device_id=device.id).all()
+        for channel in channels:
+            keyframes = Keyframe.query.filter_by(channel_id=channel.id).all()
+            if keyframes:   
+                for keyframe in keyframes:
+                    # Elimina i keyframes associati al canale
+                    keyframe.delete()
+            # Elimina il canale
+            channel.delete()
+        # Elimina il dispositivo
+        device.delete()
+        flash(f'Dispositivo {device.name} eliminato con successo', 'success')
+    else:
+        flash('Dispositivo non trovato', 'error')
+    
+    return redirect(url_for('devices.devices_management'))

@@ -64,6 +64,9 @@
                                     <button class="green-btn">Accendi<br>Dispositivo</button>
                                 {% endif %}
                             </a>
+                            <button class="red-btn delete-btn" onclick="confirmDelete('{{ device.id }}')">
+                                <img src="{{ url_for('static', filename='images/delete-icon-white.png') }}" alt="Delete">
+                            </button>
                             </div>
                         </td>
                         
@@ -112,6 +115,10 @@
     </button>
     </a>
 </div>
+
+<form id="delete-device-form" method="POST" action="{{ url_for('devices.delete_device') }}" style="display: none;">
+    <input type="hidden" name="device_id" id="device_id">
+</form>
 {% endblock %}
 
 {% block scripts %}
@@ -128,6 +135,15 @@
                 channelsRow.style.display = 'none';
                 channelsRow.style.visibility = 'hidden';
                 button.innerText = 'Mostra\nDettagli';
+            }
+        }
+
+        // Funzione per mostrare il messaggio di conferma prima di eliminare un dispositivo
+        function confirmDelete(deviceId) {
+            var confirmation = confirm("Sei sicuro di voler eliminare questo dispositivo?");
+            if (confirmation) {
+                document.getElementById('device_id').value = deviceId;
+                document.getElementById('delete-device-form').submit();
             }
         }
     </script>

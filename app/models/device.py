@@ -40,4 +40,11 @@ class Device(db.Model):
         """
         db.session.add(self)
         db.session.commit()
+
+    def delete(self) -> None:
+        """
+        Delete the device from the database.
+        """
+        db.session.delete(self)
+        db.session.commit()
     

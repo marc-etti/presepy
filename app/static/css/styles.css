@@ -304,6 +304,12 @@ footer {
     background-color: #27ae60 !important;
 }
 
+.delete-btn img {
+    padding: 2px;
+    height: 24px;
+    width: auto;
+}
+
 /* Stile per la pagina GESTIONE DMX */
 .dmx-div {
     font-family: Arial, sans-serif;

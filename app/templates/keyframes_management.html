@@ -76,7 +76,7 @@
                                             <a href="{{ url_for('keyframes.edit_keyframe_form', device_id=device.id, phase_id=phase.id, position=keyframe.position) }}">
                                                 <button class="yellow-btn">Modifica</button>
                                             </a>
-                                                <button class="red-btn" onclick="confirmDelete( {{ device.id }}, {{ phase.id }}, {{ keyframe.position }} )">Elimina</button>
+                                                <button class="red-btn" onclick="confirmDelete( '{{ device.id }}', '{{ phase.id }}', '{{ keyframe.position }}' )">Elimina</button>
                                         </div>
                                     </td>
                                 {% endif %}
@@ -96,7 +96,7 @@
     </button>
 </div>
 
-<form id="delete-keyframe-form" method="POST" action="{{ url_for('keyframes.delete_keyframe') }}">
+<form id="delete-keyframe-form" method="POST" action="{{ url_for('keyframes.delete_keyframe') }}" style="display: none;">
     <input type="hidden" name="device_id" id="device_id">
     <input type="hidden" name="phase_id" id="phase_id">
     <input type="hidden" name="position" id="position">
@@ -126,17 +126,15 @@
 
     // Funzione per chiedere la conferma prima di eliminare un keyframe
     function confirmDelete(deviceId, phaseId, position) {
-        // Imposta i valori nei campi nascosti del form di eliminazione
-        document.getElementById('device_id').value = deviceId;
-        document.getElementById('phase_id').value = phaseId;
-        document.getElementById('position').value = position;
         // Mostra un messaggio di conferma
-        if (confirm("Sei sicuro di voler eliminare questo keyframe?")) {
+        confirmation = confirm("Sei sicuro di voler eliminare questo keyframe?");
+        if (confirmation) {
             // Se l'utente conferma, invia il form
+            // Imposta i valori nei campi nascosti del form di eliminazione
+            document.getElementById('device_id').value = deviceId;
+            document.getElementById('phase_id').value = phaseId;
+            document.getElementById('position').value = position;
             document.getElementById('delete-keyframe-form').submit();
-        } else {
-            // Se l'utente annulla, non fare nulla
-            return false;
         }
     }
 </script>

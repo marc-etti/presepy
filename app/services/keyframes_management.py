@@ -66,7 +66,7 @@ def edit_keyframe():
                 keyframe.update()
     device_id = int(form_data.get('device_id'))
     flash('Keyframe updated successfully', 'success')
-    return redirect(url_for('devices.keyframes_management', device_id=device_id))
+    return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
 
 @keyframes_bp.route('/add_keyframe_form/<int:device_id>/<int:phase_id>', methods=['GET'])
 def add_keyframe_form(device_id, phase_id):
@@ -112,16 +112,16 @@ def add_keyframe():
     channels_ids = [channel.id for channel in device.channels]
     if len(new_keyframes) != len(channels_ids):
         flash('Il numero di keyframe non corrisponde al numero di canali', 'error')
-        return redirect(url_for('devices.keyframes_management', device_id=device_id))
+        return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
     for keyframe in new_keyframes:
         try:
             keyframe.add()
         except Exception as e:
             flash(f'Error adding keyframe: {str(e)}', 'error')
-            return redirect(url_for('devices.keyframes_management', device_id=device_id))
+            return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
             
     flash('Keyframe aggiunto correttamente', 'success')
-    return redirect(url_for('devices.keyframes_management', device_id=device_id))
+    return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
 
 @keyframes_bp.route('/delete_keyframe', methods=['POST'])
 def delete_keyframe():
@@ -144,15 +144,15 @@ def delete_keyframe():
 
     if len(keyframes) != len(channels_ids):
         flash('Il numero di keyframe da eliminare non corrisponde al numero di canali', 'error')
-        return redirect(url_for('devices.keyframes_management', device_id=device_id))
+        return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
     
     try:
         for keyframe in keyframes:
             keyframe.delete()
     except Exception as e:
         flash(f'Error deleting keyframe: {str(e)}', 'error')
-        return redirect(url_for('devices.keyframes_management', device_id=device_id))
+        return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
 
     flash('Keyframe deleted successfully', 'success')
 
-    return redirect(url_for('devices.keyframes_management', device_id=device_id))
+    return redirect(url_for('keyframes.keyframes_management', device_id=device_id))

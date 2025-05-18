@@ -71,7 +71,7 @@ def resume_DMX():
 @dmx_bp.route('/stampa_DMX', methods=['POST'])
 def stampa_DMX():
     """Stampa i valori dei canali DMX sul file di log."""
-    dmx.write_channels_on_log(Config.LOGS_FOLDER + 'dmx_log.log')
+    dmx.write_channels_on_log(Config.LOG_FILE)
     return jsonify({'message': 'Valori DMX stampati sul log'})
 
 @dmx_bp.route('/get_current_status', methods=['GET'])

@@ -3,8 +3,6 @@
 from datetime import datetime
 import threading
 
-
-
 NUMBER_OF_CHANNELS = 512
 MAX_CHANNEL_VALUE = 255
 

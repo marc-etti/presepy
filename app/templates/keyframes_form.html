@@ -105,7 +105,7 @@
 
         // Funzione per tornare indietro
         function goBack() {
-            window.history.back();
+            window.location.href="{{ url_for('keyframes.keyframes_management', device_id=device.id) }}";
         }
 
     </script>

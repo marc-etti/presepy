@@ -2,10 +2,7 @@ from config import Config
 from app.services.dmx.DMX_logic import dmx
 
 from app.services.dmx.DMX_logic import state_manager
-
-
 from app.services.dmx.DMX_logic import main_dmx_function
-from app.services.dmx.DMX_logic import inizializzazione
 
 from flask import Blueprint, request, jsonify, current_app, render_template
 from flask_login import login_required

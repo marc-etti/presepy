@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # Script per l'avvio dell'applicazione Flask
-# Lo script si aspetta di essere eseguito nella cartella del progetto
-# e che l'ambiente virtuale sia già stato creato
 
 # Controlla se l'ambiente virtuale esiste
 if [ ! -d "venv" ]; then

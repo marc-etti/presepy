@@ -13,14 +13,12 @@ def create_app():
 
     app.config.from_object('config.Config')
 
-    from app.services.audio_management import audio_bp
     from app.services.dmx_management import dmx_bp
     from app.services.devices_management import devices_bp
     from app.services.keyframes_management import keyframes_bp
     from app.auth import auth_bp
 
     # Registra i blueprint
-    app.register_blueprint(audio_bp)
     app.register_blueprint(dmx_bp)
     app.register_blueprint(devices_bp)
     app.register_blueprint(keyframes_bp)

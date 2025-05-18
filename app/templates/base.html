@@ -23,9 +23,6 @@
                 <a href="{{ url_for('dmx.dmx_management') }}" {% if request.endpoint == 'dmx.dmx_management' %}class="current"{% endif %}>Gestione DMX</a>
             </li>
             <li>
-                <a href="{{ url_for('audio.audio_management') }}" {% if request.endpoint == 'audio.audio_management' %}class="current"{% endif %}>Gestione Musica</a>
-            </li>
-            <li>
                 <a href="{{ url_for('devices.devices_management') }}" {% if request.endpoint == 'devices.devices_management' %}class="current"{% endif %}>Gestione Dispositivi</a>
             </li>
             {% if request.endpoint == 'keyframes.keyframes_management' %}

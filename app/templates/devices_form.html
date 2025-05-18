@@ -12,6 +12,7 @@
 
 {% block content %}
 <div class="add-edit-form">
+    {% if not device %}
     <h2>Aggiungi dispositivo</h2>
 
     <form method="POST" action="{{ url_for('devices.add_device') }}">
@@ -66,16 +67,56 @@
         <button type="button" onclick=goBack()>Annulla</button>
         
     </form>
+    {% else %}
+
+    <h2>Modifica dispositivo</h2>
+
+    <form method="POST" action="{{ url_for('devices.edit_device', device_id=device.id) }}">
+        <div class="text-container">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" value="{{ device.name }}" required>
+        </div>
+
+        <div class="text-container">
+            <label for="type">Tipo:</label>
+            <input type="text" id="type" name="type" value="{{ device.type }}" required>
+        </div>
+
+        <div class="text-container">
+            <label for="subtype">Sottotipo:</label>
+            <input type="text" id="subtype" name="subtype" value="{{ device.subtype }}" required>
+        </div>
+        <h3>Numero di canali DMX: {{ device.dmx_channels }}</h3>
+        {% if channels %}
+        {% for channel in channels %}
+        <div class="text-container">
+            <label for="channel-type-{{ channel.id }}">Tipo canale:</label>
+            <input type="text" id="channel-type-{{ channel.id }}" name="channel-type-{{ channel.id }}" value="{{ channel.type }}" required>
+            <label for="channel-number-{{ channel.id }}">Indirizzo canale:</label>
+            <input type="number" id="channel-number-{{ channel.id }}" name="channel-number-{{ channel.id }}" min="1" max="512" value="{{ channel.number }}" step="1" required>
+            <input type="hidden" id="channel-value-{{ channel.id }}" name="channel-value-{{ channel.id }}" value="{{ channel.value }}">
+        </div>
+        {% endfor %}
+        {% else %}
+        <h2>Canali non trovati</h2>
+        {% endif %}
+
+        <input type="hidden" id="device_id" name="device_id" value="{{ device.id }}">
+        <button type="submit">Salva</button>
+        <button type="button" onclick="goBack()">Annulla</button>
+    </form>
+    {% endif %}
 
 </div>
 {% endblock %}
 
 {% block scripts %}
+
     <script>
         function goBack() {
-            window.history.back();
+            window.location.href="{{ url_for('devices.devices_management') }}";
         }
-
+    {% if not device %}
         document.getElementById("dmx_channels").addEventListener("input", function() {
             generateSliders(this.value);
         });
@@ -97,5 +138,7 @@
                 container.appendChild(sliderDiv);
             }
         }
+    {% endif %}
     </script>
+
 {% endblock %}

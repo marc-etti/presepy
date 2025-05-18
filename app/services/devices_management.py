@@ -151,3 +151,86 @@ def delete_device():
         flash('Dispositivo non trovato', 'error')
     
     return redirect(url_for('devices.devices_management'))
+
+@devices_bp.route('/edit_device_form/<int:device_id>', methods=['GET', 'POST'])
+def edit_device_form(device_id):
+    """
+    Mostra il form per modificare un dispositivo.
+    """
+    device = Device.query.filter_by(id=device_id).first()
+    if not device:
+        flash('Dispositivo non trovato', 'error')
+        return redirect(url_for('devices.devices_management'))
+    
+    channels = (
+        Channel.query
+        .filter_by(device_id=device_id)
+        .order_by(Channel.number)
+        .all()
+    )
+    
+    return render_template('devices_form.html', device=device, channels=channels)
+
+@devices_bp.route('/edit_device', methods=['POST'])
+def edit_device():
+    """
+    Modifica un dispositivo esistente nel database.
+    """
+    form_data = request.form
+    device_id = int(form_data.get('device_id'))
+    name = form_data.get('name')
+    type = form_data.get('type')
+    subtype = form_data.get('subtype')
+
+    if not name or not type or not subtype:
+        flash('Tutti i campi sono obbligatori', 'error')
+        return redirect(url_for('devices.edit_device_form', device_id=device_id))
+    
+    # Verifica se il nome del dispositivo esiste già
+    existing_device = Device.query.filter_by(name=name).first()
+    if existing_device and existing_device.id != device_id:
+        flash('Nome del dispositivo già usato', 'error')
+        return redirect(url_for('devices.edit_device_form', device_id=device_id))
+    
+    # Modifica il dispositivo e aggiorna il database
+    device = Device.query.filter_by(id=device_id).first()
+    if device:
+        device.name = name
+        device.type = type
+        device.subtype = subtype
+    else:
+        flash('Dispositivo non trovato', 'error')
+        return redirect(url_for('devices.devices_management'))
+    
+    # Modifica i canali associati al dispositivo
+    for channel in device.channels:
+        channel_number = int(form_data.get(f'channel-number-{channel.id}'))
+        # controllo se il canale non sia già utilizzato
+        existing_channel = Channel.query.filter_by(number=channel_number).first()
+        if existing_channel and existing_channel.id != channel.id:
+            flash(f'Il canale {channel_number} è già utilizzato', 'error')
+            return redirect(url_for('devices.edit_device_form', device_id=device_id))
+
+        channel_type = form_data.get(f'channel-type-{channel.id}')
+        channel_value = int(form_data.get(f'channel-value-{channel.id}'))
+
+        if channel_number and channel_type and channel_value:
+            channel.number = channel_number
+            channel.type = channel_type
+            channel.value = channel_value
+            try:
+                channel.update()
+            except Exception as e:
+                flash(f'Errore durante l\'aggiornamento del canale: {e}', 'error')
+                return redirect(url_for('devices.edit_device_form', device_id=device_id))
+
+    # Aggiorno il dispositivo       
+    try: 
+        device.update()
+    except Exception as e:
+        flash(f'Errore durante l\'aggiornamento del dispositivo: {e}', 'error')
+        return redirect(url_for('devices.edit_device_form', device_id=device_id))
+    # Flash success message
+    flash(f'Dispositivo {name} modificato con successo', 'success')
+
+    return redirect(url_for('devices.devices_management'))

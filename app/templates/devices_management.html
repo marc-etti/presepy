@@ -57,6 +57,9 @@
                             <a href="{{ url_for('keyframes.keyframes_management', device_id=device.id) }}">
                                 <button>Mostra<br>Keyframes</button>
                             </a>
+                            <a href="{{ url_for('devices.edit_device_form', device_id=device.id) }}">
+                                <button class="yellow-btn">Modifica<br>Dispositivo</button>
+                            </a>
                             <a href="{{ url_for('devices.turn_on_off_device', device_id=device.id) }}">
                                 {% if device.status == 'on' %}
                                     <button class="red-btn">Spegni<br>Dispositivo</button>

@@ -1,9 +1,25 @@
+import os
+
 class Config:
     SECRET_KEY = 'mysecretkey'
-    LOG_FILE = 'app/logs/dmx_log.log'
     DEBUG = True
     TEST = True
-    HOST = 'localhost'
+
+    if not os.path.exists('app/logs'):
+        # Creazione della cartella logs se non esiste
+        os.makedirs('app/logs')
+        # Creazione del file di log vuoto
+        with open('app/logs/DMX.log', 'w') as f:
+            pass
+    LOG_FILE = 'app/logs/DMX.log'
+        
+
+    if os.path.exists('/.dockerenv'):
+        # Configurazione per Docker
+        HOST = '0.0.0.0'
+    else:
+        # Configurazione per l'esecuzione locale
+        HOST = 'localhost'
     PORT = 5000
 
     # Configurazione del database

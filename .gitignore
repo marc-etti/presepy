@@ -9,8 +9,10 @@ instance/
 *.env
 
 # File temporanei e di sistema
+logs/
 *.log
 *.sqlite3
+*.sqlite
 *.db
 *.pid
 .DS_Store

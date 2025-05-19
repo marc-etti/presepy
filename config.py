@@ -25,3 +25,10 @@ class Config:
     # Configurazione del database
     SQLALCHEMY_DATABASE_URI = 'sqlite:///presepy.sqlite'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # Use in-memory database for testing
+    DEBUG = False
+    LOG_FILE = 'app/logs/DMX_test.log'  # Log file for testing

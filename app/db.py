@@ -7,11 +7,8 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy()
 
-def init_db():
-    # Ottieni l'app corrente
-    from app.models import User
 
-def seed_development_db():
+def init_db():
     from app.models import User, Device, Channel, Keyframe, Phase
 
     with current_app.app_context():

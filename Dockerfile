@@ -1,5 +1,5 @@
 # Usa un'immagine Python ufficiale
-FROM python:3.10-slim
+FROM python:3.13-alpine
 
 # Imposta la directory di lavoro
 WORKDIR /usr/src/app
@@ -21,5 +21,4 @@ EXPOSE 5000
 
 # Comando per avviare l'applicazione
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["sh", "/entrypoint.sh"]

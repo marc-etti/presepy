@@ -1,10 +1,9 @@
-import os
 import click
 
 from flask import Flask, render_template
 from flask.cli import with_appcontext
 from flask_login import LoginManager
-from app.db import db, init_db, seed_development_db
+from app.db import db, init_db
 
 login_manager = LoginManager()
 
@@ -37,7 +36,7 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         from app.models.user import User
-        return User.query.get(int(user_id))
+        return User.query.get(int(user_id))    
 
     # handle the 404 error
     @app.errorhandler(404)
@@ -50,6 +49,5 @@ def create_app():
 @with_appcontext
 def init_db_command():
     """Clear existing data and create new tables."""
-    # init_db()
-    seed_development_db()
+    init_db()
     click.echo("Initialized the database.")

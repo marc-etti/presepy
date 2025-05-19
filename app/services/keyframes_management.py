@@ -1,6 +1,7 @@
 from config import Config
 
 from flask import Blueprint, render_template, flash, request, redirect, url_for
+from flask_login import login_required
 
 from sqlalchemy.orm import joinedload
 from app.models import Device, Channel, Phase, Keyframe
@@ -9,6 +10,7 @@ from app.models import Device, Channel, Phase, Keyframe
 keyframes_bp = Blueprint('keyframes', __name__)
 
 @keyframes_bp.route('/keyframes_management/<int:device_id>', methods=['GET', 'POST'])
+@login_required
 def keyframes_management(device_id):
     """
     Restituisce le informazioni di un dispositivo specifico.
@@ -29,6 +31,7 @@ def keyframes_management(device_id):
     return render_template('keyframes_management.html', device=device, phases=phases, channels=channels)
     
 @keyframes_bp.route('/edit_keyframe_form/<int:device_id>/<int:phase_id>/<int:position>', methods=['GET'])
+@login_required
 def edit_keyframe_form(device_id, phase_id, position):
     """
     Restituisce il form per modificare un keyframe.
@@ -50,6 +53,7 @@ def edit_keyframe_form(device_id, phase_id, position):
     return render_template('keyframes_form.html', device=device, keyframes=keyframes)
 
 @keyframes_bp.route('/edit_keyframe', methods=['POST'])
+@login_required
 def edit_keyframe():
     """
     Aggiorna un keyframe esistente nel database.
@@ -69,6 +73,7 @@ def edit_keyframe():
     return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
 
 @keyframes_bp.route('/add_keyframe_form/<int:device_id>/<int:phase_id>', methods=['GET'])
+@login_required
 def add_keyframe_form(device_id, phase_id):
     """
     Restituisce il form per aggiungere un keyframe.
@@ -84,6 +89,7 @@ def add_keyframe_form(device_id, phase_id):
     return render_template('keyframes_form.html', device=device, channels=channels, phase=phase)
 
 @keyframes_bp.route('/add_keyframe', methods=['POST'])
+@login_required
 def add_keyframe():
     """
     Aggiunge un nuovo keyframe al database.
@@ -124,6 +130,7 @@ def add_keyframe():
     return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
 
 @keyframes_bp.route('/delete_keyframe', methods=['POST'])
+@login_required
 def delete_keyframe():
     """
     Elimina un keyframe esistente dal database.

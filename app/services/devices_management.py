@@ -1,6 +1,7 @@
 from config import Config
 
 from flask import Blueprint, render_template, flash, request, redirect, url_for
+from flask_login import login_required
 
 from sqlalchemy.orm import joinedload
 from app.models import Device, Channel, Phase, Keyframe
@@ -9,6 +10,7 @@ from app.models import Device, Channel, Phase, Keyframe
 devices_bp = Blueprint('devices', __name__)
 
 @devices_bp.route('/devices_management/', methods=['GET', 'POST'])
+@login_required
 def devices_management():
     devices = (
         Device.query
@@ -19,6 +21,7 @@ def devices_management():
     return render_template('devices_management.html', devices=devices)
 
 @devices_bp.route('/turn_on_off_device/<int:device_id>', methods=['GET'])
+@login_required
 def turn_on_off_device(device_id):
     """
     Accende o spegne un dispositivo.
@@ -38,6 +41,7 @@ def turn_on_off_device(device_id):
     return redirect(url_for('devices.devices_management'))
 
 @devices_bp.route('/add_device_form/', methods=['GET', 'POST'])
+@login_required
 def add_device_form(form_data=None):
     """
     Mostra il form per aggiungere un dispositivo.
@@ -45,6 +49,7 @@ def add_device_form(form_data=None):
     return render_template('devices_form.html', form_data=form_data)
 
 @devices_bp.route('/add_device/', methods=['POST'])
+@login_required
 def add_device():
     """
     Aggiunge un dispositivo al database.
@@ -127,6 +132,7 @@ def add_device():
 
 
 @devices_bp.route('/delete_device', methods=['POST'])
+@login_required
 def delete_device():
     """
     Elimina un dispositivo dal database.
@@ -153,6 +159,7 @@ def delete_device():
     return redirect(url_for('devices.devices_management'))
 
 @devices_bp.route('/edit_device_form/<int:device_id>', methods=['GET', 'POST'])
+@login_required
 def edit_device_form(device_id):
     """
     Mostra il form per modificare un dispositivo.
@@ -172,6 +179,7 @@ def edit_device_form(device_id):
     return render_template('devices_form.html', device=device, channels=channels)
 
 @devices_bp.route('/edit_device', methods=['POST'])
+@login_required
 def edit_device():
     """
     Modifica un dispositivo esistente nel database.

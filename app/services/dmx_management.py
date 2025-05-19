@@ -24,12 +24,14 @@ def dmx_management():
     return render_template('dmx_management.html')
 
 @dmx_bp.route('/reset_DMX', methods=['POST'])
+@login_required
 def reset_DMX():
     """Resetta i valori dei canali DMX."""
     dmx.reset()
     return jsonify({'message': 'Valori DMX resettati'})
 
 @dmx_bp.route('/start_DMX', methods=['POST'])
+@login_required
 def start_DMX():
     """Avvia la funzione di invio dei valori DMX."""
     if state_manager.is_on():
@@ -42,6 +44,7 @@ def start_DMX():
         return jsonify({'message': 'Invio valori DMX avviato'})
 
 @dmx_bp.route('/stop_DMX', methods=['POST'])
+@login_required
 def stop_DMX():
     """Ferma l'invio dei valori DMX."""
     if state_manager.is_on():
@@ -51,6 +54,7 @@ def stop_DMX():
         return jsonify({'message': 'Il sistema è già spento'})
 
 @dmx_bp.route('/pause_DMX', methods=['POST'])
+@login_required
 def pause_DMX():
     """Mette in pausa l'invio dei valori DMX."""
     if state_manager.is_on():
@@ -60,6 +64,7 @@ def pause_DMX():
         return jsonify({'message': 'Il sistema è spento'})
 
 @dmx_bp.route('/resume_DMX', methods=['POST'])
+@login_required
 def resume_DMX():
     """Riprende l'invio dei valori DMX dalla pausa."""
     if state_manager.is_on():
@@ -69,12 +74,14 @@ def resume_DMX():
         return jsonify({'message': 'Il sistema è spento'})
 
 @dmx_bp.route('/stampa_DMX', methods=['POST'])
+@login_required
 def stampa_DMX():
     """Stampa i valori dei canali DMX sul file di log."""
     dmx.write_channels_on_log(Config.LOG_FILE)
     return jsonify({'message': 'Valori DMX stampati sul log'})
 
 @dmx_bp.route('/get_current_status', methods=['GET'])
+@login_required
 def get_current_status():
     """Restituisce lo stato corrente."""
     return jsonify({'current_phase': state_manager.get_phase(), 'is_on': state_manager.is_on()})

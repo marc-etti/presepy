@@ -1,7 +1,18 @@
 # Presepy - Gestione di un presepe elettronico
 
-## Creazione ambiente virtuale
+## Avvio dell'applicazione
+Una volta scaricato il repository, è possibile avviare l'applicazione in locale. Assicurati di avere installato `Python 3.10` o superiore e di avere `pip` installato.
+Su linux è sufficiente eseguire lo script `avvio.sh` che si occuperà di:
+- Creare un ambiente virtuale
+- Installare le dipendenze
+- Creare il database
+- Avviare l'applicazione
+```bash
+chmod +x avvio.sh
+./avvio.sh
+```
 
+## Creazione ambiente virtuale
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -9,13 +20,11 @@ pip install -r requirements.txt
 ```
 
 ## Avvio dell'applicazione
-
 ```bash
 python run.py
 ```
 
 ## Terminazione applicazione
-
 ```bash
 CTRL+C
 deactivate
@@ -23,7 +32,6 @@ deactivate
 
 # Inizializzazione database
 Per inizializzare il database, è necessario eseguire il comando di inizializzazione del database.
-
 ```bash
 flask init-db
 ```
@@ -31,6 +39,12 @@ flask init-db
 ## Accesso all'interfaccia web
 
 L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/).
+
+## Esecuzione dei test
+Per eseguire i test, è possibile utilizzare il parametro `--test` durante l'esecuzione dello script `run.py`. Questo avvierà l'applicazione in modalità test.
+```bash
+python run.py --test
+```
 
 ## Avvio dell'applicazione con Docker
 

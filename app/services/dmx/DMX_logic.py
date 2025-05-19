@@ -51,10 +51,10 @@ def main_dmx_function(app):
         while state_manager.is_on():                                # Controllo se il sistema è acceso
             
             for phase in phases:
-                state_manager.set_phase(phase.name)                 # Imposto la fase corrente
                 # Controllo se il sistema è acceso
                 if not state_manager.is_on():
                     break
+                state_manager.set_phase(phase.name)                 # Imposto la fase corrente
                 istanti_totali = int(phase.duration/FREQUENCY) # Calcolo il numero totale di istanti per la fase
                 for istante in range(0, istanti_totali): # Per ogni fase, aggiorno i valori istante per istante
                     print(f"Fase: {phase.name} - Istante: {istante} di {istanti_totali} - Tempo: {phase.duration} secondi")

@@ -6,7 +6,7 @@ from app.services.dmx.DMX_data import DMXData
 from app.services.dmx.state_manager import StateManager
 
 from app.services.controllers.faro_controller import FaroController
-from app.models import Phase
+from app.models import Device, Phase
 
 # Creazione dell'istanza DMX
 dmx = DMXData()
@@ -20,21 +20,21 @@ state_manager = StateManager()
 # Fornisco l'evento di pausa al StateManager
 state_manager.set_paused_event(pause_event)
 
-# inizializzazione
-def inizializzazione():
-    """Inizializzazione dei controller"""
-    faro1 = FaroController("Faro1", dmx)
-    faro2 = FaroController("Faro2", dmx)
-    faro3 = FaroController("Faro3", dmx)
-    faro4 = FaroController("Faro4", dmx)
-    led1 = FaroController("LED1", dmx)
-
-    # Lista dei device divisi per tipo
-    devices = {
-        "faro": [faro1, faro2, faro3, faro4],
-        "led": [led1]
-    }
-    return devices
+# Inizializzazione dei dispositivi di tipo "light"
+def init_lights_from_db():
+    """Inizializza i controller dei dispositivi di tipo "light" dal database."""
+    
+    lights = Device.query.filter_by(type="light").all()
+    if not lights:
+        print("Nessun dispositivo di tipo 'lights' trovato nel database")
+        return []
+    else:
+        init_lights = []
+        for light in lights:
+            init_lights.append(
+                FaroController(light.name, dmx)
+            )
+        return init_lights
 
 def main_dmx_function(app):
     """Funzione principale di gestione della giornata.
@@ -46,7 +46,8 @@ def main_dmx_function(app):
         phases = Phase.get_phases() # Carico le fasi dal database
 
         # Inizializzazione
-        devices = inizializzazione()
+        # devices = inizializzazione()
+        lights = init_lights_from_db() # Inizializzo i dispositivi dal database
 
         while state_manager.is_on():                                # Controllo se il sistema è acceso
             
@@ -66,12 +67,9 @@ def main_dmx_function(app):
                         pause_event.wait()                                  # Mi metto in attesa finché l'evento di pausa non viene resettato
                         print(f"Programma ripreso nel thread: {threading.current_thread().name}")
 
-                    # Aggiorno i fari in base alla fase
-                    for faro in devices["faro"]:
-                        faro.update(phase, istante, istanti_totali)
-                    
-                    for led in devices["led"]:
-                        led.update(phase, istante, istanti_totali)
+                    # Aggiorno i devices in base alla fase
+                    for light in lights:
+                        light.update(phase, istante, istanti_totali)
 
                     # Aggiorno il DMX
                     dmx.write_channels_on_log(Config.LOG_FILE)

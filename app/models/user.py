@@ -31,9 +31,17 @@ class User(UserMixin, db.Model):
     
     def check_password(self, password) -> bool:
         return check_password_hash(self.password, password)
+    
+    def add(self) -> None:
+        db.session.add(self)
+        db.session.commit()
         
-    def get_id(self):
-        return str(self.id)
+    def update(self) -> None:
+        db.session.commit()
+    
+    def delete(self) -> None:
+        db.session.delete(self)
+        db.session.commit()
 
             
 

@@ -27,8 +27,8 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
-class TestConfig(Config):
+class TestConfig:
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # Use in-memory database for testing
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     DEBUG = False
     LOG_FILE = 'app/logs/DMX_test.log'  # Log file for testing

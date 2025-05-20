@@ -7,11 +7,11 @@ from app.db import db, init_db
 
 login_manager = LoginManager()
 
-def create_app():
+def create_app(config=None):
     app = Flask(__name__)
 
     # Importa le configurazioni
-    app.config.from_object('config.Config')
+    app.config.from_object(config)
 
     # Importa i blueprint
     from app.services.dmx_management import dmx_bp

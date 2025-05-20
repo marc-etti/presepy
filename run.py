@@ -2,7 +2,7 @@ from app import create_app
 from config import Config
 import click
 
-app = create_app()
+app = create_app(Config)
 
 @click.command()
 @click.option('--test', is_flag=True, help='Esegui i test')

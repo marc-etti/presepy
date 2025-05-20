@@ -26,3 +26,23 @@ class Phase(db.Model):
     def get_phases() -> list:
         """Restituisce tutte le fasi."""
         return Phase.query.order_by(Phase.order).all()
+    
+    def add(self) -> None:
+        """
+        Aggiunge la fase al database.
+        """
+        # L'aggiunta di una fase non è consentita
+        raise NotImplementedError("Aggiungere una fase non è consentito.")
+    
+    def update(self) -> None:
+        """
+        Aggiorna la fase nel database.
+        """
+        db.session.commit()
+    
+    def delete(self) -> None:
+        """
+        Elimina la fase dal database.
+        """
+        # L'eliminazione di una fase non è consentita
+        raise NotImplementedError("Aggiungere una fase non è consentito.")

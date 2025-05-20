@@ -30,14 +30,6 @@ class Keyframe(db.Model):
     def __repr__(self) -> str:
         return f'<Keyframe {self.description} of Channel {self.channel_id} in Phase {self.phase_id}>'
         
-    
-    def update(self) -> None:
-        """
-        Update the keyframe in the database.
-        """
-        # TODO: implement control logic to update the keyframe
-        db.session.commit()
-
     def add(self) -> None:
         """
         Add the keyframe to the database.
@@ -63,11 +55,15 @@ class Keyframe(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self) -> None:
+        """
+        Update the keyframe in the database.
+        """
+        db.session.commit()
+
     def delete(self) -> None:
         """
         Delete the keyframe from the database.
         """
         db.session.delete(self)
         db.session.commit()
-
-

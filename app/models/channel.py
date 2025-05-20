@@ -30,17 +30,33 @@ class Channel(db.Model):
     def __repr__(self) -> str:
         return f'<Channel {self.number} of Device {self.device_id}>'
     
-    def update(self) -> None:
-        """
-        Update the channel in the database.
-        """
-        db.session.commit()
-
     def add(self) -> None:
         """
         Add the channel to the database.
         """
+        # Check if the channel number is valid (1 to 512)
+        if not (1 <= self.number <= 512):
+            raise ValueError(f"Channel number {self.number} is out of range (1-512)")
+        # Check if the value is valid (0-255)
+        if not (0 <= self.value <= 255):
+            raise ValueError(f"Value {self.value} is out of range (0-255)")
         db.session.add(self)
+        db.session.commit()
+
+    def update(self) -> None:
+        """
+        Update the channel in the database.
+        """
+        # Check if the channel number is valid (1 to 512)
+        if not (1 <= self.number <= 512):
+            raise ValueError(f"Channel number {self.number} is out of range (1-512)")
+        # Check if the value is valid (0-255)
+        if not (0 <= self.value <= 255):
+            raise ValueError(f"Value {self.value} is out of range (0-255)")
+        # Check if the channel exists in the database
+        existing_channel = db.session.get(Channel, self.id)
+        if not existing_channel:
+            raise ValueError(f"Channel with id {self.id} does not exist")
         db.session.commit()
 
     def delete(self) -> None:

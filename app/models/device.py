@@ -23,22 +23,22 @@ class Device(db.Model):
     status: Mapped[str] = mapped_column(String(80), nullable=False)
 
     # Relationships one to many with Channel
-    channels: Mapped[list["Channel"]] = relationship("Channel", back_populates="device") # type: ignore
+    channels: Mapped[list["Channel"]] = relationship("Channel", back_populates="device", cascade="all, delete-orphan") # type: ignore
 
     def __repr__(self) -> str:
         return f'<Device {self.name}>'
     
-    def update(self) -> None:
-        """
-        Update the device in the database.
-        """
-        db.session.commit()
-
     def add(self) -> None:
         """
         Add the device to the database.
         """
         db.session.add(self)
+        db.session.commit()
+
+    def update(self) -> None:
+        """
+        Update the device in the database.
+        """
         db.session.commit()
 
     def delete(self) -> None:
@@ -47,4 +47,3 @@ class Device(db.Model):
         """
         db.session.delete(self)
         db.session.commit()
-    

@@ -10,8 +10,10 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
 
+    # Importa le configurazioni
     app.config.from_object('config.Config')
 
+    # Importa i blueprint
     from app.services.dmx_management import dmx_bp
     from app.services.devices_management import devices_bp
     from app.services.keyframes_management import keyframes_bp
@@ -38,13 +40,14 @@ def create_app():
         from app.models.user import User
         return User.query.get(int(user_id))    
 
-    # handle the 404 error
+    # Handle per l'errore 404
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('404.html'), 404
 
     return app
 
+# Comando per inizializzare il database
 @click.command("init-db")
 @with_appcontext
 def init_db_command():

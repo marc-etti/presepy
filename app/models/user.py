@@ -42,6 +42,3 @@ class User(UserMixin, db.Model):
     def delete(self) -> None:
         db.session.delete(self)
         db.session.commit()
-
-            
-

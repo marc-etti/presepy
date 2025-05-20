@@ -59,6 +59,7 @@ def edit_keyframe():
     Aggiorna un keyframe esistente nel database.
     """
     form_data = request.form
+    edited_keyframes = []
     for key, value in form_data.items():
         if key.startswith('slider-'):
             keyframe_id = int(key.split('-')[1])
@@ -67,7 +68,18 @@ def edit_keyframe():
             if keyframe:
                 keyframe.value = int(value)
                 keyframe.description = description
-                keyframe.update()
+                edited_keyframes.append(keyframe)
+
+    try:
+        for keyframe in edited_keyframes:
+            keyframe.validate()
+
+        for keyframe in edited_keyframes:
+            keyframe.update()
+    except Exception as e:
+        flash(f'Errore durante l\'aggiornamento del keyframe: {str(e)}', 'error')
+        return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
+    
     device_id = int(form_data.get('device_id'))
     flash('Keyframe updated successfully', 'success')
     return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
@@ -119,12 +131,17 @@ def add_keyframe():
     if len(new_keyframes) != len(channels_ids):
         flash('Il numero di keyframe non corrisponde al numero di canali', 'error')
         return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
-    for keyframe in new_keyframes:
-        try:
+    
+    try:
+        for keyframe in new_keyframes:
+            keyframe.validate()
+
+        for keyframe in new_keyframes:
             keyframe.add()
-        except Exception as e:
-            flash(f'Error adding keyframe: {str(e)}', 'error')
-            return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
+
+    except Exception as e:
+        flash(f'Errore durante l\'aggiunta del keyframe: {str(e)}', 'error')
+        return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
             
     flash('Keyframe aggiunto correttamente', 'success')
     return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
@@ -157,9 +174,9 @@ def delete_keyframe():
         for keyframe in keyframes:
             keyframe.delete()
     except Exception as e:
-        flash(f'Error deleting keyframe: {str(e)}', 'error')
+        flash(f'Errore durante l\'eliminazione del keyframe: {str(e)}', 'error')
         return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
 
-    flash('Keyframe deleted successfully', 'success')
+    flash('Keyframe eliminato con successo', 'success')
 
     return redirect(url_for('keyframes.keyframes_management', device_id=device_id))

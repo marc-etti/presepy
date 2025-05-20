@@ -31,8 +31,8 @@ class Phase(db.Model):
         """
         Aggiunge la fase al database.
         """
-        # L'aggiunta di una fase non è consentita
-        raise NotImplementedError("Aggiungere una fase non è consentito.")
+        db.session.add(self)
+        db.session.commit()
     
     def update(self) -> None:
         """
@@ -44,5 +44,6 @@ class Phase(db.Model):
         """
         Elimina la fase dal database.
         """
-        # L'eliminazione di una fase non è consentita
-        raise NotImplementedError("Aggiungere una fase non è consentito.")
+        db.session.delete(self)
+        db.session.commit()
+            

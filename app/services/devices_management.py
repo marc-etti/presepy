@@ -62,16 +62,6 @@ def add_device():
     dmx_channels = int(form_data.get('dmx_channels'))
     # status = form_data.get('status')
     status = "on"
-
-    if not name or not type or not subtype or not dmx_channels or not status:
-        flash('Tutti i campi sono obbligatori', 'error')
-        return render_template('devices_form.html', form_data=form_data)
-
-    # Verifica se il nome del dispositivo esiste già
-    existing_device = Device.query.filter_by(name=name).first()
-    if existing_device:
-        flash('Nome del dispositivo già usato', 'error')
-        return render_template('devices_form.html', form_data=form_data)
     
     # Recupero gli indirizzi dei canali dal form
     channels = []
@@ -91,43 +81,39 @@ def add_device():
 
             return render_template('devices_form.html', form_data=form_data)
     
-    # Controllo se gli indirizzi dei canali non siano già utilizzati
-    for channel in channels:
-        existing_channel = Channel.query.filter_by(number=channel['number']).first()
-        if existing_channel:
-            flash(f'Il canale {channel["number"]} è già utilizzato', 'error')
-            return render_template('devices_form.html', form_data=form_data)
-    
-    # Crea un nuovo dispositivo lo aggiunge al database e ottene il suo ID
-    new_device = Device(
-        name=name,
-        type=type,
-        subtype=subtype,
-        dmx_channels=dmx_channels,
-        status=status
-    )
     try:
-        new_device.add()
-    except Exception as e:
-        flash(f'Errore durante l\'aggiunta del dispositivo: {e}', 'error')
-        return render_template('devices_form.html', form_data=form_data)
-    flash(f'Dispositivo {name} aggiunto con successo', 'success')
-
-    # Aggiungi i canali associati al dispositivo
-    for channel in channels:
-        new_channel = Channel(
-            device_id=new_device.id,
-            number=int(channel['number']),
-            type=channel['type'],
-            value=int(channel['value'])
+        # Crea un nuovo dispositivo lo aggiunge al database e ottene il suo ID
+        new_device = Device(
+            name=name,
+            type=type,
+            subtype=subtype,
+            dmx_channels=dmx_channels,
+            status=status
         )
-        try:
-            new_channel.add()
-        except Exception as e:
-            flash(f'Errore durante l\'aggiunta del canale: {e}', 'error')
-            return render_template('devices_form.html', form_data=form_data)
-    flash(f'Canali per il dispositivo {name} aggiunti con successo', 'success')
+        new_device.add()
 
+        new_channels = []
+        for channel in channels:
+            new_channel = Channel(
+                device_id=new_device.id,
+                number=int(channel['number']),
+                type=channel['type'],
+                value=int(channel['value'])
+            )
+            new_channel.validate()
+            new_channels.append(new_channel)
+        
+        for channel in new_channels:
+            channel.add()
+
+    except Exception as e:
+            flash(f'Errore durante l\'aggiunta del dispositivo: {e}', 'error')
+            # Se c'è un errore, elimina il dispositivo e i canali associati
+            if new_device:
+                new_device.delete()
+            return render_template('devices_form.html', form_data=form_data)
+   
+    flash(f'Dispositivo aggiunto con successo', 'success')
     return redirect(url_for('devices.devices_management'))
 
 

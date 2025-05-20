@@ -28,18 +28,15 @@ def test_get_phases(app):
         assert len(phases) == 4
         assert [p.name for p in phases] == ["ALBA", "GIORNO", "SERA", "NOTTE"]
 
-def test_add_not_implemented(app):
+def test_add_phase(app):
     with app.app_context():
-        phase = Phase.query.first()
-        with pytest.raises(NotImplementedError):
-            phase.add()
-
-def test_delete_not_implemented(app):
-    with app.app_context():
-        phase = Phase.query.first()
-        with pytest.raises(NotImplementedError):
-            phase.delete()
-
+        new_phase = Phase(name="TEST", duration=300, order=5)
+        new_phase.add()
+        added_phase = Phase.query.filter_by(name="TEST").first()
+        assert added_phase is not None
+        assert added_phase.duration == 300
+        assert added_phase.order == 5
+        
 def test_update_phase(app):
     with app.app_context():
         phase = Phase.query.filter_by(name="ALBA").first()
@@ -47,3 +44,11 @@ def test_update_phase(app):
         phase.update()
         updated = Phase.query.filter_by(name="ALBA").first()
         assert updated.duration == 700
+
+def test_delete_phase(app):
+    with app.app_context():
+        phase = Phase.query.filter_by(name="ALBA").first()
+        phase_id = phase.id
+        phase.delete()
+        deleted = db.session.get(Phase, phase_id)
+        assert deleted is None

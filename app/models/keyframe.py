@@ -28,30 +28,30 @@ class Keyframe(db.Model):
     phase: Mapped["Phase"] = relationship("Phase", back_populates="keyframes") # type: ignore
 
     def __repr__(self) -> str:
-        return f'<Keyframe {self.description} of Channel {self.channel_id} in Phase {self.phase_id}>'
+        return f'<Keyframe {self.description} of Channel {self.channel.number} in Phase {self.phase.name}>'
+    
+    def validate(self) -> None:
+        if not (0 <= self.value <= 255):
+            raise ValueError(f"Il valore scelto: {self.value} è fuori dal range (0-255)")
+        if not (0 <= self.position <= 100):
+            raise ValueError(f"La posizione scelta: {self.position} è fuori dal range (0-100)")
+        if not self.description:
+            raise ValueError("Description cannot be empty")
+        existing_keyframe = db.session.query(Keyframe).filter_by(
+            channel_id=self.channel_id,
+            phase_id=self.phase_id,
+            position=self.position
+        ).first()
+        if existing_keyframe and (not hasattr(self, "id") or existing_keyframe.id != self.id):
+            raise ValueError(
+                f"Esiste già un keyframe nella posizione {self.position} per il canale {existing_keyframe.channel.number} nella fase {existing_keyframe.phase.name}"
+            )
         
     def add(self) -> None:
         """
         Add the keyframe to the database.
         """
-        # Controllo che il valore sia compreso tra 0 e 255
-        if not (0 <= self.value <= 255):
-            raise ValueError(f"Value {self.value} is out of range (0-255)")
-        # Controllo che la posizione sia compresa tra 0 e 100
-        if not (0 <= self.position <= 100):
-            raise ValueError(f"Position {self.position} is out of range (0-100)")
-        # Controllo che la descrizione non sia vuota
-        if not self.description:
-            raise ValueError("Description cannot be empty")
-        # Controllo che non esista già un keyframe nella stessa posizione
-        existing_keyframe = Keyframe.query.filter_by(
-            channel_id=self.channel_id,
-            phase_id=self.phase_id,
-            position=self.position
-        ).first()
-        if existing_keyframe:
-            raise ValueError(f"Keyframe already exists at position {self.position} for channel {self.channel_id} in phase {self.phase_id}")
-
+        self.validate()
         db.session.add(self)
         db.session.commit()
 
@@ -59,6 +59,7 @@ class Keyframe(db.Model):
         """
         Update the keyframe in the database.
         """
+        self.validate()
         db.session.commit()
 
     def delete(self) -> None:

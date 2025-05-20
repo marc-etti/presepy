@@ -28,10 +28,30 @@ class Device(db.Model):
     def __repr__(self) -> str:
         return f'<Device {self.name}>'
     
+    def validate(self) -> None:
+        """
+        Validate the device attributes.
+        """
+        if not self.name:
+            raise ValueError("Il nome del dispositivo non può essere vuoto")
+        if not self.type:
+            raise ValueError("Il tipo del dispositivo non può essere vuoto")
+        if not self.subtype:
+            raise ValueError("Il sottotipo del dispositivo non può essere vuoto")
+        if not self.dmx_channels:
+            raise ValueError("Il numero di canali dmx del dispositivo non può essere vuoto")
+        if not self.status:
+            raise ValueError("Lo stato del dispositivo non può essere vuoto")
+        # Check if the name is not already in use by another device
+        existing_device = db.session.query(Device).filter_by(name=self.name).first()
+        if existing_device and (not hasattr(self, "id") or existing_device.id != self.id):
+            raise ValueError(f"Il nome del dispositivo {existing_device.name} è già in uso")
+    
     def add(self) -> None:
         """
         Add the device to the database.
         """
+        self.validate()
         db.session.add(self)
         db.session.commit()
 
@@ -39,6 +59,7 @@ class Device(db.Model):
         """
         Update the device in the database.
         """
+        self.validate()
         db.session.commit()
 
     def delete(self) -> None:

@@ -9,28 +9,19 @@ from app import db
 def setup_database(app):
     with app.app_context():
         db.create_all()
-        # Crea un device e una phase di esempio
+        # Crea un device esempio
         device = Device(name="TestDevice", type="light", subtype="LED", dmx_channels=3, status="on")
         device.add()
-        phase = Phase(id=1, name="ALBA", duration=600, order=1)
+        # Crea un phase esempio
+        phase = Phase(id=1, name="ALBA", duration=600, order=1)        
         db.session.add(phase)
+        # Crea un channel esempio
+        channel = Channel(device_id=device.id, number=1, type="led_red", value=128)
+        db.session.add(channel)
         db.session.commit()
         yield
         db.session.remove()
         db.drop_all()
-
-@pytest.fixture
-def channel(app):
-    with app.app_context():
-        device = Device.query.first()
-        channel = Channel(device_id=device.id, number=1, type="led_red", value=128)
-        channel.add()
-        yield channel
-
-@pytest.fixture
-def phase(app):
-    with app.app_context():
-        return Phase.query.first()
 
 @pytest.fixture
 def keyframe_data(channel, phase):

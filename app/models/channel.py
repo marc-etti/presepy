@@ -28,18 +28,40 @@ class Channel(db.Model):
     keyframes: Mapped[list["Keyframe"]] = relationship("Keyframe", back_populates="channel") # type: ignore
 
     def __repr__(self) -> str:
-        return f'<Channel {self.number} of Device {self.device_id}>'
+        return f'<Canale numero: {self.number} associato al dispositivo: {self.device.name}>'
+    
+    def validate(self) -> None:
+        """
+        Validate the channel attributes.
+        """
+        # Check if the channel number is not already in use by another device
+        existing_channel = db.session.query(Channel).filter_by(number=self.number).first()
+        if existing_channel and existing_channel.id != self.id:
+            raise ValueError(f"Il canale numero {existing_channel.number} è già usato dal dispositivo {existing_channel.device.name}")
+        # Check if the channel number is valid (1 to 512)
+        if not (1 <= self.number <= 512):
+            raise ValueError(f"Il numero del canale scelto: {self.number} è fuori dal range (1-512)")
+        # Check if the value is valid (0-255)
+        if not (0 <= self.value <= 255):
+            raise ValueError(f"Il valore scelto: {self.value} è fuori dal range (0-255)")
+        # Check if the type is not empty
+        if not self.type:
+            raise ValueError("Il tipo del canale non può essere vuoto")
+        # Check if the number is not used by another device
+        existing_channel = db.session.query(Channel).filter_by(
+            device_id=self.device_id,
+            number=self.number
+        ).first()
+        if existing_channel and (not hasattr(self, "id") or existing_channel.id != self.id):
+            raise ValueError(
+                f"Il canale con numero {existing_channel.number} è già usato dal dispositivo {existing_channel.device.name}"
+            )
     
     def add(self) -> None:
         """
         Add the channel to the database.
         """
-        # Check if the channel number is valid (1 to 512)
-        if not (1 <= self.number <= 512):
-            raise ValueError(f"Channel number {self.number} is out of range (1-512)")
-        # Check if the value is valid (0-255)
-        if not (0 <= self.value <= 255):
-            raise ValueError(f"Value {self.value} is out of range (0-255)")
+        self.validate()
         db.session.add(self)
         db.session.commit()
 
@@ -47,16 +69,7 @@ class Channel(db.Model):
         """
         Update the channel in the database.
         """
-        # Check if the channel number is valid (1 to 512)
-        if not (1 <= self.number <= 512):
-            raise ValueError(f"Channel number {self.number} is out of range (1-512)")
-        # Check if the value is valid (0-255)
-        if not (0 <= self.value <= 255):
-            raise ValueError(f"Value {self.value} is out of range (0-255)")
-        # Check if the channel exists in the database
-        existing_channel = db.session.get(Channel, self.id)
-        if not existing_channel:
-            raise ValueError(f"Channel with id {self.id} does not exist")
+        self.validate()
         db.session.commit()
 
     def delete(self) -> None:

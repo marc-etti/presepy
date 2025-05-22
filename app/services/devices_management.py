@@ -116,34 +116,6 @@ def add_device():
     flash(f'Dispositivo aggiunto con successo', 'success')
     return redirect(url_for('devices.devices_management'))
 
-
-@devices_bp.route('/delete_device', methods=['POST'])
-@login_required
-def delete_device():
-    """
-    Elimina un dispositivo dal database.
-    """
-    device_id = int(request.form.get('device_id'))
-    device = Device.query.filter_by(id=device_id).first()
-    if device:
-        # Elimina i canali e i keyframes associati al dispositivo
-        channels = Channel.query.filter_by(device_id=device.id).all()
-        for channel in channels:
-            keyframes = Keyframe.query.filter_by(channel_id=channel.id).all()
-            if keyframes:   
-                for keyframe in keyframes:
-                    # Elimina i keyframes associati al canale
-                    keyframe.delete()
-            # Elimina il canale
-            channel.delete()
-        # Elimina il dispositivo
-        device.delete()
-        flash(f'Dispositivo {device.name} eliminato con successo', 'success')
-    else:
-        flash('Dispositivo non trovato', 'error')
-    
-    return redirect(url_for('devices.devices_management'))
-
 @devices_bp.route('/edit_device_form/<int:device_id>', methods=['GET', 'POST'])
 @login_required
 def edit_device_form(device_id):
@@ -175,56 +147,68 @@ def edit_device():
     name = form_data.get('name')
     type = form_data.get('type')
     subtype = form_data.get('subtype')
-
-    if not name or not type or not subtype:
-        flash('Tutti i campi sono obbligatori', 'error')
-        return redirect(url_for('devices.edit_device_form', device_id=device_id))
     
-    # Verifica se il nome del dispositivo esiste già
-    existing_device = Device.query.filter_by(name=name).first()
-    if existing_device and existing_device.id != device_id:
-        flash('Nome del dispositivo già usato', 'error')
-        return redirect(url_for('devices.edit_device_form', device_id=device_id))
-    
-    # Modifica il dispositivo e aggiorna il database
-    device = Device.query.filter_by(id=device_id).first()
-    if device:
-        device.name = name
-        device.type = type
-        device.subtype = subtype
-    else:
-        flash('Dispositivo non trovato', 'error')
-        return redirect(url_for('devices.devices_management'))
-    
-    # Modifica i canali associati al dispositivo
-    for channel in device.channels:
-        channel_number = int(form_data.get(f'channel-number-{channel.id}'))
-        # controllo se il canale non sia già utilizzato
-        existing_channel = Channel.query.filter_by(number=channel_number).first()
-        if existing_channel and existing_channel.id != channel.id:
-            flash(f'Il canale {channel_number} è già utilizzato', 'error')
-            return redirect(url_for('devices.edit_device_form', device_id=device_id))
+    try:
+        # Modifica il dispositivo e aggiorna il database
+        device = Device.query.filter_by(id=device_id).first()
+        if device:
+            device.name = name
+            device.type = type
+            device.subtype = subtype
+        else:
+            raise ValueError("Dispositivo non trovato")
+        
+        # Modifica i canali associati al dispositivo
+        for channel in device.channels:
+            channel_number = int(form_data.get(f'channel-number-{channel.id}'))
+            channel_type = form_data.get(f'channel-type-{channel.id}')
+            channel_value = int(form_data.get(f'channel-value-{channel.id}'))
 
-        channel_type = form_data.get(f'channel-type-{channel.id}')
-        channel_value = int(form_data.get(f'channel-value-{channel.id}'))
-
-        if channel_number and channel_type and channel_value:
             channel.number = channel_number
             channel.type = channel_type
             channel.value = channel_value
-            try:
-                channel.update()
-            except Exception as e:
-                flash(f'Errore durante l\'aggiornamento del canale: {e}', 'error')
-                return redirect(url_for('devices.edit_device_form', device_id=device_id))
+            channel.validate()
 
-    # Aggiorno il dispositivo       
-    try: 
-        device.update()
+        device.validate()
     except Exception as e:
         flash(f'Errore durante l\'aggiornamento del dispositivo: {e}', 'error')
         return redirect(url_for('devices.edit_device_form', device_id=device_id))
-    # Flash success message
-    flash(f'Dispositivo {name} modificato con successo', 'success')
 
+    # Se tutto va bene, aggiorna il dispositivo e i canali
+    try:
+        device.update()
+        for channel in device.channels:
+            channel.update()
+    except Exception as e:
+        flash(f'Errore durante il salvataggio del dispositivo: {e}', 'error')
+        return redirect(url_for('devices.edit_device_form', device_id=device_id))
+    # Se tutto va bene, mostra un messaggio di successo
+    flash(f'Dispositivo {name} modificato con successo', 'success')
+    return redirect(url_for('devices.devices_management'))
+
+@devices_bp.route('/delete_device', methods=['POST'])
+@login_required
+def delete_device():
+    """
+    Elimina un dispositivo dal database.
+    """
+    device_id = int(request.form.get('device_id'))
+    device = Device.query.filter_by(id=device_id).first()
+    if device:
+        # Elimina i canali e i keyframes associati al dispositivo
+        channels = Channel.query.filter_by(device_id=device.id).all()
+        for channel in channels:
+            keyframes = Keyframe.query.filter_by(channel_id=channel.id).all()
+            if keyframes:   
+                for keyframe in keyframes:
+                    # Elimina i keyframes associati al canale
+                    keyframe.delete()
+            # Elimina il canale
+            channel.delete()
+        # Elimina il dispositivo
+        device.delete()
+        flash(f'Dispositivo {device.name} eliminato con successo', 'success')
+    else:
+        flash('Dispositivo non trovato', 'error')
+    
     return redirect(url_for('devices.devices_management'))

@@ -16,7 +16,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 class Device(db.Model):
     __tablename__ = 'device'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
     type: Mapped[str] = mapped_column(String(80), nullable=False)
     subtype: Mapped[str] = mapped_column(String(80), nullable=False)
     dmx_channels: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -43,9 +43,13 @@ class Device(db.Model):
         if not self.status:
             raise ValueError("Lo stato del dispositivo non può essere vuoto")
         # Check if the name is not already in use by another device
-        existing_device = db.session.query(Device).filter_by(name=self.name).first()
-        if existing_device and (not hasattr(self, "id") or existing_device.id != self.id):
-            raise ValueError(f"Il nome del dispositivo {existing_device.name} è già in uso")
+        if self.id is None:
+            if db.session.query(Device).filter_by(name=self.name).first() is not None:
+                raise ValueError(f"Il nome del dispositivo {self.name} è già in uso")
+        else:
+            if db.session.query(Device).filter_by(name=self.name).filter(Device.id != self.id).first() is not None:
+                raise ValueError(f"Il nome del dispositivo {self.name} è già in uso")
+            
     
     def add(self) -> None:
         """

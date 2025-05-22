@@ -1,4 +1,5 @@
 import click
+from config import Config
 
 from flask import Flask, render_template
 from flask.cli import with_appcontext
@@ -7,11 +8,11 @@ from app.db import db, init_db
 
 login_manager = LoginManager()
 
-def create_app(config=None):
+def create_app(myConfig=Config):
     app = Flask(__name__)
 
     # Importa le configurazioni
-    app.config.from_object(config)
+    app.config.from_object(myConfig)
 
     # Importa i blueprint
     from app.services.dmx_management import dmx_bp

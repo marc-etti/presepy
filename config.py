@@ -28,6 +28,7 @@ class Config:
 
 
 class TestConfig:
+    SECRET_KEY = 'mysecretkey'
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     DEBUG = False

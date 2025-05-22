@@ -22,6 +22,7 @@ def register():
             else:
                 new_user = User(username=username, password=password)
                 new_user.add()
+                flash(f"Registrazione completata per {username}.", 'success')
                 return redirect(url_for("auth.login"))
 
         flash(error)
@@ -34,12 +35,18 @@ def login():
         username = request.form['username']
         password = request.form['password']
         error = None
-        user = User.query.filter_by(username=username).first()
 
-        if user is None:
-            error = 'Username non trovato.'
-        elif not user.check_password(password):
-            error = 'Password errata.'
+        if not username:
+            error = 'Username è obbligatorio.'
+        elif not password:
+            error = 'Password è obbligatoria.'
+
+        if error is None:
+            user = User.query.filter_by(username=username).first()
+            if user is None:
+                error = 'Username non trovato.'
+            elif not user.check_password(password):
+                error = 'Password errata.'
 
         if error is None:
             login_user(user)
@@ -64,7 +71,7 @@ def profile():
 @login_required
 def admin():
     if not current_user.is_admin:
-        flash('Non hai i permessi per accedere a questa pagina.')
+        flash('Non hai i permessi per accedere a questa pagina.', 'error')
         return redirect(url_for('dmx.index'))
     return render_template('auth/admin.html', users=User.query.all())
 

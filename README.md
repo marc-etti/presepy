@@ -41,9 +41,8 @@ flask init-db
 L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/).
 
 ## Esecuzione dei test
-Per eseguire i test, è possibile utilizzare il parametro `--test` durante l'esecuzione dello script `run.py`. Questo avvierà l'applicazione in modalità test.
 ```bash
-python run.py --test
+pytest
 ```
 
 ## Avvio dell'applicazione con Docker

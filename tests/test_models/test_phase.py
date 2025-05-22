@@ -38,3 +38,12 @@ def test_phase_repr(phase_data, app):
         
         assert repr(phase) == f"<Fase: {phase.name} di durata {phase.duration} secondi>"
         
+def test_get_phases(app):
+    with app.app_context():
+        phases = Phase.get_phases()
+        
+        assert len(phases) > 0
+        assert all(isinstance(phase, Phase) for phase in phases)
+        assert all(phase.name is not None for phase in phases)
+        assert all(phase.duration is not None for phase in phases)
+        assert all(phase.order is not None for phase in phases)

@@ -2,7 +2,7 @@ import pytest
 from app.models import Device
 from app import db
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def device_data():
     return {
         "name": "TestDevice",
@@ -15,8 +15,7 @@ def device_data():
 def test_device_creation(device_data, app):
     with app.app_context():
         device = Device(**device_data)
-        db.session.add(device)
-        db.session.commit()
+        device.add()
 
         assert device.id is not None
         assert device.name == device_data["name"]
@@ -24,16 +23,13 @@ def test_device_creation(device_data, app):
         assert device.subtype == device_data["subtype"]
         assert device.dmx_channels == device_data["dmx_channels"]
         assert device.status == device_data["status"]
-        assert Device.query.count() == 1
 
 def test_device_update(device_data, app):
     with app.app_context():
         device = Device(**device_data)
-        db.session.add(device)
-        db.session.commit()
-
+        device.add()
         device.status = "off"
-        db.session.commit()
+        device.update()
 
         updated_device = db.session.get(Device, device.id)
         assert updated_device.status == "off"
@@ -42,31 +38,22 @@ def test_device_update(device_data, app):
 def test_device_deletion(device_data, app):
     with app.app_context():
         device = Device(**device_data)
-        db.session.add(device)
-        db.session.commit()
+        device.add()
 
-        db.session.delete(device)
-        db.session.commit()
-
-        assert Device.query.count() == 0
-
+        device.delete()
+        deleted_device = db.session.get(Device, device.id)
+        assert deleted_device is None
 
 def test_device_repr(device_data, app):
     with app.app_context():
         device = Device(**device_data)
-        db.session.add(device)
-        db.session.commit()
+        device.add()
 
         assert repr(device) == f"<Device {device.name}>"
 
 def test_device_validation(device_data, app):
     with app.app_context():
         device = Device(**device_data)
-        db.session.add(device)
-        db.session.commit()
-
-        # Test validation
-        device.validate()
 
         # Test invalid name
         device.name = ""

@@ -38,7 +38,7 @@ def init_db():
             print("Devices added successfully.")
 
             # Recupero gli ID dei dispositivi appena creati
-            devices_in_db = db.session.query(Device).all()
+            devices_in_db = db.session.query(Device).orde
 
             # Popolamento Tabella Channel
             channels = [

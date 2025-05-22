@@ -21,7 +21,7 @@ class Phase(db.Model):
     keyframes: Mapped[list["Keyframe"]] = relationship("Keyframe", back_populates="phase") # type: ignore
 
     def __repr__(self) -> str:
-        return f'<Phase {self.name}>'
+        return f'<Fase: {self.name} di durata {self.duration} secondi>'
     
     def get_phases() -> list:
         """Restituisce tutte le fasi."""
@@ -31,19 +31,17 @@ class Phase(db.Model):
         """
         Aggiunge la fase al database.
         """
-        db.session.add(self)
-        db.session.commit()
+        raise NotImplementedError("La funzione add non è ancora implementata")
     
     def update(self) -> None:
         """
         Aggiorna la fase nel database.
         """
-        db.session.commit()
+        raise NotImplementedError("La funzione update non è ancora implementata")
     
     def delete(self) -> None:
         """
         Elimina la fase dal database.
         """
-        db.session.delete(self)
-        db.session.commit()
+        raise NotImplementedError("La funzione delete non è ancora implementata")
             

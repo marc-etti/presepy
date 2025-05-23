@@ -37,7 +37,6 @@ flask init-db
 ```
 
 ## Accesso all'interfaccia web
-
 L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/).
 
 ## Esecuzione dei test

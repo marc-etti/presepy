@@ -30,6 +30,7 @@ def app():
             Channel(device_id=devices[0].id, number=1, type="RED", value=255),
             Channel(device_id=devices[0].id, number=2, type="GREEN", value=128),
             Channel(device_id=devices[0].id, number=3, type="BLUE", value=0),
+            Channel(device_id=devices[1].id, number=4, type="INTENSITY", value=255),
         ]
         db.session.bulk_save_objects(channels)
         db.session.commit()

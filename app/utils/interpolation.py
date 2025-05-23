@@ -16,12 +16,13 @@ def interpolate_value(
     :param current_time: The current time for which the value is to be interpolated.
     :return: The interpolated value of the channel.
     """
+    if start_time > end_time:
+        raise ValueError("Start time must be less than or equal to end time.")
     if current_time < start_time:
         return start_value
     if current_time > end_time:
         return end_value
-    if start_time > end_time:
-        raise ValueError("Start time must be less than or equal to end time.")
+
 
     if start_time == end_time:
         return start_value

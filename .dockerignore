@@ -44,3 +44,6 @@ __pycache__/
 
 # File json nella cartella data
 data/*.json
+
+# Hypothesis
+.hypothesis/

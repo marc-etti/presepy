@@ -31,9 +31,11 @@ def create_app(myConfig=Config):
     app.cli.add_command(init_db_command)
 
     # Inizializza Flask-Login
-    login_manager = LoginManager()
-    login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message = "Devi essere autenticato per accedere a questa pagina."
+    login_manager.login_message_category = "error"
+
 
     # Associa il modello User a Flask-Login
     @login_manager.user_loader

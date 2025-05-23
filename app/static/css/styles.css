@@ -339,16 +339,6 @@ footer {
     color: #333;
 }
 
-.dmx-div #message_box {
-    display: inline-block;
-    min-height: 20px;
-    padding: 5px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    min-width: 200px;
-}
-
 /* Stile dei pulsanti */
 .dmx-div button {
     width: 48%;

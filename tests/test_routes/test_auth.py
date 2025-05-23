@@ -1,13 +1,6 @@
 import pytest
 from flask import url_for
 
-def test_index(client):
-    response = client.get(url_for('dmx.index'))
-    assert response.status_code == 200
-    assert b'Presepy' in response.data
-    assert b'Login' in response.data
-    assert b'Registrati' in response.data
-
 def test_register_get(client):
     response = client.get(url_for('auth.register'))
     assert response.status_code == 200

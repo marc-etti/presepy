@@ -23,7 +23,7 @@ def init_db():
             ]
             db.session.bulk_save_objects(users)
             db.session.commit()
-            print("Users added successfully.")
+            print("Utenti aggiunti correttamente.")
 
             # Popolamento Tabella Device
             devices = [
@@ -35,10 +35,10 @@ def init_db():
             ]
             db.session.bulk_save_objects(devices)
             db.session.commit()
-            print("Devices added successfully.")
+            print("Dispositivi aggiunti correttamente.")
 
             # Recupero gli ID dei dispositivi appena creati
-            devices_in_db = db.session.query(Device).orde
+            devices_in_db = db.session.query(Device).order_by(Device.id).all()
 
             # Popolamento Tabella Channel
             channels = [
@@ -53,10 +53,10 @@ def init_db():
             ]
             db.session.bulk_save_objects(channels)
             db.session.commit()
-            print("Channels added successfully.")
+            print("Canali aggiunti correttamente.")
 
             # Recupero gli ID dei canali appena creati
-            channels_in_db = db.session.query(Channel).all()
+            channels_in_db = db.session.query(Channel).order_by(Channel.id).all()
 
             # Popolamento Tabella Phase
             phases = [
@@ -67,10 +67,10 @@ def init_db():
             ]
             db.session.bulk_save_objects(phases)
             db.session.commit()
-            print("Phases added successfully.")
+            print("Fasi aggiunte correttamente.")
 
             # Recupero gli ID delle fasi appena create
-            phases_in_db = db.session.query(Phase).all()
+            phases_in_db = db.session.query(Phase).order_by(Phase.id).all()
 
             # Popolamento Tabella Keyframe
             keyframes = [
@@ -173,15 +173,14 @@ def init_db():
             ]
             db.session.bulk_save_objects(keyframes)
             db.session.commit()
-            print("Keyframes added successfully.")
+            print("Keyframes aggiunti correttamente.")
 
         except Exception as e:
             # Rollback in caso di errore
             db.session.rollback()
-            print(f"Error occurred while adding data: {e}")
+            print(f"Errore nel popolamento del database: {e}")
 
         finally:    
             # Chiudi la sessione
             db.session.close()
-            print("Database seeded successfully.")
-
+            print("Database popolato e sessione chiusa.")

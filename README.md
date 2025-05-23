@@ -61,5 +61,5 @@ docker pull andreamarchetti/presepy:1.0
 ```
 ### Esecuzione dell'immagine
 ```bash
- docker run -p 5000:5000 andreamarchetti/presepy:1.0
+docker run -p 5000:5000 andreamarchetti/presepy:1.0
 ```

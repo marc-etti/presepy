@@ -56,4 +56,4 @@ def create_app(myConfig=Config):
 def init_db_command():
     """Clear existing data and create new tables."""
     init_db()
-    click.echo("Initialized the database.")
+    click.echo("Database inizializzato.")

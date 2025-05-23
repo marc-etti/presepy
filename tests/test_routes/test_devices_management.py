@@ -2,16 +2,6 @@ import pytest
 from flask import url_for
 from app.models import Device
 
-# @pytest.fixture()
-# def login(client):
-#     def do_login(username='testuser1', password='password1'):
-#         return client.post(
-#             url_for('auth.login'),
-#             data={'username': username, 'password': password},
-#             follow_redirects=True
-#         )
-#     return do_login
-
 def test_devices_management_requires_login(client):
     response = client.get(url_for('devices.devices_management'), follow_redirects=True)
     assert b'Login' in response.data or response.status_code == 200

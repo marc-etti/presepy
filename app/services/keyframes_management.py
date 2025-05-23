@@ -10,12 +10,17 @@ from app import db
 # Creazione del Blueprint
 keyframes_bp = Blueprint('keyframes', __name__)
 
+@keyframes_bp.route('/keyframes_management/', methods=['GET', 'POST'])
 @keyframes_bp.route('/keyframes_management/<int:device_id>', methods=['GET', 'POST'])
 @login_required
 def keyframes_management(device_id):
     """
     Restituisce le informazioni di un dispositivo specifico.
     """
+    if device_id is None:
+        flash('Non è stato selezionato nessun dispositivo', 'error')
+        return redirect(url_for('devices.devices_management'))
+
     device = Device.query.filter_by(id=device_id).first()
     phases = Phase.query.order_by(Phase.order).all()
     channels = (
@@ -48,7 +53,7 @@ def edit_keyframe_form(device_id, phase_id, position):
         .all()
     )
     if not keyframes:
-        flash('Keyframe not found', 'error')
+        flash('Keyframe non trovato', 'error')
         return render_template('keyframes_management.html', device=device)
     
     return render_template('keyframes_form.html', device=device, keyframes=keyframes)
@@ -82,7 +87,7 @@ def edit_keyframe():
         return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
     
     device_id = int(form_data.get('device_id'))
-    flash('Keyframe updated successfully', 'success')
+    flash('Keyframe aggiornato correttamente', 'success')
     return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
 
 @keyframes_bp.route('/add_keyframe_form/<int:device_id>/<int:phase_id>', methods=['GET'])
@@ -178,6 +183,6 @@ def delete_keyframe():
         flash(f'Errore durante l\'eliminazione del keyframe: {str(e)}', 'error')
         return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
 
-    flash('Keyframe eliminato con successo', 'success')
+    flash('Keyframe eliminato correttamente', 'success')
 
     return redirect(url_for('keyframes.keyframes_management', device_id=device_id))

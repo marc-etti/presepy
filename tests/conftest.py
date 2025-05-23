@@ -1,6 +1,7 @@
 import pytest
 from app import create_app, db
 from config import TestConfig
+from flask import url_for
 from app.models import User, Device, Keyframe, Channel, Phase
 
 @pytest.fixture
@@ -73,3 +74,13 @@ def app():
 def client(app):
     """Create a test client for the app."""
     return app.test_client()
+
+@pytest.fixture()
+def login(client):
+    def do_login(username='testuser1', password='password1'):
+        return client.post(
+            url_for('auth.login'),
+            data={'username': username, 'password': password},
+            follow_redirects=True
+        )
+    return do_login

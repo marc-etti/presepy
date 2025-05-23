@@ -2,15 +2,15 @@ import pytest
 from flask import url_for
 from app.models import Device
 
-@pytest.fixture
-def login(client):
-    def do_login(username='testuser1', password='password1'):
-        return client.post(
-            url_for('auth.login'),
-            data={'username': username, 'password': password},
-            follow_redirects=True
-        )
-    return do_login
+# @pytest.fixture()
+# def login(client):
+#     def do_login(username='testuser1', password='password1'):
+#         return client.post(
+#             url_for('auth.login'),
+#             data={'username': username, 'password': password},
+#             follow_redirects=True
+#         )
+#     return do_login
 
 def test_devices_management_requires_login(client):
     response = client.get(url_for('devices.devices_management'), follow_redirects=True)
@@ -44,7 +44,7 @@ def test_add_device_missing_fields(client, login):
         },
         follow_redirects=True
     )
-    assert b'Tutti i campi dei canali sono obbligatori' in response.data
+    assert b'Dati mancanti per il canale 1' in response.data
 
 def test_add_device_success(client, login, app):
     login()
@@ -65,7 +65,7 @@ def test_add_device_success(client, login, app):
     }
     response = client.post(url_for('devices.add_device'), data=data, follow_redirects=True)
     # print(response.data.decode('utf-8'))
-    assert b'Dispositivo aggiunto con successo' in response.data
+    assert b'Dispositivo LedRGBtest aggiunto con successo' in response.data
 
 def test_edit_device_form_not_found(client, login):
     login()

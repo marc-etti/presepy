@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models import User
+from app import db
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -78,7 +79,7 @@ def admin():
 @auth_bp.route('/delete_account', methods=('POST',))
 @login_required
 def delete_account():
-    user = User.query.get(request.form['user_id'])
+    user = db.session.get(User, request.form['user_id'])
     if user:
         user.delete()
         logout_user()

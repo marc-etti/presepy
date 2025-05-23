@@ -39,7 +39,7 @@ def create_app(myConfig=Config):
     @login_manager.user_loader
     def load_user(user_id):
         from app.models.user import User
-        return User.query.get(int(user_id))    
+        return db.session.get(User, user_id)   
 
     # Handle per l'errore 404
     @app.errorhandler(404)

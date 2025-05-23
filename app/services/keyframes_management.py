@@ -5,6 +5,7 @@ from flask_login import login_required
 
 from sqlalchemy.orm import joinedload
 from app.models import Device, Channel, Phase, Keyframe
+from app import db
 
 # Creazione del Blueprint
 keyframes_bp = Blueprint('keyframes', __name__)
@@ -64,7 +65,7 @@ def edit_keyframe():
         if key.startswith('slider-'):
             keyframe_id = int(key.split('-')[1])
             description = form_data.get(f'description-{keyframe_id}')
-            keyframe = Keyframe.query.get(keyframe_id)
+            keyframe = db.session.get(Keyframe, keyframe_id)
             if keyframe:
                 keyframe.value = int(value)
                 keyframe.description = description

@@ -172,7 +172,7 @@ def edit_device():
             raise ValueError("Tutti i campi del dispositivo sono obbligatori")
 
         # Recupera il dispositivo dal database
-        device = Device.query.get(device_id)
+        device = db.session.query(Device).filter_by(id=device_id).first()
         if not device:
             raise ValueError(f"Dispositivo con ID {device_id} non trovato")
  
@@ -225,7 +225,7 @@ def delete_device():
     Elimina un dispositivo dal database.
     """
     device_id = int(request.form.get('device_id'))
-    device = Device.query.get(device_id)
+    device = db.session.query(Device).filter_by(id=device_id).first()
     if device:
         # Elimina i canali e i keyframes associati al dispositivo
         channels = Channel.query.filter_by(device_id=device.id).all()

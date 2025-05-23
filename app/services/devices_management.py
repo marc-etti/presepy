@@ -4,7 +4,9 @@ from flask import Blueprint, render_template, flash, request, redirect, url_for
 from flask_login import login_required
 
 from sqlalchemy.orm import joinedload
+from sqlalchemy.exc import SQLAlchemyError
 from app.models import Device, Channel, Phase, Keyframe
+from app import db
 
 # Creazione del Blueprint
 devices_bp = Blueprint('devices', __name__)
@@ -56,65 +58,81 @@ def add_device():
     """
     form_data = request.form
 
-    name = form_data.get('name')
-    type = form_data.get('type')
-    subtype = form_data.get('subtype')
-    dmx_channels = int(form_data.get('dmx_channels'))
-    # status = form_data.get('status')
-    status = "on"
-    
-    # Recupero gli indirizzi dei canali dal form
-    channels = []
-    for i in range(1, dmx_channels + 1):
-        channel_type = form_data.get(f'channel-type-{i}')
-        channel_number = form_data.get(f'channel-number-{i}')
-        channel_value = form_data.get(f'channel-value-{i}')
-        if channel_type and channel_number and channel_value:
-            channels.append({
-                'type': channel_type,
-                'number': channel_number,
-                'value': channel_value
-            })
-        else:
-            flash('Tutti i campi dei canali sono obbligatori', 'error')
-            print(f"Errore nei valori: {channel_type}, {channel_number}, {channel_value}")
-
-            return render_template('devices_form.html', form_data=form_data)
-    
     try:
-        # Crea un nuovo dispositivo lo aggiunge al database e ottene il suo ID
-        new_device = Device(
-            name=name,
-            type=type,
-            subtype=subtype,
-            dmx_channels=dmx_channels,
-            status=status
-        )
-        new_device.add()
+        required_fields = ['name', 'type', 'subtype', 'dmx_channels']
+        if not all(form_data.get(field) for field in required_fields):
+            raise ValueError("Tutti i campi del dispositivo sono obbligatori")
 
-        new_channels = []
-        for channel in channels:
-            new_channel = Channel(
-                device_id=new_device.id,
-                number=int(channel['number']),
-                type=channel['type'],
-                value=int(channel['value'])
+        name = form_data.get('name')
+        type = form_data.get('type')
+        subtype = form_data.get('subtype')
+        dmx_channels = int(form_data.get('dmx_channels'))
+        # status = form_data.get('status')
+        status = "on"
+    
+        # Recupero gli indirizzi dei canali dal form
+        channels = []
+        for i in range(1, dmx_channels + 1):
+            channel_data = {
+                'type' : form_data.get(f'channel-type-{i}'),
+                'number' : form_data.get(f'channel-number-{i}'),
+                'value' : form_data.get(f'channel-value-{i}')
+            }
+
+            if None in channel_data.values():
+                raise ValueError(f"Dati mancanti per il canale {i}")
+
+            channels.append({
+                'type': channel_data['type'],
+                'number': int(channel_data['number']),
+                'value': int(channel_data['value'])
+            })
+
+
+        # Creazione del dispositivo e dei canali
+        with db.session.begin_nested():
+            device = Device(
+                name=name,
+                type=type,
+                subtype=subtype,
+                dmx_channels=dmx_channels,
+                status=status
             )
-            new_channel.validate()
-            new_channels.append(new_channel)
-        
-        for channel in new_channels:
-            channel.add()
+            device.validate()
+
+            db.session.add(device)
+            db.session.flush()
+
+            for channel in channels:
+                new_channel = Channel(
+                    device_id=device.id,
+                    type=channel['type'],
+                    number=channel['number'],
+                    value=channel['value']
+                )
+                new_channel.validate()
+                db.session.add(new_channel)
+
+        # Commit delle modifiche
+        db.session.commit()
+   
+        flash(f'Dispositivo {device.name} aggiunto con successo', 'success')
+        return redirect(url_for('devices.devices_management'))
+    
+    except ValueError as ve:
+        db.session.rollback()
+        flash(f'Errore di validazione: {str(ve)}', 'error')
+        return render_template('devices_form.html', form_data=form_data)
+
+    except SQLAlchemyError as sae:
+        db.session.rollback()
+        flash(f'Errore del database: {str(sae)}', 'error')
+        return render_template('devices_form.html', form_data=form_data)
 
     except Exception as e:
-            flash(f'Errore durante l\'aggiunta del dispositivo: {e}', 'error')
-            # Se c'è un errore, elimina il dispositivo e i canali associati
-            if new_device:
-                new_device.delete()
-            return render_template('devices_form.html', form_data=form_data)
-   
-    flash(f'Dispositivo aggiunto con successo', 'success')
-    return redirect(url_for('devices.devices_management'))
+        db.session.rollback()
+        flash(f'Errore imprevisto: {str(e)}', 'error')
+        return render_template('devices_form.html', form_data=form_data)
 
 @devices_bp.route('/edit_device_form/<int:device_id>', methods=['GET', 'POST'])
 @login_required
@@ -142,49 +160,63 @@ def edit_device():
     """
     Modifica un dispositivo esistente nel database.
     """
-    form_data = request.form
-    device_id = int(form_data.get('device_id'))
-    name = form_data.get('name')
-    type = form_data.get('type')
-    subtype = form_data.get('subtype')
-    
     try:
-        # Modifica il dispositivo e aggiorna il database
-        device = Device.query.filter_by(id=device_id).first()
-        if device:
-            device.name = name
-            device.type = type
-            device.subtype = subtype
-        else:
-            raise ValueError("Dispositivo non trovato")
-        
-        # Modifica i canali associati al dispositivo
+        # Recupera i dati dal form
+        form_data = request.form
+        device_id = int(form_data.get('device_id'))
+        name = form_data.get('name')
+        type = form_data.get('type')
+        subtype = form_data.get('subtype')
+    
+        if not all([name, type, subtype]):
+            raise ValueError("Tutti i campi del dispositivo sono obbligatori")
+
+        # Recupera il dispositivo dal database
+        device = Device.query.get(device_id)
+        if not device:
+            raise ValueError(f"Dispositivo con ID {device_id} non trovato")
+ 
+        # Aggiornamento dei dati del dispositivo
+        device.name = name
+        device.type = type
+        device.subtype = subtype
+        device.validate()
+
+        # Aggiornamento dei canali
         for channel in device.channels:
             channel_number = int(form_data.get(f'channel-number-{channel.id}'))
             channel_type = form_data.get(f'channel-type-{channel.id}')
             channel_value = int(form_data.get(f'channel-value-{channel.id}'))
+
+            if not all([channel_number, channel_type, channel_value]):
+                raise ValueError(f"Tutti i campi del canale {channel.id} sono obbligatori")
 
             channel.number = channel_number
             channel.type = channel_type
             channel.value = channel_value
             channel.validate()
 
-        device.validate()
+        # Salvataggio delle modifiche
+        db.session.commit()
+
+        flash(f'Dispositivo {name} modificato con successo', 'success')
+        return redirect(url_for('devices.devices_management'))
+
+    except ValueError as ve:
+        db.session.rollback()
+        flash(f'Errore di validazione: {str(ve)}', 'error')
+        return redirect(url_for('devices.edit_device_form', device_id=device_id))
+    
+    except SQLAlchemyError as sae:
+        db.session.rollback()
+        flash(f'Errore del database durante l\'aggiornamento: {str(sae)}', 'error')
+        return redirect(url_for('devices.edit_device_form', device_id=device_id))
+    
     except Exception as e:
-        flash(f'Errore durante l\'aggiornamento del dispositivo: {e}', 'error')
+        db.session.rollback()
+        flash(f'Errore imprevisto durante l\'aggiornamento del dispositivo: {str(e)}', 'error')
         return redirect(url_for('devices.edit_device_form', device_id=device_id))
 
-    # Se tutto va bene, aggiorna il dispositivo e i canali
-    try:
-        device.update()
-        for channel in device.channels:
-            channel.update()
-    except Exception as e:
-        flash(f'Errore durante il salvataggio del dispositivo: {e}', 'error')
-        return redirect(url_for('devices.edit_device_form', device_id=device_id))
-    # Se tutto va bene, mostra un messaggio di successo
-    flash(f'Dispositivo {name} modificato con successo', 'success')
-    return redirect(url_for('devices.devices_management'))
 
 @devices_bp.route('/delete_device', methods=['POST'])
 @login_required
@@ -193,7 +225,7 @@ def delete_device():
     Elimina un dispositivo dal database.
     """
     device_id = int(request.form.get('device_id'))
-    device = Device.query.filter_by(id=device_id).first()
+    device = Device.query.get(device_id)
     if device:
         # Elimina i canali e i keyframes associati al dispositivo
         channels = Channel.query.filter_by(device_id=device.id).all()

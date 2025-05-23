@@ -6,7 +6,7 @@ from app import db
 def channel_data():
     return {
         "device_id": 2,
-        "number": 4,
+        "number": 5,
         "type": "INTENSITY",
         "value": 0
     }
@@ -61,7 +61,7 @@ def test_channel_validation(channel_data, app):
         channel.number = 600
         with pytest.raises(ValueError):
             channel.validate()
-        channel.number = 4
+        channel.number = 5
 
         # Test invalid value
         channel.value = 300

@@ -70,8 +70,6 @@ def test_delete_device_not_found(client, login):
 def test_turn_on_off_device(app, client, login):
     with app.app_context():
         old_status = Device.query.filter_by(id=1).first().status
-        if old_status is None:
-            pytest.skip("No device with id=1 found in the test database.")
         login()
         response = client.get(url_for('devices.turn_on_off_device', device_id=1), follow_redirects=True)
         new_status = Device.query.filter_by(id=1).first().status
@@ -81,8 +79,6 @@ def test_turn_on_off_device(app, client, login):
 def test_edit_device_success(app, client, login):
     with app.app_context():
         old_name = Device.query.filter_by(id=2).first().name
-        if old_name is None:
-            pytest.skip("No device with id=2 found in the test database.")
         assert old_name == 'TestDevice2'
         login()
         response = client.get(url_for('devices.edit_device_form', device_id=2))
@@ -110,3 +106,33 @@ def test_delete_device_success(client, login):
     # Check if the device is actually deleted
     response = client.get(url_for('devices.devices_management'))
     assert b'TestDevice2_edited' not in response.data
+
+def test_add_device_existing_channel(client, login):
+    login()
+    data = {
+        'name': 'TestDevice3',
+        'type': 'Light',
+        'subtype': 'Faro',
+        'dmx_channels': 1,
+        'channel-type-1': 'Intensity',
+        'channel-number-1': '1', 
+        'channel-value-1': '255',         
+    }
+    response = client.post(url_for('devices.add_device'), data=data, follow_redirects=True)
+    assert 'Il canale numero 1 è già usato dal dispositivo TestDevice1'.encode() in response.data
+
+def test_edit_device_existing_channel(client, login):
+    login()
+    data = {
+        'device_id': 1,
+        'name': 'TestDevice1',
+        'type': 'Light',
+        'subtype': 'Faro',
+        'dmx_channels': 1,
+        'channel-number-1': 2,
+        'channel-type-1': 'Intensity',
+        'channel-value-1': 255
+    }
+    response = client.post(url_for('devices.edit_device'), data=data, follow_redirects=True)
+    print(response.data.decode('utf-8'))
+    assert 'Il canale numero 2 è già usato dal dispositivo TestDevice1'.encode() in response.data

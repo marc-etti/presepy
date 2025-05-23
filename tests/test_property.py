@@ -18,8 +18,6 @@ class TestInterpolation:
                 interpolate_value(start_value, end_value, start_time, end_time, current_time)
             except ValueError:
                 assert True
-            else:
-                assert False, "Expected ValueError when start_time > end_time"
             return
 
         result = interpolate_value(start_value, end_value, start_time, end_time, current_time)

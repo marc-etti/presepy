@@ -40,8 +40,15 @@ flask init-db
 L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/).
 
 ## Esecuzione dei test
+### pytest
 ```bash
 pytest
+```
+### Coverage
+```bash
+coverage run -m pytest
+coverage report -m
+coverage html
 ```
 
 ## Avvio dell'applicazione con Docker

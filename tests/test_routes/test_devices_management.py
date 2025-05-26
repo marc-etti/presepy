@@ -110,7 +110,7 @@ def test_delete_device_success(client, login):
 def test_add_device_existing_channel(client, login):
     login()
     data = {
-        'name': 'TestDevice3',
+        'name': 'TestDevice4',
         'type': 'Light',
         'subtype': 'Faro',
         'dmx_channels': 1,

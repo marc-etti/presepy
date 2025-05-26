@@ -46,7 +46,6 @@ def main_dmx_function(app):
         phases = Phase.get_phases() # Carico le fasi dal database
 
         # Inizializzazione
-        # devices = inizializzazione()
         lights = init_lights_from_db() # Inizializzo i dispositivi dal database
 
         while state_manager.is_on():                                # Controllo se il sistema è acceso

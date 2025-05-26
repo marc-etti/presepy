@@ -20,7 +20,8 @@ def app():
         db.session.commit()
         devices = [
             Device(name="TestDevice1", type="light", subtype="LED", dmx_channels=3, status="on"),
-            Device(name="TestDevice2", type="light", subtype="Faro", dmx_channels=1, status="off")
+            Device(name="TestDevice2", type="light", subtype="Faro", dmx_channels=1, status="off"),
+            Device(name="TestDevice3", type="light", subtype="Faro", dmx_channels=1, status="on")
         ]
         db.session.bulk_save_objects(devices)
         db.session.commit()
@@ -39,8 +40,8 @@ def app():
         channels = Channel.query.all()
 
         phases = [
-            Phase(name="TestPhase1", duration=10, order=1),
-            Phase(name="TestPhase2", duration=20, order=2),
+            Phase(id=1, name="TestPhase1", duration=120, order=1),
+            Phase(id=2, name="TestPhase2", duration=240, order=2),
         ]
         db.session.bulk_save_objects(phases)
         db.session.commit()

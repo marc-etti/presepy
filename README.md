@@ -1,11 +1,12 @@
 # Presepy - Gestione di un presepe elettronico
-
-<div align="center">
-  <img src="https://github.com/marc-etti/presepy/blob/main/app/static/images/presepy-logo.png" alt="Presepy Logo">
-</div>
+Presepy è un'applicazione web per la gestione di un presepe elettronico, sviluppata in Python utilizzando il framework Flask. L'applicazione attualmente consente la gestione di dispositivi di illuminazione pilotabili tramite protocollo DMX512.
+Le funzionalità principali includono:
+- Creazione, modifica e cancellazione di dispositivi
+- Creazione, modifica e cancellazione di keyframe
+- Avvio, pausa e stop della trasmissione dei dati DMX (simulata con una scrittura su file di log)
 
 ## Avvio dell'applicazione
-Una volta scaricato il repository, è possibile avviare l'applicazione in locale. Assicurati di avere installato `Python 3.10` o superiore e di avere `pip` installato.
+Una volta scaricato il repository, è possibile avviare l'applicazione in locale. Assicurarsi di avere installato `Python 3.10` o superiore e di avere `pip` installato.
 Su linux è sufficiente eseguire lo script `avvio.sh` che si occuperà di:
 - Creare un ambiente virtuale
 - Installare le dipendenze

@@ -17,7 +17,7 @@ class Config:
 
     LOG_FILE = 'app/logs/DMX.log'
         
-    if os.path.exists('/.dockerenv'):
+    if os.environ.get('DOCKER_CONTAINER'):
         # Configurazione per Docker
         HOST = '0.0.0.0'
     else:

@@ -1,0 +1,14 @@
+services:
+  presepy:
+    image: andreamarchetti/presepy:latest
+    container_name: presepy
+    ports:
+      - "5000:5000"
+    volumes:
+      - presepy_data:/usr/src/presepy/instance
+    environment:
+      - DOCKER_CONTAINER=true
+
+volumes:
+  presepy_data:
+    driver: local

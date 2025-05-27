@@ -70,7 +70,11 @@ docker push andreamarchetti/presepy:1.0
 ```bash
 docker pull andreamarchetti/presepy:1.0
 ```
-### Esecuzione dell'immagine
+### Esecuzione dell'immagine con Docker
 ```bash
 docker run -p 5000:5000 andreamarchetti/presepy:1.0
+```
+### Esecuzione con docker compose
+```bash
+docker compose up -d
 ```

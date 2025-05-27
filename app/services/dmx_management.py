@@ -26,9 +26,13 @@ def dmx_management():
 @dmx_bp.route('/reset_DMX', methods=['POST'])
 @login_required
 def reset_DMX():
-    """Resetta i valori dei canali DMX."""
-    dmx.reset()
-    return jsonify({'message': 'Valori DMX resettati'})
+    """Resetta il file logs/dmx.log"""
+    if state_manager.is_on():
+        return jsonify({'message': 'Il sistema è acceso, spegnilo prima di resettare il file di log'})
+    else:
+        dmx.clear_log_file(Config.LOG_FILE)
+        # dmx.reset()
+        return jsonify({'message': 'File di log DMX resettato'})
 
 @dmx_bp.route('/start_DMX', methods=['POST'])
 @login_required

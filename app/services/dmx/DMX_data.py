@@ -102,3 +102,13 @@ class DMXData:
         Stampa i valori dei canali DMX su console.
         """
         print(self.channels)
+
+    def clear_log_file(self, log_file):
+        """
+        Pulisce il file di log.
+        """
+        if not log_file:
+            raise ValueError("Il file di log non è stato specificato")
+        
+        with open(log_file, 'w') as f:
+            f.write('')

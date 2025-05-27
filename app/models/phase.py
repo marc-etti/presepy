@@ -44,4 +44,3 @@ class Phase(db.Model):
         Elimina la fase dal database.
         """
         raise NotImplementedError("La funzione delete non è ancora implementata")
-            

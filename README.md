@@ -1,5 +1,7 @@
 # Presepy - Gestione di un presepe elettronico
 
+![Presepy Logo](https://github.com/marc-etti/presepy/blob/main/app/static/images/presepy-logo.png)
+
 ## Avvio dell'applicazione
 Una volta scaricato il repository, è possibile avviare l'applicazione in locale. Assicurati di avere installato `Python 3.10` o superiore e di avere `pip` installato.
 Su linux è sufficiente eseguire lo script `avvio.sh` che si occuperà di:
@@ -30,7 +32,7 @@ CTRL+C
 deactivate
 ```
 
-# Inizializzazione database
+## Inizializzazione database
 Per inizializzare il database, è necessario eseguire il comando di inizializzazione del database.
 ```bash
 flask init-db

@@ -5,6 +5,33 @@ Le funzionalità principali includono:
 - Creazione, modifica e cancellazione di keyframe
 - Avvio, pausa e stop della trasmissione dei dati DMX (simulata con una scrittura su file di log)
 
+## Struttura del progetto
+```
+presepy/
+├── app/                  # Directory principale dell'applicazione
+│   ├── __init__.py       # Inizializzazione dell'applicazione Flask
+│   ├── logs/                # Directory per i file di log
+│   ├── models/              # Modelli del database
+│   ├── services/            # Gestione della logica di business
+│   ├── static/              # File statici (CSS, JS, immagini)
+│   ├── templates/           # Template HTML per l'interfaccia utente
+│   ├── utils/               # Funzioni di utilità
+│   ├── __init__.py          # Inizializzazione del modulo app
+│   ├── auth/                # Gestione dell'autenticazione
+│   └── db.py                # Gestione del database
+├── instace/presepy.sqlite   # Database SQLite
+├── tests/                # Directory dei test
+├── config.py             # Configurazione dell'applicazione
+├── run.py                # Punto di ingresso dell'applicazione
+├── requirements.txt      # Dipendenze del progetto
+├── avvio.sh              # Script per l'avvio dell'applicazione
+├── Dockerfile            # File per la creazione dell'immagine Docker
+├── docker-compose.yml    # File di configurazione per Docker Compose
+├── entrypoint.sh         # Script di entrypoint per Docker
+├── README.md             # Documentazione del progetto
+└── .gitignore            # File per ignorare file e cartelle non necessari
+```
+
 ## Avvio dell'applicazione
 Una volta scaricato il repository, è possibile avviare l'applicazione in locale. Assicurarsi di avere installato `Python 3.10` o superiore e di avere `pip` installato.
 Su linux è sufficiente eseguire lo script `avvio.sh` che si occuperà di:

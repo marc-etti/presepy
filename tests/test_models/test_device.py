@@ -17,12 +17,13 @@ def test_device_creation(device_data, app):
         device = Device(**device_data)
         device.add()
 
-        assert device.id is not None
-        assert device.name == device_data["name"]
-        assert device.type == device_data["type"]
-        assert device.subtype == device_data["subtype"]
-        assert device.dmx_channels == device_data["dmx_channels"]
-        assert device.status == device_data["status"]
+        new_device = db.session.get(Device, device.id)
+        assert new_device.id is not None
+        assert new_device.name == device_data["name"]
+        assert new_device.type == device_data["type"]
+        assert new_device.subtype == device_data["subtype"]
+        assert new_device.dmx_channels == device_data["dmx_channels"]
+        assert new_device.status == device_data["status"]
 
 def test_device_update(device_data, app):
     with app.app_context():

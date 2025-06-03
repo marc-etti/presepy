@@ -1,5 +1,6 @@
 services:
   presepy:
+    build: .
     image: andreamarchetti/presepy:latest
     container_name: presepy
     ports:
@@ -11,4 +12,3 @@ services:
 
 volumes:
   presepy_data:
-    driver: local

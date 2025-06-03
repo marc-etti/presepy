@@ -6,12 +6,12 @@ from app.models import User, Device, Keyframe, Channel, Phase
 
 @pytest.fixture
 def app():
-    """Create a new app instance for testing."""
+    """Creazione dell'app Flask per i test."""
     app = create_app(TestConfig)
     with app.app_context():
         db.create_all()
 
-        # populate the database with test data
+        # popolo le tabelle con dati di test
         users = [ 
             User(username="testuser1", password="password1", is_admin=False, is_active=True),
             User(username="testuser2", password="password2", is_admin=True, is_active=True)
@@ -73,11 +73,12 @@ def app():
 
 @pytest.fixture
 def client(app):
-    """Create a test client for the app."""
+    """Crea un client di test."""
     return app.test_client()
 
 @pytest.fixture()
 def login(client):
+    """Login fixture per autenticare un utente di test."""
     def do_login(username='testuser1', password='password1'):
         return client.post(
             url_for('auth.login'),

@@ -54,7 +54,6 @@ def test_add_device_success(client, login, app):
             'channel-value-3': '255',
     }
     response = client.post(url_for('devices.add_device'), data=data, follow_redirects=True)
-    # print(response.data.decode('utf-8'))
     assert b'Dispositivo LedRGBtest aggiunto con successo' in response.data
 
 def test_edit_device_form_not_found(client, login):
@@ -103,7 +102,6 @@ def test_delete_device_success(client, login):
     login()
     response = client.post(url_for('devices.delete_device'), data={'device_id': 2}, follow_redirects=True)
     assert b'eliminato con successo' in response.data
-    # Check if the device is actually deleted
     response = client.get(url_for('devices.devices_management'))
     assert b'TestDevice2_edited' not in response.data
 

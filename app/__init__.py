@@ -18,7 +18,7 @@ def create_app(myConfig=Config):
     from app.services.dmx_management import dmx_bp
     from app.services.devices_management import devices_bp
     from app.services.keyframes_management import keyframes_bp
-    from app.auth import auth_bp
+    from app.services.auth_management import auth_bp
 
     # Registra i blueprint
     app.register_blueprint(dmx_bp)

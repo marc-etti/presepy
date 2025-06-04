@@ -46,25 +46,6 @@ class DMXData:
         if value < 0 or value > 255:
             raise ValueError("Il valore deve essere compreso tra 0 e 255")
         self.channels[channel] = value
-
-    def set_interval(self, start_channel, end_channel, value):
-        """
-        Imposta lo stesso valore a più canali DMX.
-
-        :param start_channel: il primo canale da impostare
-        :param end_channel: l'ultimo canale da impostare
-        :param value: il valore da impostare
-        """
-        if start_channel < 1 or start_channel > 512:
-            raise ValueError("Il canale iniziale deve essere compreso tra 1 e 512")
-        if end_channel < 1 or end_channel > 512:
-            raise ValueError("Il canale finale deve essere compreso tra 1 e 512")
-        if start_channel > end_channel:
-            raise ValueError("Il canale iniziale deve essere minore o uguale al canale finale")
-        if value < 0 or value > 255:
-            raise ValueError("Il valore deve essere compreso tra 0 e 255")
-        for i in range(start_channel, end_channel):
-            self.channels[i] = value
     
     def reset(self):
         """
@@ -73,19 +54,27 @@ class DMXData:
         for i in range(1, NUMBER_OF_CHANNELS + 1):
             self.channels[i] = 0
 
+    def open(self):
+        """
+        Apre la connessione DMX.
+        """
+        #TODO: implementare l'apertura della connessione DMX'
+        raise NotImplementedError("Metodo non implementato")
+
     def send(self, host, port):
         """
         Invia i valori dei canali DMX alla porta specificata.
         """
         #TODO: implementare la connessione DMX
-        pass
+        raise NotImplementedError("Metodo non implementato")
 
     def close(self):
         """
         Chiude la connessione DMX.
         """
         #TODO: implementare la chiusura della connessione DMX
-        pass
+        raise NotImplementedError("Metodo non implementato")
+
 
     def write_channels_on_log(self, log_file):
         """

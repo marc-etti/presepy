@@ -17,9 +17,8 @@ presepy/
 │   ├── templates/           # Template HTML per l'interfaccia utente
 │   ├── utils/               # Funzioni di utilità
 │   ├── __init__.py          # Inizializzazione del modulo app
-│   ├── auth/                # Gestione dell'autenticazione
 │   └── db.py                # Gestione del database
-├── instace/presepy.sqlite   # Database SQLite
+├── instance/presepy.sqlite  # Database SQLite
 ├── tests/                # Directory dei test
 ├── config.py             # Configurazione dell'applicazione
 ├── run.py                # Punto di ingresso dell'applicazione

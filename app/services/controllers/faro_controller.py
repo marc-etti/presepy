@@ -1,7 +1,5 @@
 ###################################
 # Controller del faro
-# CANALI:
-# 0 - Luminosità (0-255)
 ###################################
 
 from app.models import Device, Channel, Keyframe, Phase

@@ -1,7 +1,6 @@
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 import threading
-import time
 
 from app.services.dmx.DMX_logic import (
     init_lights_from_db, 

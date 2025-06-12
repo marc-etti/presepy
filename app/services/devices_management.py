@@ -6,6 +6,7 @@ from flask_login import login_required
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import SQLAlchemyError
 from app.models import Device, Channel, Phase, Keyframe
+from app.decorators import role_required
 from app import db
 
 # Creazione del Blueprint
@@ -44,6 +45,7 @@ def turn_on_off_device(device_id):
 
 @devices_bp.route('/add_device_form/', methods=['GET', 'POST'])
 @login_required
+@role_required('admin', 'expert')
 def add_device_form(form_data=None):
     """
     Mostra il form per aggiungere un dispositivo.
@@ -52,6 +54,7 @@ def add_device_form(form_data=None):
 
 @devices_bp.route('/add_device/', methods=['POST'])
 @login_required
+@role_required('admin', 'expert')
 def add_device():
     """
     Aggiunge un dispositivo al database.
@@ -136,6 +139,7 @@ def add_device():
 
 @devices_bp.route('/edit_device_form/<int:device_id>', methods=['GET', 'POST'])
 @login_required
+@role_required('admin', 'expert')
 def edit_device_form(device_id):
     """
     Mostra il form per modificare un dispositivo.
@@ -156,6 +160,7 @@ def edit_device_form(device_id):
 
 @devices_bp.route('/edit_device', methods=['POST'])
 @login_required
+@role_required('admin', 'expert')
 def edit_device():
     """
     Modifica un dispositivo esistente nel database.
@@ -220,6 +225,7 @@ def edit_device():
 
 @devices_bp.route('/delete_device', methods=['POST'])
 @login_required
+@role_required('admin', 'expert')
 def delete_device():
     """
     Elimina un dispositivo dal database.

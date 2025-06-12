@@ -84,5 +84,6 @@ def main_dmx_function(app):
 
 def closing_function():
     """Funzione di chiusura del programma."""
+    dmx.reset()  # Resetta i canali DMX
     # dmx.close()
     print("Interfaccia DMX chiusa")

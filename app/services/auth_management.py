@@ -2,6 +2,7 @@ from flask import Blueprint, flash, g, redirect, render_template, request, sessi
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models import User
 from app import db
+from app.decorators import role_required
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -35,6 +36,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        next_page = request.args.get('next')
         error = None
 
         if not username:
@@ -48,10 +50,15 @@ def login():
                 error = 'Username non trovato.'
             elif not user.check_password(password):
                 error = 'Password errata.'
+            elif not user.is_active:
+                error = 'Il tuo account è stato disattivato. Contatta l\'amministratore.'
 
         if error is None:
             login_user(user)
-            return redirect(url_for('dmx.index'))
+            if next_page:
+                return redirect(next_page)
+            else:
+                return redirect(url_for('dmx.index'))
 
         flash(error)
 
@@ -70,10 +77,8 @@ def profile():
 
 @auth_bp.route('/admin')
 @login_required
+@role_required('admin')
 def admin():
-    if current_user.role != 'admin':
-        flash('Non hai i permessi per accedere a questa pagina.', 'error')
-        return redirect(url_for('dmx.index'))
     return render_template('auth/admin.html', users=User.query.all())
 
 @auth_bp.route('/delete_account', methods=('POST',))
@@ -90,6 +95,7 @@ def delete_account():
 
 @auth_bp.route('/deactivate', methods=('POST',))
 @login_required
+@role_required('admin')
 def deactivate():
     user_id = request.form['user_id']
     user = User.query.filter_by(id=user_id).first()
@@ -110,6 +116,21 @@ def activate():
         user.is_active = True
         user.update()
         flash(f"L'utente {user.username} è stato riattivato.", 'success')
+    else:
+        flash('Utente non trovato.', 'error')
+    return redirect(url_for('auth.admin'))
+
+@auth_bp.route('/change_role', methods=('POST',))
+@login_required
+@role_required('admin')
+def change_role():
+    user_id = request.form['user_id']
+    new_role = request.form['new_role']
+    user = User.query.filter_by(id=user_id).first()
+    if user:
+        user.role = new_role
+        user.update()
+        flash(f"Il ruolo di {user.username} è stato cambiato in {new_role}.", 'success')
     else:
         flash('Utente non trovato.', 'error')
     return redirect(url_for('auth.admin'))

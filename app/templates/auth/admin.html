@@ -29,6 +29,13 @@
                     <td>
                         {% if user.role != 'admin' %}
                         <div class="table-button-container">
+                            <form action="{{ url_for('auth.change_role') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <select name="new_role" onchange="this.form.submit()">
+                                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>Utente</option>
+                                    <option value="expert" {% if user.role == 'expert' %}selected{% endif %}>Esperto</option>
+                                </select>
+                            </form>
                             {% if user.is_active %}
                                 <form action="{{ url_for('auth.deactivate') }}" method="post" style="display:inline;">
                                     <input type="hidden" name="user_id" value="{{ user.id }}">

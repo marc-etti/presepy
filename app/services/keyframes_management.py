@@ -5,6 +5,7 @@ from flask_login import login_required
 
 from sqlalchemy.orm import joinedload
 from app.models import Device, Channel, Phase, Keyframe
+from app.decorators import role_required
 from app import db
 
 # Creazione del Blueprint
@@ -38,6 +39,7 @@ def keyframes_management(device_id):
     
 @keyframes_bp.route('/edit_keyframe_form/<int:device_id>/<int:phase_id>/<int:position>', methods=['GET'])
 @login_required
+@role_required('admin', 'expert')
 def edit_keyframe_form(device_id, phase_id, position):
     """
     Restituisce il form per modificare un keyframe.
@@ -60,6 +62,7 @@ def edit_keyframe_form(device_id, phase_id, position):
 
 @keyframes_bp.route('/edit_keyframe', methods=['POST'])
 @login_required
+@role_required('admin', 'expert')
 def edit_keyframe():
     """
     Aggiorna un keyframe esistente nel database.
@@ -92,6 +95,7 @@ def edit_keyframe():
 
 @keyframes_bp.route('/add_keyframe_form/<int:device_id>/<int:phase_id>', methods=['GET'])
 @login_required
+@role_required('admin', 'expert')
 def add_keyframe_form(device_id, phase_id):
     """
     Restituisce il form per aggiungere un keyframe.
@@ -108,6 +112,7 @@ def add_keyframe_form(device_id, phase_id):
 
 @keyframes_bp.route('/add_keyframe', methods=['POST'])
 @login_required
+@role_required('admin', 'expert')
 def add_keyframe():
     """
     Aggiunge un nuovo keyframe al database.
@@ -154,6 +159,7 @@ def add_keyframe():
 
 @keyframes_bp.route('/delete_keyframe', methods=['POST'])
 @login_required
+@role_required('admin', 'expert')
 def delete_keyframe():
     """
     Elimina un keyframe esistente dal database.

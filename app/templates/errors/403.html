@@ -3,38 +3,7 @@
 {% block title %}403 - Accesso Negato{% endblock %}
 
 {% block styles %}
-<style>
-    .container-handler403 {
-        font-family: 'Arial', sans-serif;
-        background-color: #f8f9fa;
-        color: #343a40;
-        line-height: 1.6;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 70vh;
-        text-align: center;
-    }
-
-    .div-handler403 {
-        font-size: 4rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        color: #dc3545;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .emoji {
-        font-size: 5rem;
-        margin-bottom: 1rem;
-    }
-    .message {
-        font-size: 1.2rem;
-        color: #6c757d;
-    }
-</style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/error.css') }}">
 {% endblock %}
 
 {% block header %}
@@ -42,9 +11,9 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-handler403">
-        <div class="div-handler403">403 - Accesso Negato</div>
-        <span class="emoji">🚫</span>
-        <p class="message">Non hai i permessi necessari per accedere a questa pagina.</p>
+    <div class="error-container-handler">
+        <div class="error-div-handler">403 - Accesso Negato
+        <span class="error-emoji">🚫</span></div>
+        <div class="error-message">Non hai i permessi necessari per accedere a questa pagina.</div>
     </div>
 {% endblock %}

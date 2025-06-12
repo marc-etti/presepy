@@ -5,6 +5,7 @@ from flask_login import login_required
 
 from sqlalchemy.orm import joinedload
 from app.models import Device, Channel, Phase, Keyframe
+from app.decorators import role_required
 from app import db
 
 # Creazione del Blueprint
@@ -47,6 +48,7 @@ def active_deactivate_phase(phase_id):
 
 @phases_bp.route('/delete_phase', methods=['POST'])
 @login_required
+@role_required('admin','expert')
 def delete_phase():
     """
     Elimina una fase.
@@ -66,6 +68,7 @@ def delete_phase():
 @phases_bp.route('/add_edit_phase_form', methods=['GET', 'POST'])
 @phases_bp.route('/add_edit_phase_form/<int:phase_id>', methods=['GET', 'POST'])
 @login_required
+@role_required('admin','expert')
 def add_edit_phase_form(phase_id=None):
     """
     Mostra il form per aggiungere o modificare una fase.
@@ -82,6 +85,7 @@ def add_edit_phase_form(phase_id=None):
 @phases_bp.route('/add_edit_phase', methods=['POST'])
 @phases_bp.route('/add_edit_phase/<int:phase_id>', methods=['POST'])
 @login_required
+@role_required('admin','expert')
 def add_edit_phase(phase_id=None):
     """
     Aggiunge o modifica una fase.

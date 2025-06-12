@@ -19,7 +19,7 @@ def init_db():
             # Popolamento Tabella User
             users = [
                 User(username='admin', password='admin', role='admin', is_active=True),
-                User(username='user', password='user', role='expert', is_active=True),
+                User(username='user', password='user', role='user', is_active=True),
                 User(username='expert', password='expert', role='expert', is_active=True)
             ]
             db.session.bulk_save_objects(users)

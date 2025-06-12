@@ -41,11 +41,15 @@ class FaroController:
                     channel_id=channel.id,
                     phase_id=phase.id
                     ).order_by(Keyframe.position).all()
-                if len(kfs) < 2:
-                    raise ValueError(
-                        f"Il faro {name} richiede almeno 2 keyframe per il canale {channel.number} "
-                        f"nella fase {phase.name} (trovati {len(kfs)})")
-                
+                # Se manca il keyframe di partenza (kfs.position == 0) lo creo con il valore di default del canale
+                if not kfs or kfs[0].position != 0:
+                    default_value = channel.value if channel.value is not None else 0
+                    kfs.insert(0, Keyframe(position=0, value=default_value, channel_id=channel.id, phase_id=phase.id))
+                # Se manca il keyframe di fine (kfs.position == 100) lo creo con il valore di default del canale
+                if not kfs or kfs[-1].position != 100:
+                    default_value = channel.value if channel.value is not None else 0
+                    kfs.append(Keyframe(position=100, value=default_value, channel_id=channel.id, phase_id=phase.id))
+                # creo una lista di tuple (keyframe, next_keyframe) per ogni canale
                 self.keyframes[phase.id][channel.id] = list(zip(kfs, kfs[1:]))
 
         self.dmx = dmx_instance             # Istanza del DMX

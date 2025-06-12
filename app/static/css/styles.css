@@ -268,7 +268,21 @@ footer {
 
 .table-button-container a {
     text-decoration: none;
-    color: white;
+}
+
+.table-button-container select {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 0.85rem;
+    background-color: #f5f5f5;
+    color: #333;
+    transition: border-color 0.2s ease;
+}
+.table-button-container select:hover {
+    border-color: #3498db;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Stile per i pulsanti di navigazione */

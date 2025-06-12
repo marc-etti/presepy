@@ -9,10 +9,23 @@ from flask_login import login_required
 import threading
 
 # Variabile globale per il thread 
-thread = None
+dmx_thread = None
+thread_lock = threading.Lock()
 
 # Creazione del Blueprint
 dmx_bp = Blueprint('dmx', __name__)
+
+def cleanup_dmx_thread():
+    """Funzione per pulire il thread DMX se esiste."""
+    global dmx_thread
+    if dmx_thread is not None:
+        with thread_lock:
+            if dmx_thread.is_alive():
+                state_manager.turn_off()  # Assicura che il sistema sia spento
+                dmx_thread.join(timeout=1)  # Attende che il thread termini
+                if dmx_thread.is_alive():
+                    print("Il thread DMX non si è fermato correttamente.")
+            dmx_thread = None
 
 @dmx_bp.route('/')
 def index():
@@ -38,24 +51,41 @@ def reset_DMX():
 @login_required
 def start_DMX():
     """Avvia la funzione di invio dei valori DMX."""
+    global dmx_thread
+
     if state_manager.is_on():
         return jsonify({'message': 'Il sistema è già acceso'})
-    else:
+
+    with thread_lock:
+        # Controlla se il thread DMX esiste e se è attivo
+        if dmx_thread is not None and dmx_thread.is_alive():
+            return jsonify({'message': 'Il thread DMX è già in esecuzione'})
+        
+        # Pulizia del thread DMX precedente se esiste
+        cleanup_dmx_thread()
+
+        # Inizializza il thread DMX
         state_manager.turn_on()
         app = current_app._get_current_object()
-        thread = threading.Thread(target=main_dmx_function, args=(app,), name = 'DMX_thread')
-        thread.start()
-        return jsonify({'message': 'Invio valori DMX avviato'})
+        dmx_thread = threading.Thread(
+            target=main_dmx_function,
+            args=(app,), # Passa l'istanza dell'app Flask al thread
+            name = 'DMX_thread',
+            daemon=True  # Imposta il thread come daemon
+        )
+        dmx_thread.start()
+        
+    return jsonify({'message': 'Invio valori DMX avviato'})
 
 @dmx_bp.route('/stop_DMX', methods=['POST'])
 @login_required
 def stop_DMX():
     """Ferma l'invio dei valori DMX."""
-    if state_manager.is_on():
-        state_manager.turn_off()
-        return jsonify({'message': 'Invio valori DMX fermato'})
-    else:
+    if not state_manager.is_on():
         return jsonify({'message': 'Il sistema è già spento'})
+    
+    cleanup_dmx_thread()
+    return jsonify({'message': 'Invio valori DMX fermato'})
 
 @dmx_bp.route('/pause_DMX', methods=['POST'])
 @login_required

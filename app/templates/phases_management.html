@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Gestione Fasi{% endblock %}
+
+{% block styles %}
+    <style>
+        .active {
+            background-color: #4CAF50 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+        .deactivated {
+            background-color: #f44336 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+    <h1>Gestione Fasi</h1>
+{% endblock %}
+
+{% block content %}
+    {% if phases %}
+    <div class="device-table">
+        <table>
+            <thead>
+                <tr>
+                    <!--th>ID</th-->
+                    <th>Order</th>
+                    <th>Nome</th>
+                    <th>Duration</th>
+                    <th>Stato</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for phase in phases %}
+                    {% if phase.status != 'deleted' %}
+                    <tr>
+                        <!--td>{{ phase.id }}</td-->
+                        <td>{{ phase.order }}</td>
+                        <td>{{ phase.name }}</td>
+                        <td>{{ phase.duration }}</td>
+                        <td class="{{ phase.status }}">{{ phase.status }}</td>
+                        <td>
+                            <div class="table-button-container">
+                                {% if phase.status == 'active' %}
+                                <a href="{{ url_for('phases.move_up_down_phase', phase_id=phase.id, direction='up') }}">
+                                    <button>Sposta<br>Su</button>
+                                </a>
+                                <a href="{{ url_for('phases.move_up_down_phase', phase_id=phase.id, direction='down') }}">
+                                    <button>Sposta<br>Giù</button>
+                                </a>
+                                {% else %}
+                                <button class="grey-btn">Sposta<br>Su</button>
+                                <button class="grey-btn">Sposta<br>Giù</button>
+                                {% endif %}
+                                <a href="{{ url_for('phases.active_deactivate_phase', phase_id=phase.id) }}">
+                                    {% if phase.status == 'active' %}
+                                        <button class="red-btn">Disattiva<br>Fase</button>
+                                    {% else %}
+                                        <button class="green-btn">Attiva<br>Fase</button>
+                                    {% endif %}
+                                </a>
+                                <a href="{{ url_for('phases.add_edit_phase_form', phase_id=phase.id) }}">
+                                    <button>Modifica<br>Fase</button>
+                                </a>
+                                <button class="red-btn delete-btn" onclick="confirmDelete('{{ phase.id }}')">
+                                    <img src="{{ url_for('static', filename='images/delete-icon-white.png') }}" alt="Delete">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <h2>Nessuna fase trovata.</h2>
+    {% endif %}
+    <div class="button-container">
+        <a href="{{ url_for('phases.add_edit_phase_form') }}">
+        <button>
+            Aggiungi Fase
+        </button>
+        </a>
+    </div>
+
+    <form id="delete-phase-form" method="POST" action="{{ url_for('phases.delete_phase') }}" style="display: none;">
+        <input type="hidden" name="phase_id" id="phase_id">
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function confirmDelete(phaseId) {
+            var confirmation = confirm("Sei sicuro di voler eliminare questa fase?");
+            if (confirmation) {
+                document.getElementById('phase_id').value = phaseId;
+                document.getElementById('delete-phase-form').submit();
+            }
+        }
+    </script>
+{% endblock %}

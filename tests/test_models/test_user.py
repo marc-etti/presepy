@@ -7,7 +7,7 @@ def user_data():
     return {
         "username": "testuser",
         "password": "testpassword",
-        "is_admin": False,
+        "role": "user",
         "is_active": True
     }
 
@@ -20,7 +20,7 @@ def test_user_creation(user_data, app):
         assert user_from_db is not None
         assert user_from_db.id is not None
         assert user_from_db.username == user_data["username"]
-        assert user_from_db.is_admin == user_data["is_admin"]
+        assert user_from_db.role == user_data["role"]
         assert user_from_db.is_active == user_data["is_active"]
 
 def test_user_update(user_data, app):

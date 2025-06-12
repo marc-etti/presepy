@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Fasi Form{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
+
+{% block header %}
+    <h1>Fasi Form</h1>
+{% endblock %}
+
+{% block content %}
+<div class="add-edit-form">
+    {% if phase %}
+    <h2>Modifica Fase</h2>
+    <form method="POST" action="{{ url_for('phases.add_edit_phase', phase_id=phase.id) }}">
+    {% else %}
+    <h2>Aggiungi Nuova Fase</h2>
+    <form method="POST" action="{{ url_for('phases.add_edit_phase') }}">
+    {% endif %}
+        <div class="text-container">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" value="{{ phase.name if phase else '' }}" placeholder="Nome della fase" required>
+        </div>
+        <div class="text-container">
+            <label for="duration">Durata (in secondi):</label>
+            <input type="number" id="duration" name="duration" value="{{ phase.duration if phase else 0 }}" min="0" step="1" required>
+        </div>
+        <button type="submit">Salva</button>
+        <button type="button" onclick=goBack()>Annulla</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+{% endblock %}

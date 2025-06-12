@@ -329,6 +329,16 @@ footer {
     background-color: #27ae60 !important;
 }
 
+.grey-btn {
+    background-color: #bdc3c7 !important;
+}
+.grey-btn:hover {
+    background-color: #95a5a6 !important;
+}
+.grey-btn:active {
+    background-color: #95a5a6 !important;
+}
+
 .delete-btn img {
     padding: 2px;
     height: 24px;

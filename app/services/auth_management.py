@@ -71,7 +71,7 @@ def profile():
 @auth_bp.route('/admin')
 @login_required
 def admin():
-    if not current_user.is_admin:
+    if current_user.role != 'admin':
         flash('Non hai i permessi per accedere a questa pagina.', 'error')
         return redirect(url_for('dmx.index'))
     return render_template('auth/admin.html', users=User.query.all())

@@ -5,22 +5,31 @@ from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 
+#####################################################################
+# User Model
+# This model represents a user in the system.
+# id: Unique identifier for the user.
+# username: Unique username for the user.
+# password: Hashed password for the user.
+# role: Role assigned to the user (e.g., admin, user, expert).
+# is_active: Indicates if the user account is active.
+
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(128), nullable=True)
-    is_admin: Mapped[bool] = mapped_column(default=False)
+    role: Mapped[str] = mapped_column(String(80), default='user') 
     is_active: Mapped[bool] = mapped_column(default=True)
 
     def __init__(self, 
                  username, 
                  password, 
-                 is_admin=False,
+                 role='user',
                  is_active=True) -> None:
         self.username = username
         self.password = generate_password_hash(password)
-        self.is_admin = is_admin
+        self.role = role
         self.is_active = is_active
 
     def __repr__(self) -> str:

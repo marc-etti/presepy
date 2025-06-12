@@ -18,8 +18,9 @@ def init_db():
         try:
             # Popolamento Tabella User
             users = [
-                User(username='admin', password='admin', is_admin=True, is_active=True),
-                User(username='user', password='user', is_admin=False, is_active=True)
+                User(username='admin', password='admin', role='admin', is_active=True),
+                User(username='user', password='user', role='expert', is_active=True),
+                User(username='expert', password='expert', role='expert', is_active=True)
             ]
             db.session.bulk_save_objects(users)
             db.session.commit()
@@ -60,10 +61,10 @@ def init_db():
 
             # Popolamento Tabella Phase
             phases = [
-                Phase(name='ALBA', duration=30, order=1),
-                Phase(name='GIORNO', duration=60, order=2),
-                Phase(name='SERA', duration=30, order=3),
-                Phase(name='NOTTE', duration=30, order=4)
+                Phase(name='ALBA', duration=30, order=1, status='active'),
+                Phase(name='GIORNO', duration=60, order=2, status='active'),
+                Phase(name='SERA', duration=30, order=3, status='active'),
+                Phase(name='NOTTE', duration=30, order=4, status='active')
             ]
             db.session.bulk_save_objects(phases)
             db.session.commit()

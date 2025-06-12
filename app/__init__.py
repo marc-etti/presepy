@@ -18,12 +18,14 @@ def create_app(myConfig=Config):
     from app.services.dmx_management import dmx_bp
     from app.services.devices_management import devices_bp
     from app.services.keyframes_management import keyframes_bp
+    from app.services.phases_managements import phases_bp
     from app.services.auth_management import auth_bp
 
     # Registra i blueprint
     app.register_blueprint(dmx_bp)
     app.register_blueprint(devices_bp)
     app.register_blueprint(keyframes_bp)
+    app.register_blueprint(phases_bp)
     app.register_blueprint(auth_bp)
 
     # Inizializza SQLAlchemy
@@ -46,7 +48,12 @@ def create_app(myConfig=Config):
     # Handle per l'errore 404
     @app.errorhandler(404)
     def page_not_found(e):
-        return render_template('404.html'), 404
+        return render_template('errors/404.html'), 404
+
+    # Handle per l'errore 403
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template('errors/403.html'), 403
 
     return app
 

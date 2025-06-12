@@ -43,7 +43,7 @@ def main_dmx_function(app):
 
         FREQUENCY = 1/20 # Frequenza di invio dei dati al dmx (44Hz)
 
-        phases = Phase.get_phases() # Carico le fasi dal database
+        phases = Phase.get_phases(active=True) # Carico le fasi dal database
 
         # Inizializzazione
         lights = init_lights_from_db() # Inizializzo i dispositivi dal database

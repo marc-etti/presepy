@@ -13,8 +13,8 @@ def app():
 
         # popolo le tabelle con dati di test
         users = [ 
-            User(username="testuser1", password="password1", is_admin=False, is_active=True),
-            User(username="testuser2", password="password2", is_admin=True, is_active=True)
+            User(username="testuser1", password="password1", role='user', is_active=True),
+            User(username="testuser2", password="password2", role='admin', is_active=True)
         ]
         db.session.bulk_save_objects(users)
         db.session.commit()
@@ -40,8 +40,8 @@ def app():
         channels = Channel.query.all()
 
         phases = [
-            Phase(id=1, name="TestPhase1", duration=120, order=1),
-            Phase(id=2, name="TestPhase2", duration=240, order=2),
+            Phase(id=1, name="TestPhase1", duration=120, order=1, status='active'),
+            Phase(id=2, name="TestPhase2", duration=240, order=2, status='active'),
         ]
         db.session.bulk_save_objects(phases)
         db.session.commit()

@@ -23,6 +23,9 @@
                 <a href="{{ url_for('dmx.dmx_management') }}" {% if request.endpoint == 'dmx.dmx_management' %}class="current"{% endif %}>Gestione DMX</a>
             </li>
             <li>
+                <a href="{{ url_for('phases.phases_management') }}" {% if request.endpoint == 'phases.phases_management' %}class="current"{% endif %}>Gestione Fasi</a>
+            </li>
+            <li>
                 <a href="{{ url_for('devices.devices_management') }}" {% if request.endpoint == 'devices.devices_management' %}class="current"{% endif %}>Gestione Dispositivi</a>
             </li>
             {% if request.endpoint == 'keyframes.keyframes_management' %}
@@ -34,7 +37,7 @@
                 <li>
                     <a href="{{ url_for('auth.profile') }}" {% if request.endpoint == 'auth.profile' %}class="current"{% endif %}>Il mio profilo</a>
                 </li>
-                {% if current_user.is_admin %}
+                {% if current_user.role == 'admin' %}
                     <li>
                         <a href="{{ url_for('auth.admin') }}" {% if request.endpoint == 'auth.admin' %}class="current"{% endif %}>Pannello Admin</a>
                     </li>

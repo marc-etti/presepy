@@ -24,10 +24,10 @@
             {% for user in users %}
                 <tr>
                     <td>{{ user.username }}</td>
-                    <td>{{ 'Admin' if user.is_admin else 'Utente' }}</td>
+                    <td>{{ user.role }}</td>
                     <td>{{ 'Attivo' if user.is_active else 'Disattivato' }}</td>
                     <td>
-                        {% if not user.is_admin %}
+                        {% if user.role != 'admin' %}
                         <div class="table-button-container">
                             {% if user.is_active %}
                                 <form action="{{ url_for('auth.deactivate') }}" method="post" style="display:inline;">

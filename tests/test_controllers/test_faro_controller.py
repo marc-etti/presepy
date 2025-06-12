@@ -40,10 +40,12 @@ def test_faro_controller_init_no_channels(app, mock_dmx):
             FaroController("TestDevice3", mock_dmx)
 
 def test_faro_controller_no_keyframes(app, mock_dmx):
-    """Test che verifica l'errore se non ci sono keyframes per le fasi."""
+    """Test che verifica il funzionamento del faro anche in assenza di keyframes."""
     with app.app_context():
-        with pytest.raises(ValueError, match=re.escape("Il faro TestDevice2 richiede almeno 2 keyframe per il canale 4 nella fase TestPhase1 (trovati 0)")):
-            FaroController("TestDevice2", mock_dmx)
+        faroTest = FaroController("TestDevice2", mock_dmx)
+        phase = faroTest.phases[0]
+        faroTest.update(phase=phase, time=100, total_time=1000)
+        assert mock_dmx.set_channel.call_count == len(faroTest.channels)
 
 def test_faro_controller_update_success(app, mock_dmx):
     """Test che verifica l'aggiornamento del faro."""

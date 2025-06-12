@@ -13,8 +13,10 @@ def app():
 
         # popolo le tabelle con dati di test
         users = [ 
-            User(username="testuser1", password="password1", role='user', is_active=True),
-            User(username="testuser2", password="password2", role='admin', is_active=True)
+            User(username="test_user", password="password_user", role='user', is_active=True),
+            User(username="test_admin", password="password_admin", role='admin', is_active=True),
+            User(username="test_expert", password="password_expert", role='expert', is_active=True),
+            User(username="test_inactive", password="password_inactive", role='user', is_active=False)
         ]
         db.session.bulk_save_objects(users)
         db.session.commit()
@@ -77,9 +79,31 @@ def client(app):
     return app.test_client()
 
 @pytest.fixture()
-def login(client):
-    """Login fixture per autenticare un utente di test."""
-    def do_login(username='testuser1', password='password1'):
+def login_user(client):
+    """Login fixture per autenticare un utente di tipo user."""
+    def do_login(username='test_user', password='password_user'):
+        return client.post(
+            url_for('auth.login'),
+            data={'username': username, 'password': password},
+            follow_redirects=True
+        )
+    return do_login
+
+@pytest.fixture()
+def login_admin(client):
+    """Login fixture per autenticare un utente di tipo admin."""
+    def do_login(username='test_admin', password='password_admin'):
+        return client.post(
+            url_for('auth.login'),
+            data={'username': username, 'password': password},
+            follow_redirects=True
+        )
+    return do_login
+
+@pytest.fixture()
+def login_expert(client):
+    """Login fixture per autenticare un utente di tipo expert."""
+    def do_login(username='test_expert', password='password_expert'):
         return client.post(
             url_for('auth.login'),
             data={'username': username, 'password': password},

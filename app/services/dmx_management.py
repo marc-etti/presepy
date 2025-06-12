@@ -74,7 +74,7 @@ def start_DMX():
             daemon=True  # Imposta il thread come daemon
         )
         dmx_thread.start()
-        
+
     return jsonify({'message': 'Invio valori DMX avviato'})
 
 @dmx_bp.route('/stop_DMX', methods=['POST'])

@@ -39,7 +39,7 @@
                 </li>
                 {% if current_user.role == 'admin' %}
                     <li>
-                        <a href="{{ url_for('auth.admin') }}" {% if request.endpoint == 'auth.admin' %}class="current"{% endif %}>Pannello Admin</a>
+                        <a href="{{ url_for('admin.dashboard') }}" {% if request.endpoint == 'admin.dashboard' %}class="current"{% endif %}>Pannello Admin</a>
                     </li>
                 {% endif %}
                 <div class="onRight">

@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Profilo di amministrazione
+    Dashboard di amministrazione
 {% endblock %}
 
 {% block header %}
-    <h1>Profilo di amministrazione </h1>
+    <h1>Dashboard di amministrazione </h1>
 {% endblock %}
 
 {% block content %}
@@ -27,9 +27,9 @@
                     <td>{{ user.role }}</td>
                     <td>{{ 'Attivo' if user.is_active else 'Disattivato' }}</td>
                     <td>                        
-                        <div class="table-button-container">
                         {% if user.role != 'admin' %}
-                            <form action="{{ url_for('auth.change_role') }}" method="post" style="display:inline;">
+                        <div class="table-button-container">
+                            <form action="{{ url_for('admin.change_role') }}" method="post" style="display:inline;">
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
                                 <select name="new_role" onchange="this.form.submit()">
                                     <option value="user" {% if user.role == 'user' %}selected{% endif %}>Utente</option>
@@ -37,23 +37,24 @@
                                 </select>
                             </form>
                             {% if user.is_active %}
-                                <form action="{{ url_for('auth.deactivate') }}" method="post" style="display:inline;">
+                                <form action="{{ url_for('admin.deactivate') }}" method="post" style="display:inline;">
                                     <input type="hidden" name="user_id" value="{{ user.id }}">
                                     <button class="red-btn" type="submit">Disattiva</button>
                                 </form>
                             {% else %}
-                                <form action="{{ url_for('auth.activate') }}" method="post" style="display:inline;">
+                                <form action="{{ url_for('admin.activate') }}" method="post" style="display:inline;">
                                     <input type="hidden" name="user_id" value="{{ user.id }}">
                                     <button class="green-btn" type="submit">Attiva</button>
                                 </form>
                             {% endif %}
-                            <form action="{{ url_for('auth.delete_account') }}" method="post" style="display:inline;">
+                            <form action="{{ url_for('admin.delete_account') }}" method="post" style="display:inline;">
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
                                 <button class="red-btn" type="submit">Elimina</button>
+                            </form>
+                        </div>
                         {% else %}
                             <span>/</span>
                         {% endif %}
-                        </div>
                     </td>
                 </tr>
             {% endfor %}

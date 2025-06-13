@@ -20,6 +20,7 @@ def create_app(myConfig=Config):
     from app.services.keyframes_management import keyframes_bp
     from app.services.phases_managements import phases_bp
     from app.services.auth_management import auth_bp
+    from app.services.admin_management import admin_bp
 
     # Registra i blueprint
     app.register_blueprint(dmx_bp)
@@ -27,6 +28,7 @@ def create_app(myConfig=Config):
     app.register_blueprint(keyframes_bp)
     app.register_blueprint(phases_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(admin_bp)
 
     # Inizializza SQLAlchemy
     db.init_app(app)

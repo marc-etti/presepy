@@ -116,7 +116,7 @@ def activate():
     if user:
         user.is_active = True
         user.update()
-        flash(f"L'utente {user.username} è stato riattivato.", 'success')
+        flash(f"L'utente {user.username} è stato attivato.", 'success')
     else:
         flash('Utente non trovato.', 'error')
     return redirect(url_for('auth.admin'))

@@ -210,6 +210,6 @@ def test_activate_account(client, login_admin):
     login_admin()
     
     # Test di attivazione di un account
-    response = client.post(url_for('auth.activate'), data={'user_id': '1'}, follow_redirects=True)
+    response = client.post(url_for('auth.activate'), data={'user_id': '4'}, follow_redirects=True)
     assert response.status_code == 200
     assert b'stato attivato' in response.data

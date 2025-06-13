@@ -13,10 +13,10 @@
 {% block content %}
 <div class="add-edit-form">
     {% if phase %}
-    <h2>Modifica Fase</h2>
+    <h2>Modifica la fase {{ phase.name }}</h2>
     <form method="POST" action="{{ url_for('phases.add_edit_phase', phase_id=phase.id) }}">
     {% else %}
-    <h2>Aggiungi Nuova Fase</h2>
+    <h2>Aggiungi una nuova fase</h2>
     <form method="POST" action="{{ url_for('phases.add_edit_phase') }}">
     {% endif %}
         <div class="text-container">

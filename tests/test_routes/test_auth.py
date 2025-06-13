@@ -10,21 +10,21 @@ def test_register_get(client):
 
 def test_register_post(client):
     response = client.post(url_for('auth.register'),
-        data={ 'username': 'testuser',
-               'password': 'password'},
+        data={ 'username': 'testuser1',
+               'password': 'password1'},
         follow_redirects=True
     )
     assert response.status_code == 200
-    assert 'Registrazione completata per testuser.'.encode('utf-8') in response.data
+    assert 'Registrazione completata per testuser1.'.encode('utf-8') in response.data
 
 def test_register_post_existing_username(client):
     response = client.post(url_for('auth.register'), 
-        data={  'username': 'testuser1',
-                'password': 'password1'},
+        data={  'username': 'test_user',
+                'password': 'password'},
         follow_redirects=True
     )
     assert response.status_code == 200
-    assert 'Il nome testuser1 è già in uso.'.encode('utf-8') in response.data
+    assert 'Il nome test_user è già in uso.'.encode('utf-8') in response.data
 
 def test_login_get(client):
     response = client.get(url_for('auth.login'))
@@ -35,8 +35,8 @@ def test_login_get(client):
 
 def test_login_post(client):
     response = client.post(url_for('auth.login'),
-        data={ 'username': 'testuser1',
-               'password': 'password1'},
+        data={ 'username': 'test_user',
+               'password': 'password_user'},
         follow_redirects=True
     )
     assert response.status_code == 200
@@ -54,7 +54,7 @@ def test_login_post_invalid_username(client):
 
 def test_login_post_invalid_password(client):
     response = client.post(url_for('auth.login'),
-        data={ 'username': 'testuser1',
+        data={ 'username': 'test_user',
                'password': 'invalidpassword'},
         follow_redirects=True
     )
@@ -64,8 +64,8 @@ def test_login_post_invalid_password(client):
 def test_logout(client):
     # Login 
     client.post(url_for('auth.login'),
-        data={ 'username': 'testuser1',
-               'password': 'password1'},
+        data={ 'username': 'test_user',
+               'password': 'password_user'},
         follow_redirects=True
     )
 
@@ -79,32 +79,32 @@ def test_logout(client):
 def test_profile(client):
     # Login 
     client.post(url_for('auth.login'),
-        data={ 'username': 'testuser1',
-               'password': 'password1'},
+        data={ 'username': 'test_user',
+               'password': 'password_user'},
         follow_redirects=True
     )
     # Test per la profile page
     response = client.get(url_for('auth.profile'))
     assert response.status_code == 200
-    assert b'Benvenuto testuser1' in response.data
+    assert b'Benvenuto test_user' in response.data
 
 def test_admin_required(client):
     # Login come utente normale
     client.post(url_for('auth.login'),
-        data={ 'username': 'testuser1',
-               'password': 'password1'},
+        data={ 'username': 'test_user',
+               'password': 'password_user'},
         follow_redirects=True
     )
     # Test di accesso alla pagina admin
     response = client.get(url_for('auth.admin'), follow_redirects=True)
-    assert response.status_code == 200
-    assert b'Non hai i permessi per accedere a questa pagina.' in response.data
+    assert response.status_code == 403
+    assert b'Non hai i permessi necessari per accedere a questa pagina.' in response.data
 
 def test_admin_access(client):
     # Login come admin
     client.post(url_for('auth.login'),
-        data={ 'username': 'testuser2',
-               'password': 'password2'},
+        data={ 'username': 'test_admin',
+               'password': 'password_admin'},
         follow_redirects=True
     )
     # Test di accesso alla pagina admin
@@ -112,3 +112,104 @@ def test_admin_access(client):
     assert response.status_code == 200
     assert b'Pannello Admin' in response.data
     assert b'Gestione Utenti' in response.data
+
+def test_role_required(client):
+    # Login come utente normale
+    client.post(url_for('auth.login'),
+        data={ 'username': 'test_user',
+               'password': 'password_user'},
+        follow_redirects=True
+    )
+    # Test di accesso alla pagina admin
+    response = client.get(url_for('auth.admin'), follow_redirects=True)
+    assert response.status_code == 403
+    assert b'Non hai i permessi necessari per accedere a questa pagina.' in response.data
+
+    # Login come admin
+    client.post(url_for('auth.login'),
+        data={ 'username': 'test_admin',
+               'password': 'password_admin'},
+        follow_redirects=True
+    )
+    # Test di accesso alla pagina admin
+    response = client.get(url_for('auth.admin'))
+    assert response.status_code == 200
+
+def test_delete_account(client, login_admin):
+    # Login come admin
+    login_admin()
+    
+    # Test di eliminazione di un account
+    response = client.post(url_for('auth.delete_account'), data={'user_id': '1'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'stato eliminato.' in response.data
+
+def test_deactivate_account(client, login_admin):
+    # Login come admin
+    login_admin()
+    
+    # Test di disattivazione di un account
+    response = client.post(url_for('auth.deactivate'), data={'user_id': '1'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'stato disattivato' in response.data
+
+def test_delete_account_invalid_user(client, login_admin):
+    # Login come admin
+    login_admin()
+    
+    # Test di eliminazione di un account inesistente
+    response = client.post(url_for('auth.delete_account'), data={'user_id': '999'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Utente non trovato.' in response.data
+
+def test_deactivate_account_invalid_user(client, login_admin):
+    # Login come admin
+    login_admin()
+    
+    # Test di disattivazione di un account inesistente
+    response = client.post(url_for('auth.deactivate'), data={'user_id': '999'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Utente non trovato.' in response.data
+
+def test_delete_account_unauthorized(client):
+    # Login come utente normale
+    client.post(url_for('auth.login'),
+        data={ 'username': 'test_user',
+               'password': 'password_user'},
+        follow_redirects=True
+    )
+    
+    # Test di eliminazione senza permessi admin
+    response = client.post(url_for('auth.delete_account'), data={'user_id': '1'}, follow_redirects=True)
+    assert response.status_code == 403
+
+def test_deactivate_account_unauthorized(client):
+    # Login come utente normale
+    client.post(url_for('auth.login'),
+        data={ 'username': 'test_user',
+               'password': 'password_user'},
+        follow_redirects=True
+    )
+    
+    # Test di disattivazione senza permessi admin
+    response = client.post(url_for('auth.deactivate'), data={'user_id': '1'}, follow_redirects=True)
+    assert response.status_code == 403
+
+def test_admin_page_content(client, login_admin):
+    # Login come admin
+    login_admin()
+    
+    # Test del contenuto della pagina admin
+    response = client.get(url_for('auth.admin'))
+    assert response.status_code == 200
+    assert b'test_user' in response.data
+    assert b'test_admin' in response.data
+
+def test_activate_account(client, login_admin):
+    # Login come admin
+    login_admin()
+    
+    # Test di attivazione di un account
+    response = client.post(url_for('auth.activate'), data={'user_id': '1'}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'stato attivato' in response.data

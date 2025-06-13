@@ -13,21 +13,8 @@
         <span class="titolo"> Benvenuto {{ user.username }} </span>
         <img src="{{ url_for('static', filename='images/user.png') }}" alt="User Icon" class="user-icon">
     </div>
-    <div class="button-container">
-        <button onclick="deleteAccount()" class="red-btn">Elimina Account</button>
-    </div>
-
-    <form action="{{ url_for('auth.delete_account') }}" method="POST" style="display: none;">
-        <input type="hidden" id="user_id" name="user_id" value="{{ user.id }}">
-    </form>
 {% endblock %}
 
 {% block scripts %}
-    <script>
-        function deleteAccount() {
-            if (confirm("Sei sicuro di voler eliminare il tuo account?")) {
-                document.querySelector('form').submit();
-            }
-        }
-    </script>
+
 {% endblock %}

@@ -42,8 +42,8 @@ def test_faro_controller_init_no_channels(app, mock_dmx):
 def test_faro_controller_no_keyframes(app, mock_dmx):
     """Test che verifica il funzionamento del faro anche in assenza di keyframes."""
     with app.app_context():
-        faroTest = FaroController("TestDevice2", mock_dmx)
-        phase = faroTest.phases[0]
+        faroTest = FaroController("TestDevice1", mock_dmx)
+        phase = faroTest.phases[2]
         faroTest.update(phase=phase, time=100, total_time=1000)
         assert mock_dmx.set_channel.call_count == len(faroTest.channels)
 

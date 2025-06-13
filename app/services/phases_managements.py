@@ -32,10 +32,10 @@ def active_deactivate_phase(phase_id):
         if phase:
             if phase.status == "active":
                 phase.deactivate()
-                flash(f"Fase {phase.name} attiva", 'success')
+                flash(f"Fase {phase.name} disattivata", 'success')
             elif phase.status == "deactivated":
                 phase.activate()
-                flash(f"Fase {phase.name} disattivata", 'success')
+                flash(f"Fase {phase.name} attivata", 'success')
             else:
                 flash(f"Stato della fase {phase.name} non valido", 'error')
                 return redirect(url_for('phases.phases_management'))
@@ -107,8 +107,6 @@ def add_edit_phase(phase_id=None):
             phase = Phase()
             phase.name = name
             phase.duration = int(duration)
-            phase.status = 'deactivated'  # Default status for new phases
-            phase.order = db.session.query(Phase).filter_by(status='active').count() + 1  # Set order based on active phases
             phase.add()
             flash(f'Fase {name} aggiunta con successo', 'success')
 

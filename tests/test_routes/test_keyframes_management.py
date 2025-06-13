@@ -7,22 +7,22 @@ def test_keyframes_management_requires_login(client):
     response = client.get(url_for('keyframes.keyframes_management', device_id=1), follow_redirects=True)
     assert b'Login' in response.data or response.status_code == 200
 
-def test_keyframes_management_page(client, login):
-    login()
+def test_keyframes_management_page(client, login_user):
+    login_user()
     response = client.get(url_for('keyframes.keyframes_management', device_id=1))
     assert response.status_code == 200
     assert b'Gestione Keyframes' in response.data
 
-def test_edit_keyframe_form_page(client, login):
-    login()
+def test_edit_keyframe_form_page(client, login_expert):
+    login_expert()
     response = client.get(url_for('keyframes.edit_keyframe_form', device_id=1, phase_id=1, position=0))
     assert response.status_code == 200
     assert b'Modifica Keyframe' in response.data
 
-def test_edit_keyframe(app, client, login):
+def test_edit_keyframe(app, client, login_expert):
     with app.app_context():
         old_value = db.session.query(Keyframe).filter_by(phase_id=1, position=0, channel_id=1).first().value
-        login()
+        login_expert()
         response = client.post(
             url_for('keyframes.edit_keyframe'),
             data={
@@ -41,20 +41,20 @@ def test_edit_keyframe(app, client, login):
     assert old_value != new_value
     assert new_value == 255
 
-def test_edit_keyframe_not_found(client, login):
-    login()
+def test_edit_keyframe_not_found(client, login_expert):
+    login_expert()
     response = client.get(url_for('keyframes.edit_keyframe_form', device_id=1, phase_id=1, position=999))
     assert response.status_code == 200
     assert b'Keyframe non trovato' in response.data
 
-def test_add_keyframe_form_page(client, login):
-    login()
+def test_add_keyframe_form_page(client, login_expert):
+    login_expert()
     response = client.get(url_for('keyframes.add_keyframe_form', device_id=1, phase_id=1), follow_redirects=True)
     assert response.status_code == 200
     assert b'Aggiungi Keyframe' in response.data
 
-def test_add_keyframe(client, login):
-    login()
+def test_add_keyframe(client, login_expert):
+    login_expert()
     response = client.post(
         url_for('keyframes.add_keyframe'),
         data={
@@ -74,8 +74,8 @@ def test_add_keyframe(client, login):
     assert response.status_code == 200
     assert b'Keyframe aggiunto correttamente' in response.data
 
-def test_delete_keyframe(client, login):
-    login()
+def test_delete_keyframe(client, login_expert):
+    login_expert()
     response = client.post(
         url_for('keyframes.delete_keyframe'),
         data={

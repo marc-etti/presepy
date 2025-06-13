@@ -26,9 +26,9 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.role }}</td>
                     <td>{{ 'Attivo' if user.is_active else 'Disattivato' }}</td>
-                    <td>
-                        {% if user.role != 'admin' %}
+                    <td>                        
                         <div class="table-button-container">
+                        {% if user.role != 'admin' %}
                             <form action="{{ url_for('auth.change_role') }}" method="post" style="display:inline;">
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
                                 <select name="new_role" onchange="this.form.submit()">
@@ -47,6 +47,9 @@
                                     <button class="green-btn" type="submit">Attiva</button>
                                 </form>
                             {% endif %}
+                            <form action="{{ url_for('auth.delete_account') }}" method="post" style="display:inline;">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <button class="red-btn" type="submit">Elimina</button>
                         {% else %}
                             <span>/</span>
                         {% endif %}

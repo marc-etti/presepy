@@ -7,8 +7,8 @@ def test_index(client):
     assert b'Login' in response.data
     assert b'Registrati' in response.data
 
-def test_index_logged_in(client, login):
-    login()
+def test_index_logged_in(client, login_user):
+    login_user()
     response = client.get(url_for('dmx.index'))
     assert response.status_code == 200
     assert b'Presepy' in response.data
@@ -20,8 +20,8 @@ def test_dmx_management_requires_login(client):
     assert b'Devi essere autenticato per accedere a questa pagina.' in response.data
     assert b'Login' in response.data
 
-def test_dmx_management_page(client, login):
-    login()
+def test_dmx_management_page(client, login_user):
+    login_user()
     response = client.get(url_for('dmx.dmx_management'))
     assert response.status_code == 200
     assert b'Pagina di gestione DMX' in response.data

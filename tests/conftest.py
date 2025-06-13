@@ -44,6 +44,7 @@ def app():
         phases = [
             Phase(id=1, name="TestPhase1", duration=120, order=1, status='active'),
             Phase(id=2, name="TestPhase2", duration=240, order=2, status='active'),
+            Phase(id=3, name="TestPhase3", duration=180, order=3, status='active'),
         ]
         db.session.bulk_save_objects(phases)
         db.session.commit()

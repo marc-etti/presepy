@@ -83,16 +83,17 @@ def admin():
 
 @auth_bp.route('/delete_account', methods=('POST',))
 @login_required
+@role_required('admin')
 def delete_account():
-    user = db.session.get(User, request.form['user_id'])
+    user_id = request.form['user_id']
+    user = User.query.filter_by(id=user_id).first()
     if user:
         user.delete()
-        logout_user()
-        flash('Il tuo account è stato eliminato.', 'success')
+        flash(f"L'utente {user.username} è stato eliminato.", 'success')
     else:
-        flash("Errore durante l'eliminazione dell'account.", 'error')
-    return redirect(url_for('dmx.index'))
-
+        flash('Utente non trovato.', 'error')
+    return redirect(url_for('auth.admin'))
+    
 @auth_bp.route('/deactivate', methods=('POST',))
 @login_required
 @role_required('admin')

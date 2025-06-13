@@ -42,13 +42,13 @@ class Phase(db.Model):
         """
         Valida gli attributi della fase.
         """
-        if not self.name:
+        if self.name is None or self.name.strip() == "":
             raise ValueError("Il nome della fase non può essere vuoto")
-        if not self.duration:
+        if self.duration is None:
             raise ValueError("La durata della fase non può essere vuota")
         if self.duration <= 0:
             raise ValueError("La durata della fase deve essere maggiore di zero")
-        if not self.order:
+        if self.order is None:
             raise ValueError("L'ordine della fase non può essere vuoto")
         if not self.status:
             raise ValueError("Lo stato della fase non può essere vuoto")
@@ -64,6 +64,8 @@ class Phase(db.Model):
         """
         Aggiunge la fase al database.
         """
+        self.order = 0
+        self.status = "deactivated"
         self.validate()
         db.session.add(self)
         db.session.commit()
@@ -89,6 +91,9 @@ class Phase(db.Model):
         Cambia la posizione della fase nell'ordine.
         direction: "up" per spostare su, "down" per spostare giù.
         """
+        if self.status != "active":
+            raise ValueError("La fase deve essere attiva per poter essere spostata")
+        
         if direction not in ["up", "down"]:
             raise ValueError("La direzione deve essere 'up' o 'down'")
         
@@ -126,9 +131,9 @@ class Phase(db.Model):
         """
         Attiva la fase.
         """
-        self.status = "active"
         order_count = db.session.query(Phase).filter_by(status="active").count()
-        self.order = order_count
+        self.order = order_count + 1
+        self.status = "active"
         db.session.commit()
 
     def deactivate(self) -> None:

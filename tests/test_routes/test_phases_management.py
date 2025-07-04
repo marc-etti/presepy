@@ -25,7 +25,6 @@ def test_active_deactivate_phase(client, login_expert):
     updated_phase = db.session.query(Phase).filter_by(id=phase.id).first()
     assert updated_phase.status != initial_status
 
-
 def test_active_deactivate_phase_not_found(client, login_expert):
     login_expert()
     response = client.get(url_for('phases.active_deactivate_phase', phase_id=999), follow_redirects=True)
@@ -130,7 +129,7 @@ def test_move_up_first_phase(client, login_user):
     response = client.get(url_for('phases.move_up_down_phase', phase_id=phase.id, direction='up'), follow_redirects=True)
     
     assert response.status_code == 200
-    assert 'a fase è già al primo posto e non può essere spostata su'.encode() in response.data
+    assert 'La fase è già al primo posto e non può essere spostata su'.encode() in response.data
 
     updated_phase = db.session.query(Phase).filter_by(id=phase.id).first()
 

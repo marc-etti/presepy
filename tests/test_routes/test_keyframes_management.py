@@ -19,6 +19,11 @@ def test_edit_keyframe_form_page(client, login_expert):
     assert response.status_code == 200
     assert b'Modifica Keyframe' in response.data
 
+def test_edit_keyframe_form_user_not_expert(client, login_user):
+    login_user()
+    response = client.get(url_for('keyframes.edit_keyframe_form', device_id=1, phase_id=1, position=0), follow_redirects=True)
+    assert b'Non hai i permessi necessari per accedere a questa pagina.' in response.data
+
 def test_edit_keyframe(app, client, login_expert):
     with app.app_context():
         old_value = db.session.query(Keyframe).filter_by(phase_id=1, position=0, channel_id=1).first().value
@@ -52,6 +57,11 @@ def test_add_keyframe_form_page(client, login_expert):
     response = client.get(url_for('keyframes.add_keyframe_form', device_id=1, phase_id=1), follow_redirects=True)
     assert response.status_code == 200
     assert b'Aggiungi Keyframe' in response.data
+
+def test_add_keyframe_form_user_not_expert(client, login_user):
+    login_user()
+    response = client.get(url_for('keyframes.add_keyframe_form', device_id=1, phase_id=1), follow_redirects=True)
+    assert b'Non hai i permessi necessari per accedere a questa pagina.' in response.data
 
 def test_add_keyframe(client, login_expert):
     login_expert()
@@ -88,3 +98,32 @@ def test_delete_keyframe(client, login_expert):
     )
     assert response.status_code == 200
     assert b'Keyframe eliminato correttamente' in response.data
+
+def test_delete_keyframe_not_found(client, login_expert):
+    login_expert()
+    response = client.post(
+        url_for('keyframes.delete_keyframe'),
+        data={
+            'device_id': 1,
+            'phase_id': 1,
+            'position': 999,
+            'channel_id': 1
+        },
+        follow_redirects=True
+    )
+    assert response.status_code == 200
+    assert b'Keyframe non trovato' in response.data
+
+def test_delete_keyframe_user_not_expert(client, login_user):
+    login_user()
+    response = client.post(
+        url_for('keyframes.delete_keyframe'),
+        data={
+            'device_id': 1,
+            'phase_id': 1,
+            'position': 0,
+            'channel_id': 1
+        },
+        follow_redirects=True
+    )
+    assert b'Non hai i permessi necessari per accedere a questa pagina.' in response.data

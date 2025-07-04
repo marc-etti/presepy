@@ -178,6 +178,10 @@ def delete_keyframe():
         position=position
     ).filter(Keyframe.channel_id.in_(channels_ids)).all()
 
+    if not keyframes:
+        flash('Keyframe non trovato', 'error')
+        return redirect(url_for('keyframes.keyframes_management', device_id=device_id))
+
     if len(keyframes) != len(channels_ids):
         flash('Il numero di keyframe da eliminare non corrisponde al numero di canali', 'error')
         return redirect(url_for('keyframes.keyframes_management', device_id=device_id))

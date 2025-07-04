@@ -23,7 +23,7 @@ def test_admin_access(client):
     # Test di accesso alla pagina admin
     response = client.get(url_for('admin.dashboard'))
     assert response.status_code == 200
-    assert b'Pannello Admin' in response.data
+    assert b'Dashboard Admin' in response.data
     assert b'Gestione Utenti' in response.data
 
 def test_role_required(client):

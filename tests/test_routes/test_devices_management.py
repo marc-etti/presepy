@@ -19,6 +19,11 @@ def test_add_device_form_page(client, login_expert):
     assert response.status_code == 200
     assert b'Aggiungi dispositivo' in response.data
 
+def test_add_device_form_user_not_expert(client, login_user):
+    login_user()
+    response = client.get(url_for('devices.add_device_form'), follow_redirects=True)
+    assert b'Non hai i permessi necessari per accedere a questa pagina.' in response.data
+
 def test_add_device_missing_fields(client, login_expert):
     login_expert()
     response = client.post(
@@ -98,12 +103,22 @@ def test_edit_device_success(app, client, login_expert):
     assert b'modificato con successo' in response.data
     assert old_name != new_name
 
+def test_edit_device_user_not_expert(client, login_user):
+    login_user()
+    response = client.get(url_for('devices.edit_device_form', device_id=1), follow_redirects=True)
+    assert b'Non hai i permessi necessari per accedere a questa pagina.' in response.data
+
 def test_delete_device_success(client, login_expert):
     login_expert()
     response = client.post(url_for('devices.delete_device'), data={'device_id': 2}, follow_redirects=True)
     assert b'eliminato con successo' in response.data
     response = client.get(url_for('devices.devices_management'))
     assert b'TestDevice2_edited' not in response.data
+
+def test_delete_device_user_not_expert(client, login_user):
+    login_user()
+    response = client.post(url_for('devices.delete_device'), data={'device_id': 1}, follow_redirects=True)
+    assert b'Non hai i permessi necessari per accedere a questa pagina.' in response.data
 
 def test_add_device_existing_channel(client, login_expert):
     login_expert()

@@ -8,7 +8,7 @@ services:
     volumes:
       - presepy_data:/usr/src/presepy/instance
     environment:
-      - DOCKER_CONTAINER=true
+      - DOCKER_CONTAINER=True
 
 volumes:
   presepy_data:

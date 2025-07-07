@@ -3,21 +3,27 @@ Presepy è un'applicazione web per la gestione di un presepe elettronico, svilup
 Le funzionalità principali includono:
 - Creazione, modifica e cancellazione di dispositivi
 - Creazione, modifica e cancellazione di keyframe
+- Creazione, modifica e cancellazione di fasi
 - Avvio, pausa e stop della trasmissione dei dati DMX (simulata con una scrittura su file di log)
+- Visualizzazione dello stato dei dispositivi e delle fasi
+- L'amministratore può gestire gli utenti e i loro ruoli:
+    - `User`: può visualizzare lo stato dei dispositivi e delle fasi, ma non può modificarli
+    - `Expert`: può anche aggiungere, modificare e cancellare dispositivi, keyframe e fasi
+
 
 ## Struttura del progetto
 ```
 presepy/
 ├── app/                  # Directory principale dell'applicazione
-│   ├── __init__.py       # Inizializzazione dell'applicazione Flask
 │   ├── logs/                # Directory per i file di log
 │   ├── models/              # Modelli del database
 │   ├── services/            # Gestione della logica di business
 │   ├── static/              # File statici (CSS, JS, immagini)
 │   ├── templates/           # Template HTML per l'interfaccia utente
 │   ├── utils/               # Funzioni di utilità
-│   ├── __init__.py          # Inizializzazione del modulo app
-│   └── db.py                # Gestione del database
+│   ├── __init__.py          # Inizializzazione dell'applicazione Flask
+│   ├── db.py                # Gestione del database
+|   └──  decorators.py       # Decoratori per la gestione delle autorizzazioni
 ├── instance/presepy.sqlite  # Database SQLite
 ├── tests/                # Directory dei test
 ├── config.py             # Configurazione dell'applicazione
@@ -28,7 +34,9 @@ presepy/
 ├── docker-compose.yml    # File di configurazione per Docker Compose
 ├── entrypoint.sh         # Script di entrypoint per Docker
 ├── README.md             # Documentazione del progetto
-└── .gitignore            # File per ignorare file e cartelle non necessari
+├── LICENSE               # Licenza del progetto
+├── .gitignore            # File per ignorare file e cartelle non necessari
+└── .dockerignore         # File per ignorare file e cartelle non necessari in Docker
 ```
 
 ## Avvio dell'applicazione
@@ -43,32 +51,7 @@ chmod +x avvio.sh
 ./avvio.sh
 ```
 
-## Creazione ambiente virtuale
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-## Avvio dell'applicazione
-```bash
-python run.py
-```
-
-## Terminazione applicazione
-```bash
-CTRL+C
-deactivate
-```
-
-## Inizializzazione database
-Per inizializzare il database, è necessario eseguire il comando di inizializzazione del database.
-```bash
-flask init-db
-```
-
-## Accesso all'interfaccia web
-L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/).
+L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/)
 
 ## Esecuzione dei test
 ### pytest
@@ -82,25 +65,9 @@ coverage report -m
 coverage html
 ```
 
-## Avvio dell'applicazione con Docker
-
-### Build dell'immagine
+## Docker
+### Esecuzione dell'applicazione con docker-compose.yml
 ```bash
-docker build -t andreamarchetti/presepy:1.0 .
+docker compose up --build -d
 ```
-### Push dell'immagine
-```bash
-docker push andreamarchetti/presepy:1.0
-```
-### Pull dell'immagine
-```bash
-docker pull andreamarchetti/presepy:1.0
-```
-### Esecuzione dell'immagine con Docker
-```bash
-docker run -p 5000:5000 andreamarchetti/presepy:1.0
-```
-### Esecuzione con docker compose
-```bash
-docker compose up -d
-```
+L'interfaccia web è accessibile all'indirizzo [http://localhost:5000/](http://localhost:5000/)

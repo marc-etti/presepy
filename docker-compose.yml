@@ -1,6 +1,5 @@
 services:
   presepy:
-    build: .
     image: andreamarchetti/presepy:latest
     container_name: presepy
     ports:

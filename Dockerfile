@@ -2,7 +2,7 @@
 FROM python:3.13-alpine
 
 # Imposta la directory di lavoro
-WORKDIR /usr/src/app
+WORKDIR /usr/src/presepy
 
 # Copia i file necessari
 COPY requirements.txt .
@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # volume per il database
-VOLUME /usr/src/app/instance/
+VOLUME /usr/src/presepy/instance/
 
 # Copia il resto del codice sorgente
 COPY . .
